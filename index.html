@@ -640,6 +640,9 @@
               <h2 class="q"><span class="qnum" aria-hidden="true">4</span>Colour mood — pick from the swatches</h2>
               <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Every colour, shown as it will appear. Your preview recolours the moment you choose.</p>
               <div id="swatches" style="margin-top:14px"></div>
+              <p style="font-weight:600;margin-top:24px">Brand kits — colours &amp; font in one tap</p>
+              <p style="color:var(--muted);font-size:14.5px;margin-top:6px">A ready-made brand set: a primary colour, an accent colour and a font, chosen to work together. Tap one and your preview changes at once — you can still fine-tune the exact colours and font afterwards, just below.</p>
+              <div id="kits" style="margin-top:12px"></div>
               <div class="panel" style="padding:18px;margin-top:16px">
                 <p style="font-weight:600">Or fine-tune with exact colours</p>
                 <p style="color:var(--muted);font-size:14px;margin-top:4px">Pick a primary colour for buttons and the main elements, and an accent colour for highlights and gradients. Your preview recolours the moment you choose — tap a picked colour again to go back to your colour mood.</p>
@@ -1075,6 +1078,7 @@
         <p class="polish-line" style="max-width:none"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>This site was built from the brief — <b>your words, polished into professional text</b>. <button class="entry-explore" id="code-brief-btn" type="button" style="margin:0;padding:0;font-size:14.5px">Open the polished brief →</button></span></p>
         <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:18px">
           <button class="btn small" id="code-copy" type="button">Copy the code</button>
+          <button class="btn small" id="code-download" type="button">Download .html</button>
           <button class="btn small" id="code-save" type="button">Save my edited version</button>
           <button class="btn ghost small" id="code-reset" type="button">Reset to generated code</button>
           <button class="btn ghost small" id="code-back" type="button">← Back</button>
@@ -1234,6 +1238,15 @@
       {name:"Berry & Cream", sw:["#9d174d","#fb7185","#fdf2f8"], primary:"#9d174d", pn:"Berry", accent:"#e11d48", an:"Rose Red", bg:"#fffafc", ink:"#33101f"},
       {name:"Signature Spectrum", sw:["#00f2fe","#d946ef","#f59e0b"], primary:"#7c3aed", pn:"Violet", accent:"#d97706", an:"Solar Gold", bg:"#ffffff", ink:"#17122b"}
     ];
+    /* Brand kits — a primary colour + an accent colour + a font style, applied in one tap */
+    var KITS = [
+      {name:"Ocean Trust", primary:"#0369a1", pn:"Ocean Blue", accent:"#0891b2", an:"Deep Sky Blue", font:"Clean sans"},
+      {name:"Warm Gold", primary:"#161616", pn:"Charcoal Black", accent:"#b8912a", an:"Antique Gold", font:"Elegant serif"},
+      {name:"Fresh Green", primary:"#3f6212", pn:"Olive Green", accent:"#a16207", an:"Harvest Gold", font:"Friendly rounded"},
+      {name:"Bold Coral", primary:"#ea580c", pn:"Burnt Orange", accent:"#e11d48", an:"Coral Red", font:"Clean sans"},
+      {name:"Calm Purple", primary:"#7c3aed", pn:"Violet", accent:"#06b6d4", an:"Cyan", font:"Friendly rounded"},
+      {name:"Classic Navy", primary:"#1e3a8a", pn:"Royal Navy", accent:"#64748b", an:"Slate Grey", font:"Elegant serif"}
+    ];
     var STYLE_FX = {
       "Modern & Minimalist":{r:10},"Bold & Colorful":{r:14,bold:1},"Dark & Cyber":{r:6,dark:1},
       "Classic & Editorial":{r:4,serif:1},"Bento Grid":{r:16},"Retro & Vintage":{r:8,serif:1},
@@ -1292,7 +1305,7 @@
     ];
     var DEFAULTS = {purpose:"Portfolio", style:"Modern & Minimalist", audience:"Creative professionals", name:"",
       pages:["Hero","Project Showcase","About Me","Contact form"], features:["Gallery","Forms"],
-      colors:"Cyan & Purple", primaryPick:null, accentPick:null, tone:"Professional", complex:true, pageCount:"1", custom:"", tagline:"",
+      colors:"Cyan & Purple", primaryPick:null, accentPick:null, kit:"", tone:"Professional", complex:true, pageCount:"1", custom:"", tagline:"",
       layout:"Centred hero", font:"Clean sans", btnShape:"Rounded"};
     var S = JSON.parse(JSON.stringify(DEFAULTS));
     var addons = {email:false, phone:false, backend:false};
@@ -1332,6 +1345,7 @@
         '. Include '+(b.features.join(", ")||"basic features")+'. Use a colour scheme of '+b.colors.toLowerCase()+
         ', with '+effPrimary().name+' ('+effPrimary().hex+') as the primary colour and '+effAccent().name+' ('+effAccent().hex+') as the accent colour. Lay the page out as a '+b.layout.toLowerCase()+' design, set type in a '+b.font.toLowerCase()+' style, and use '+b.btnShape.toLowerCase()+' buttons. Make it '+
         (b.complex?"rich and detailed":"simple and focused")+' with '+b.pageCount+' page'+(b.pageCount==="1"?"":"s")+'.';
+      if(b.kit)p+=' The design starts from the '+b.kit+' brand kit — its primary colour, accent colour and font applied together.';
       if(userImages.length)p+=' The customer supplied '+userImages.length+' of their own image'+(userImages.length===1?"":"s")+' to include: '+userImages.map(function(im){return '"'+(im.name||"image")+'"'+(im.slot&&im.slot!=="Auto"?" as the "+im.slot.toLowerCase():"")+(im.note?' ('+im.note+")":"")}).join(", ")+'.';
       if(aiImageRequest)p+=' The customer also asked WebFlowAI to create images showing: "'+aiImageRequest+'" — created images must be completely people-free (products, objects, places, interiors and screens only; never any image of a female and no people at all).';
       if(b.tagline)p+=' The site tagline is: "'+b.tagline+'".';
@@ -1345,7 +1359,7 @@
     }
     function orderPackage(){
       return {reference:refCode(), account:customerPhone?{phone:fmtPhone(customerPhone),keyedBy:"phone number",ownerOnly:true}:null, signinCode:customerCode||null, aiSideIdentity:customerCode?("Customer · Code "+fmtCode(customerCode)):"Guest (not signed in)", createdImagesRequest:aiImageRequest||null, createdImagesRule:"WebFlowAI-created images are always people-free — products, objects, places, interiors and screens only; never any image of a female and no people at all.", business:S.name||"My Website", purpose:S.purpose, style:S.style, audience:S.audience,
-        sections:S.pages, features:S.features, colours:S.colors, primaryColour:{name:effPrimary().name, hex:effPrimary().hex}, accentColour:{name:effAccent().name, hex:effAccent().hex}, tone:S.tone, layout:S.layout, fontStyle:S.font,
+        sections:S.pages, features:S.features, colours:S.colors, brandKit:S.kit||null, primaryColour:{name:effPrimary().name, hex:effPrimary().hex}, accentColour:{name:effAccent().name, hex:effAccent().hex}, tone:S.tone, layout:S.layout, fontStyle:S.font,
         buttonShape:S.btnShape, complexity:S.complex?"Complex":"Simple", pageCount:S.pageCount, tagline:S.tagline||null,
         notes:S.custom||null, brief:buildPrompt(S),
         plan:{website:{label:"Front-end website", price:BASE_PRICE, billing:"one-time"},
@@ -1382,6 +1396,7 @@
         +'<tr><th>Sections</th><td>'+esc(S.pages.join(", ")||"—")+'</td></tr>'
         +'<tr><th>Features</th><td>'+esc(S.features.join(", ")||"—")+'</td></tr>'
         +'<tr><th>Colour mood</th><td>'+swatchDots(pal)+' '+esc(S.colors)+'</td></tr>'
+        +(S.kit?'<tr><th>Brand kit</th><td>'+esc(S.kit)+'</td></tr>':"")
         +'<tr><th>Primary colour</th><td>'+swatchDots({sw:[effPrimary().hex]})+' '+esc(effPrimary().name)+' · '+effPrimary().hex+'</td></tr>'
         +'<tr><th>Accent colour</th><td>'+swatchDots({sw:[effAccent().hex]})+' '+esc(effAccent().name)+' · '+effAccent().hex+'</td></tr>'
         +'<tr><th>Tone of voice</th><td>'+esc(S.tone)+'</td></tr>'
@@ -1447,7 +1462,7 @@
       $("feat-quick").innerHTML=["Gallery","Forms","Socials"].map(function(f){return chipHTML(f,S.features.indexOf(f)>=0)}).join("");
       document.querySelectorAll('[data-complex]').forEach(function(b){b.classList.toggle("on",(b.getAttribute("data-complex")==="true")===S.complex)});
       $("complex-switch").setAttribute("aria-checked",S.complex?"true":"false");
-      renderSwatches($("swatches")); renderSwatches($("pv-swatches")); renderPickers();
+      renderSwatches($("swatches")); renderSwatches($("pv-swatches")); renderKits(); renderPickers();
       $("pv-layouts").innerHTML=LAYOUTS.map(function(l){return chipHTML(l,S.layout===l)}).join("");
       var ap=addonHTML();
       $("home-addons").innerHTML=ap; $("checkout-addons").innerHTML=ap;
@@ -1465,6 +1480,15 @@
           +'<span style="display:flex;gap:6px">'+p.sw.map(function(c){return '<span style="width:26px;height:26px;border-radius:50%;background:'+c+';border:1px solid rgba(0,0,0,.15)"></span>'}).join("")+'</span>'
           +'<span style="display:block;margin-top:9px;font-size:14px;font-weight:'+(on?"700":"500")+'">'+esc(p.name)+'</span>'
           +'<span style="display:block;margin-top:2px;font-size:12.5px;color:var(--muted)">'+esc(p.pn)+' primary · '+esc(p.an)+' accent</span></button>'}).join("")+'</div>';
+    }
+    function renderKits(){
+      var box=$("kits");if(!box)return;
+      box.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">'
+        +KITS.map(function(k){var on=S.kit===k.name;
+          return '<button type="button" data-kit="'+esc(k.name)+'" aria-pressed="'+on+'" style="text-align:left;border:'+(on?"2px solid var(--brand-2)":"1px solid var(--border)")+';background:var(--surface);border-radius:12px;padding:'+(on?"11px":"12px")+'">'
+          +'<span style="display:flex;gap:6px"><span style="width:26px;height:26px;border-radius:50%;background:'+k.primary+';border:1px solid rgba(0,0,0,.15)"></span><span style="width:26px;height:26px;border-radius:50%;background:'+k.accent+';border:1px solid rgba(0,0,0,.15)"></span></span>'
+          +'<span style="display:block;margin-top:9px;font-size:14px;font-weight:'+(on?"700":"500")+'">'+esc(k.name)+'</span>'
+          +'<span style="display:block;margin-top:2px;font-size:12.5px;color:var(--muted)">'+esc(k.pn)+' · '+esc(k.an)+' · '+esc(k.font)+'</span></button>'}).join("")+'</div>';
     }
     var pickersSig="";
     function renderPickers(){
@@ -1622,9 +1646,13 @@
         else S.accentPick=(S.accentPick&&S.accentPick.hex===pick7.hex)?null:pick7;
         promptOverride=null;renderAll();return}
       var pl=e.target.closest("[data-palette]");
-      if(pl){S.colors=pl.getAttribute("data-palette");S.primaryPick=null;S.accentPick=null;promptOverride=null;renderAll();return}
+      if(pl){S.colors=pl.getAttribute("data-palette");S.primaryPick=null;S.accentPick=null;S.kit="";promptOverride=null;renderAll();return}
+      var kt=e.target.closest("[data-kit]");
+      if(kt){var kn=kt.getAttribute("data-kit");
+        for(var ki=0;ki<KITS.length;ki++){if(KITS[ki].name===kn){S.primaryPick={name:KITS[ki].pn,hex:KITS[ki].primary};S.accentPick={name:KITS[ki].an,hex:KITS[ki].accent};S.font=KITS[ki].font;S.kit=KITS[ki].name}}
+        promptOverride=null;renderAll();toast(kn+" brand kit applied — colours and font together");return}
       var st=e.target.closest("[data-starter]");
-      if(st){Object.assign(S,JSON.parse(JSON.stringify(STARTERS[+st.getAttribute("data-starter")].data)));S.primaryPick=null;S.accentPick=null;renderAll();toast("Quick start applied — check the brief preview");return}
+      if(st){Object.assign(S,JSON.parse(JSON.stringify(STARTERS[+st.getAttribute("data-starter")].data)));S.primaryPick=null;S.accentPick=null;S.kit="";renderAll();toast("Quick start applied — check the brief preview");return}
     });
     $("surprise").addEventListener("click",function(){
       function pick(a){return a[Math.floor(Math.random()*a.length)]}
@@ -2007,7 +2035,7 @@
       var b=e.target.closest("[data-proact]");if(!b)return;
       var act=b.getAttribute("data-proact");
       if(act==="bolder"){proUser("Make it bolder");promptOverride=null;S.style="Bold & Colorful";renderAll();renderProSigs();proSay("Done! Your site now uses the Bold & Colorful style — bright and full of energy. Look at the big preview.")}
-      else if(act==="calm"){proUser("Calmer colours, please");promptOverride=null;S.colors="Soft Pastels";S.primaryPick=null;S.accentPick=null;renderAll();proSay("Done — soft, calm colours are on. Gentle on the eyes.")}
+      else if(act==="calm"){proUser("Calmer colours, please");promptOverride=null;S.colors="Soft Pastels";S.primaryPick=null;S.accentPick=null;S.kit="";renderAll();proSay("Done — soft, calm colours are on. Gentle on the eyes.")}
       else if(act==="gallery"){proUser("Add a gallery");promptOverride=null;if(S.features.indexOf("Gallery")<0)S.features.push("Gallery");if(S.pages.indexOf("Project Showcase")<0)S.pages.push("Project Showcase");renderAll();proSay("Done — a gallery is in, ready for your photos.")}
       else if(act==="layout"){proUser("Change the layout");promptOverride=null;var li=LAYOUTS.indexOf(S.layout);S.layout=LAYOUTS[(li+1)%LAYOUTS.length];renderAll();proSay("Done — the layout is now “"+S.layout+"”. Tap again any time to try the next one.")}
     });
@@ -2056,11 +2084,11 @@
       if(source==="owner"){
         if(!ownerUnlocked){toast("Unlock the Owner Area first to open a site's code.");showView("owner");return}
         var o=orders[orderIndex];if(!o){toast("That request is no longer here.");return}
-        codeCtx={source:"owner",orderIndex:orderIndex,key:"order-"+o.ref,generated:wrapSiteHTML(o.siteHTML||"",o.pkg.business)};
+        codeCtx={source:"owner",orderIndex:orderIndex,key:"order-"+o.ref,biz:o.pkg.business||"",generated:wrapSiteHTML(o.siteHTML||"",o.pkg.business)};
         $("code-context").textContent="Owner view — the full HTML code of "+o.pkg.business+" (Ref "+o.ref+"), all in one place. Only you, the owner, can open it.";
       }else{
         if(!customerPhone||!hasBackend()){toast("The code view opens for back-end customers, in their Pro workspace.");showView("pro");return}
-        codeCtx={source:"pro",orderIndex:null,key:"my-site",generated:wrapSiteHTML(pvHTML(),S.name||"My Website")};
+        codeCtx={source:"pro",orderIndex:null,key:"my-site",biz:S.name||"",generated:wrapSiteHTML(pvHTML(),S.name||"My Website")};
         $("code-context").textContent="Your website's full HTML code, all in one place — Customer · Code "+fmtCode(customerCode)+". Only you, the owner of this site, can open it.";
       }
       var ed=$("code-editor");
@@ -2071,6 +2099,12 @@
     $("code-editor").addEventListener("input",updateCodePreview);
     $("code-editor").addEventListener("scroll",syncCodeHL);
     $("code-copy").addEventListener("click",function(){copyText($("code-editor").value,"Code copied — the full HTML, from one place.")});
+    $("code-download").addEventListener("click",function(){
+      var slug=(codeCtx.biz||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+      var fname=(slug||"website")+".html";
+      download(fname,$("code-editor").value,"text/html");
+      toast("Downloaded "+fname+" — your website as one HTML file");
+    });
     $("code-save").addEventListener("click",function(){savedCodes[codeCtx.key]=$("code-editor").value;$("code-status").textContent="Saved. Your edited version is kept for this site and opens again next time you come to this view in this visit.";toast("Code saved for this site")});
     $("code-reset").addEventListener("click",function(){delete savedCodes[codeCtx.key];$("code-editor").value=codeCtx.generated;updateCodePreview();$("code-status").textContent="Back to the generated code.";toast("Code reset to the generated version")});
     function codeGoBack(){showView(codeCtx.source==="owner"?"owner":"pro")}
