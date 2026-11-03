@@ -1,0 +1,20 @@
+name: Publish staging build
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Move staging build onto index.html
+        run: |
+          set -e
+          mv webflowai-new-build.html index.html
+          rm .github/workflows/publish.yml
+          git config user.name "elevatejewels-hq"
+          git config user.email "elevatejewels-hq@users.noreply.github.com"
+          git add -A
+          git commit -m "WebFlowAI — entry page, 6-digit sign-in, owner-only numbers, code editor"
+          git push
