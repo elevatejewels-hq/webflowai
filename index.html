@@ -30,6 +30,8 @@
           --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -12px rgba(0,0,0,.55);
           color-scheme:dark;
         }
+        /* dark surfaces get the dark glass-orb logo; light mode keeps the light medallion */
+        img[src="assets/logo.png"]{content:url("assets/logo-dark.png")}
       }
       *{box-sizing:border-box}
       html{scroll-behavior:smooth}
@@ -302,6 +304,31 @@
       .site-card .sc-name{font-weight:800;font-size:16px;font-family:"Inter Tight",sans-serif}
       .site-card .sc-url{color:var(--brand-2);font-size:13.5px;font-weight:600;margin-top:1px;overflow-wrap:anywhere}
       .site-card .sc-note{color:var(--muted);font-size:12.5px;margin-top:7px;line-height:1.5}
+      /* ---------- in-chat owner handoff + style tries ---------- */
+      .handoff-card,.styletry-card{border:1px solid var(--border);background:var(--surface);border-radius:16px;border-top-left-radius:4px;padding:14px 15px;max-width:92%;overflow:hidden}
+      .handoff-card h4,.styletry-card h4{margin:0;font-size:15.5px;font-family:"Inter Tight",sans-serif}
+      .handoff-tag{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-2)}
+      .handoff-list{margin:11px 0 0;padding:0;list-style:none;display:grid;gap:7px;font-size:13.5px;line-height:1.5}
+      .handoff-list li{display:flex;gap:8px;flex-wrap:wrap;min-width:0}
+      .handoff-list b{flex:none;min-width:92px;color:var(--ink)}
+      .handoff-list span{flex:1;min-width:140px;color:var(--muted);overflow-wrap:anywhere}
+      .handoff-note,.styletry-note{color:var(--muted);font-size:12.5px;line-height:1.55;margin-top:10px}
+      .handoff-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+      .handoff-actions .btn{text-decoration:none}
+      .try-counter{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+      .try-pill{border:1px solid var(--border);background:var(--surface-2);border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600}
+      .try-pill b{color:var(--brand-2)}
+      .styletry-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+      @media (max-width:480px){.styletry-grid{grid-template-columns:1fr}.handoff-list b{min-width:78px}}
+      .styletry-btn{border:1px solid var(--border);background:var(--surface);border-radius:11px;padding:10px 11px;text-align:left;font-size:13.5px;line-height:1.4;min-width:0}
+      .styletry-btn b{display:block;font-size:14px;overflow-wrap:anywhere}
+      .styletry-btn small{display:block;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+      .styletry-btn.on{border:2px solid var(--brand-2);padding:9px 10px;background:var(--surface-2)}
+      .styletry-btn[disabled]{opacity:.48;cursor:not-allowed}
+      .credit-window{border:2px solid var(--gold);background:var(--surface-2);border-radius:13px;padding:14px;margin-top:13px}
+      .credit-window h5{margin:0;font-size:15px;font-family:"Inter Tight",sans-serif}
+      .credit-window p{color:var(--muted);font-size:13px;line-height:1.55;margin-top:6px}
+      .credit-window p b{color:var(--ink)}
       /* ---------- checkout ---------- */
       .card-form label{display:block;font-size:13.5px;font-weight:600;margin:16px 0 6px}
       .card-form label:first-child{margin-top:0}
@@ -2869,6 +2896,65 @@
     var isPhone=function(v){return v.replace(/\D/g,"").length>=7&&/^[+\d\s().-]+$/.test(v.trim())};
     var chat={msgs:[],step:"hello",data:{},thinking:false,sound:true,done:false,building:false,idc:1};
     var buildTimer=null;
+    /* ---- style tries & owner handoff (this page only, in memory — nothing is stored) ----
+       The first style is free to keep. The customer then gets up to 3 free style
+       changes in the chat. After those, a $5 credit pack adds 10 more tries.
+       No tries are granted any other way in the chat, so switches cannot run forever. */
+    var OWNER_EMAIL="webflowai301@gmail.com";
+    var styleFlow=null;
+    function freshStyleFlow(){
+      return {pool:[],initialStyle:"",freeLeft:3,paidLeft:0,balance:0,packs:0,changesUsed:0};
+    }
+    function initStyleFlow(){
+      styleFlow=freshStyleFlow();
+      styleFlow.initialStyle=S.style;
+      var candidates=["Modern & Minimalist","Bold & Colorful","Dark & Cyber","Classic & Editorial","Organic & Natural","Glassmorphism","Retro & Vintage","SaaS & Enterprise"];
+      var pool=[S.style];
+      candidates.forEach(function(c){if(pool.indexOf(c)<0&&pool.length<6)pool.push(c)});
+      /* if the starting style is not one of the candidates, the pool is initial + 5 alternatives;
+         if it is, the pool is still 6 distinct styles — always initial + at least 3 alternatives */
+      styleFlow.pool=pool;
+      return styleFlow;
+    }
+    function ensureStyleFlow(){if(!styleFlow)initStyleFlow();return styleFlow}
+    function styleTriesLeft(){var f=ensureStyleFlow();return f.freeLeft+f.paidLeft}
+    function handoffPlainText(){
+      var f=ensureStyleFlow();
+      var lines=[];
+      lines.push("WebFlowAI — NEW PROJECT HANDOFF FOR THE OWNER");
+      lines.push("Reference: "+refCode());
+      lines.push("");
+      lines.push("BUSINESS & STYLE DETAILS (collected in the chat)");
+      lines.push("Business / site name: "+(S.name||"— to be confirmed —"));
+      lines.push("Purpose: "+S.purpose);
+      lines.push("Target audience: "+S.audience);
+      lines.push("Chosen style (current): "+S.style+"  (started as: "+(f.initialStyle||S.style)+")");
+      lines.push("Colour mood: "+S.colors+" — primary "+effPrimary().name+" ("+effPrimary().hex+"), accent "+effAccent().name+" ("+effAccent().hex+"), background "+effBg());
+      if(S.kit)lines.push("Brand kit: "+S.kit);
+      lines.push("Colour balance: main "+S.balanceMain+"% / second "+S.balanceSecond+"%");
+      lines.push("Sections: "+(S.pages.join(", ")||"—"));
+      lines.push("Features: "+(S.features.join(", ")||"—"));
+      lines.push("Tone: "+S.tone+" · Layout: "+S.layout+" · Font: "+S.font+" · Buttons: "+S.btnShape);
+      if(S.tagline)lines.push("Tagline: "+S.tagline);
+      if(S.displayPhone)lines.push("Phone to show on the website: "+S.displayPhone);
+      if(S.displayEmail)lines.push("Email to show on the website: "+S.displayEmail);
+      if(chat.data&&chat.data.phone)lines.push("Phone given in chat: "+chat.data.phone);
+      if(userImages.length)lines.push("Customer images: "+userImages.length+" supplied ("+userImages.map(function(im){return im.name}).join(", ")+")");
+      if(aiImageRequest)lines.push("Images to create (people-free, always): "+aiImageRequest);
+      if(S.custom)lines.push("Extra notes: "+S.custom);
+      lines.push("Style tries so far: "+f.changesUsed+" change(s) used · "+f.freeLeft+" free left · "+f.paidLeft+" paid left · demo credit added in page: $"+f.balance.toFixed(2));
+      lines.push("");
+      lines.push("THE BRIEF");
+      lines.push(buildPrompt(S));
+      lines.push("");
+      lines.push("OWNER'S NEXT STEP (manual until the back end is connected)");
+      lines.push("Take this brief to Gemini on the best Gemini model available, ask Gemini to return the complete live HTML for this website, then paste that HTML back for the customer's first full preview in this chat for them to confirm.");
+      return lines.join("\n");
+    }
+    function handoffMailtoHref(){
+      var subject="WebFlowAI — new project handoff: "+(S.name||"Untitled website")+" ("+refCode()+")";
+      return "mailto:"+OWNER_EMAIL+"?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(handoffPlainText());
+    }
     /* the finishing sequence's steps, built from THIS customer's actual choices */
     function buildStepsList(){
       var steps=[{label:"Building your layout — "+layoutTypeLabel(),done:false},
@@ -2914,6 +3000,62 @@
         }
         if(m.kind==="site"){
           return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo.png" alt="" /><div class="site-card"><div class="pv-scale crop" style="height:150px;border:0;border-radius:0"><div class="pv-scale-in"><div>'+pvHTML()+'</div></div></div><div class="sc-body"><p class="sc-name">'+esc(S.name||"Your Business")+'</p><p class="sc-url">'+esc(pvUrlText().replace("https://",""))+'</p><button class="btn small block" data-preview style="margin-top:10px">Open my website</button><p class="sc-note">This is your instant front-end preview, made from your answers. Your finished website is built from these same details by a real AI run, and arrives on a temporary address within a few hours of your order.</p></div></div></div>';
+        }
+        if(m.kind==="handoff"){
+          var hf=ensureStyleFlow();
+          var hRows=[
+            ["Business",S.name||"— to be confirmed —"],
+            ["Purpose",S.purpose+" · for "+S.audience],
+            ["Style","Started as "+(hf.initialStyle||S.style)+" · now "+S.style],
+            ["Colours",S.colors+" — "+effPrimary().name+" "+effPrimary().hex+" / "+effAccent().name+" "+effAccent().hex],
+            ["Sections",S.pages.join(", ")||"—"],
+            ["Features",S.features.join(", ")||"—"],
+            ["Look & feel",S.tone+" tone · "+S.layout+" · "+S.font+" · "+S.btnShape+" buttons"]
+          ];
+          if(S.tagline)hRows.push(["Tagline","“"+S.tagline+"”"]);
+          if(S.displayPhone||S.displayEmail)hRows.push(["On the site",[S.displayPhone,S.displayEmail].filter(Boolean).join(" · ")]);
+          if(userImages.length)hRows.push(["Images",userImages.length+" supplied by the customer"]);
+          else if(aiImageRequest)hRows.push(["Images","To be created, people-free: "+aiImageRequest]);
+          var hList=hRows.map(function(r){return '<li><b>'+esc(r[0])+'</b><span>'+esc(r[1])+'</span></li>'}).join("");
+          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo.png" alt="" /><div class="handoff-card">'
+            +'<span class="handoff-tag">For the owner · Back-end handoff</span>'
+            +'<h4 style="margin-top:9px">Ready to send to the owner</h4>'
+            +'<p style="color:var(--muted);font-size:13.5px;line-height:1.55;margin-top:5px">Everything you just answered, packaged as one brief — business, style and details together. This is the exact brief the owner works from behind the scenes.</p>'
+            +'<ul class="handoff-list">'+hList+'</ul>'
+            +'<p class="handoff-note"><b style="color:var(--ink)">Owner&rsquo;s next step:</b> take this brief to Gemini on the best Gemini model available, ask Gemini to return the complete live HTML, then paste that HTML back so the first full preview appears here in this chat for you to confirm.</p>'
+            +'<div class="handoff-actions"><a class="btn small" href="'+esc(handoffMailtoHref())+'">Open email draft to owner</a><button class="btn ghost small" type="button" data-copyhandoff>Copy the brief</button></div>'
+            +'<p class="handoff-note">Not sent yet — nothing has been emailed and no Gemini build has run. The button above opens a pre-filled email draft to '+esc(OWNER_EMAIL)+' in your own mail app, ready for you to send. Automatic sending to the owner and the Gemini build switch on only when the real email + Gemini back end is connected.</p>'
+            +'</div></div>';
+        }
+        if(m.kind==="styletry"){
+          var sf=ensureStyleFlow();
+          var left=styleTriesLeft();
+          var noTries=left<=0;
+          var pool=sf.pool&&sf.pool.length?sf.pool:[S.style];
+          var descFor=function(n){var ix=STYLES.indexOf(n);return ix>=0?STYLE_DESCS[ix]:"Your starting style — the look your answers produced first."};
+          var btns=pool.map(function(n){
+            var on=n===S.style;
+            return '<button type="button" class="styletry-btn'+(on?" on":"")+'" data-styletry="'+esc(n)+'" '+(on||noTries?'disabled':'')+'><b>'+esc(n)+(on?" · viewing now":"")+'</b><small>'+esc(on?"This is the style in your preview above.":descFor(n))+'</small></button>';
+          }).join("");
+          var credit="";
+          if(sf.freeLeft<=0){
+            if(sf.paidLeft>0){
+              credit='<div class="credit-window"><h5>Credit active — $'+sf.balance.toFixed(2)+' added in this page</h5><p>You have <b>'+sf.paidLeft+' paid style '+(sf.paidLeft===1?"try":"tries")+' left</b>. Each different style you pick uses one. When they run out, this window offers another $5 pack for 10 more tries.</p></div>';
+            }else{
+              credit='<div class="credit-window" role="group" aria-label="Add credit for more style tries"><h5>'+(sf.packs>0?"Your style tries are used up":"Your free style changes are used up")+'</h5><p>Add <b>$5 credit</b> and you get <b>10 more style tries</b>. Like the style you have? You don&rsquo;t need credit at all — just continue to checkout to confirm it.</p><button class="btn small block" type="button" data-addcredit style="margin-top:11px">Add $5 credit — get 10 more style tries</button><p><b>No card is charged in this demo.</b> Adding real credit requires a connected payment provider. Tapping the button only adds demo credit and tries inside this page, so you can see exactly how it will work.</p></div>';
+            }
+          }
+          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo.png" alt="" /><div class="styletry-card">'
+            +'<span class="handoff-tag">Style tries</span>'
+            +'<h4 style="margin-top:9px">Like this style? Confirm it — or try a different one</h4>'
+            +'<p style="color:var(--muted);font-size:13.5px;line-height:1.55;margin-top:5px">Your preview above is already wearing <b style="color:var(--ink)">'+esc(S.style)+'</b>, built from your business details. Pick a different style below and the same business, colours and sections re-dress in that style at once.</p>'
+            +'<div class="pv-scale crop" style="height:118px;margin-top:11px"><div class="pv-scale-in"><div>'+pvHTML()+'</div></div></div>'
+            +'<div class="try-counter" aria-live="polite"><span class="try-pill">Free changes left: <b>'+sf.freeLeft+' of 3</b></span><span class="try-pill">Paid tries left: <b>'+sf.paidLeft+'</b></span><span class="try-pill">Demo credit: <b>$'+sf.balance.toFixed(2)+'</b></span><span class="try-pill">Changes used: <b>'+sf.changesUsed+'</b></span></div>'
+            +(noTries?'<p class="styletry-note"><b style="color:var(--ink)">No style tries left.</b> Your current style stays exactly as it is — confirm it at checkout, or add the $5 credit pack below for 10 more tries. Styles can&rsquo;t be switched again until credit is added.</p>':"")
+            +'<div class="styletry-grid">'+btns+'</div>'
+            +credit
+            +'<p class="styletry-note">How it counts: your first style is free to keep, then you have 3 free changes. After those, $5 credit adds 10 more tries. Each pick of a <i>different</i> style uses one try — re-picking the style you are already viewing uses none.</p>'
+            +'</div></div>';
         }
         if(m.from==="ai"){
           /* spin class goes ONLY to the newest AI message's logo */
@@ -2969,6 +3111,28 @@
     function chatGoTo(s){return chatSay(CHAT_STEPS[s].say,s).then(function(){chat.step=s;chatRender()})}
     $("chat-msgs").addEventListener("click",function(e){
       if(chat.building)return;
+      var stb=e.target.closest("[data-styletry]");
+      if(stb&&!stb.disabled){
+        var ns=stb.getAttribute("data-styletry");
+        if(ns===S.style){toast("That's the style you're already viewing — no try used.");return}
+        var fl=ensureStyleFlow();
+        if(styleTriesLeft()<=0){chatRender();toast("No style tries left — add $5 credit for 10 more tries.");return}
+        if(fl.freeLeft>0)fl.freeLeft--;else fl.paidLeft--;
+        fl.changesUsed++;
+        promptOverride=null;S.style=ns;
+        renderAll();chatRender();
+        toast("Style changed to "+ns+" — "+styleTriesLeft()+(styleTriesLeft()===1?" try":" tries")+" left.");
+        return;
+      }
+      var acb=e.target.closest("[data-addcredit]");
+      if(acb){
+        var cf=ensureStyleFlow();cf.balance+=5;cf.paidLeft+=10;cf.packs++;
+        chatRender();
+        toast("$5 demo credit added in this page only — 10 more style tries. No card was charged.");
+        return;
+      }
+      var chb=e.target.closest("[data-copyhandoff]");
+      if(chb){copyText(handoffPlainText(),"Owner handoff copied — the full brief, ready to paste or send.");return}
       var ci=e.target.closest("[data-chatimg]");
       if(ci&&!chat.thinking){
         var act=ci.getAttribute("data-chatimg");
@@ -3027,8 +3191,11 @@
         chat.building=true;chatRender();
         runBuildSequence(function(){
           chat.building=false;chat.done=true;
+          initStyleFlow();
           chat.msgs.push({id:chat.idc++,from:"ai",kind:"site"});
-          chatSay("All done — that was easy! Your website is ready — it's the card just above. Open it for the full look, change the colours right in the preview, and tap Continue when it feels right.").then(function(){chatRender()});
+          chat.msgs.push({id:chat.idc++,from:"ai",kind:"handoff"});
+          chat.msgs.push({id:chat.idc++,from:"ai",kind:"styletry"});
+          chatSay("All done — that was easy! Your first style is in the preview card above, and everything you answered is packaged in the “Ready to send to the owner” block under it. Like this style? Continue to checkout to confirm it. Want a different look? You have 3 free style changes in the Style tries card — after those, $5 credit adds 10 more tries.").then(function(){chatRender()});
         });
         return;
       }
@@ -3039,7 +3206,7 @@
       chat.sound=!chat.sound;this.setAttribute("aria-label",chat.sound?"Turn sound off":"Turn sound on");
       $("sound-on-ic").style.display=chat.sound?"":"none";$("sound-off-ic").style.display=chat.sound?"none":"";
     });
-    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}chat={msgs:[],step:"hello",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1};chatRender();chatGoTo("hello")}
+    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}styleFlow=null;chat={msgs:[],step:"hello",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1};chatRender();chatGoTo("hello")}
 
     /* ============ card form + order submission ============ */
     function luhn(num){var sum=0,alt=false;for(var i=num.length-1;i>=0;i--){var d=+num[i];if(alt){d*=2;if(d>9)d-=9}sum+=d;alt=!alt}return num.length>=15&&sum%10===0}
@@ -3640,6 +3807,18 @@
       siPendingCode=genCode(); /* a fresh 6-digit code is created for this email, every time */
       $("si-demo-code").textContent="Your demo code: "+fmtCode(siPendingCode);
     }
+    /* after each send, Resend pauses 30s — the same anti-spam cooldown the live email service uses */
+    var siCooldownTimer=null;
+    function siResendCooldown(){
+      var b=$("si-resend");if(!b)return;
+      if(siCooldownTimer)clearInterval(siCooldownTimer);
+      var left=30;b.disabled=true;b.style.opacity=".55";b.textContent="Resend code ("+left+"s)";
+      siCooldownTimer=setInterval(function(){
+        left--;
+        if(left<=0){clearInterval(siCooldownTimer);siCooldownTimer=null;b.disabled=false;b.style.opacity="";b.textContent="Resend code"}
+        else b.textContent="Resend code ("+left+"s)";
+      },1000);
+    }
     function siBoxes(){return Array.prototype.slice.call(document.querySelectorAll(".code-box"))}
     function siShow(n){$("si-step1").style.display=n===1?"":"none";$("si-step2").style.display=n===2?"":"none";$("si-done").style.display=n===3?"":"none"}
     function openSignin(){siShow(1);$("signin-overlay").style.display="block";document.body.style.overflow="hidden";setTimeout(function(){$("si-email").focus()},40)}
@@ -3683,9 +3862,17 @@
       siNewCode();
       $("si-sent-to").textContent="We've emailed a fresh 6-digit code to "+siEmail+" — check your inbox. (In this preview build, use the demo code shown below.)";
       siShow(2);var b=siBoxes();b.forEach(function(x){x.value=""});setTimeout(function(){b[0].focus()},40);
+      siResendCooldown();
     });
     $("si-back").addEventListener("click",function(){siShow(1);setTimeout(function(){$("si-email").focus()},40)});
-    $("si-resend").addEventListener("click",function(){siNewCode();var b=siBoxes();b.forEach(function(x){x.value=""});b[0].focus();toast("A fresh 6-digit code was created for your email")});
+    $("si-resend").addEventListener("click",function(){
+      siNewCode(); /* a brand-new code replaces the old one and goes to the same email the customer entered */
+      var b=siBoxes();b.forEach(function(x){x.value=""});b[0].focus();
+      $("si-err2").textContent="";
+      $("si-sent-to").textContent="A new 6-digit code was sent to "+siEmail+" just now — check your inbox. (In this preview build, use the demo code shown below.)";
+      toast("A fresh 6-digit code was sent to "+siEmail);
+      siResendCooldown();
+    });
     function siVerify(){
       if(siVerifying)return;
       var code=siBoxes().map(function(b){return b.value}).join("");
