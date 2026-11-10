@@ -406,7 +406,13 @@
       #chat-stage-bar p b{color:var(--ink)}
       body.chat-stage #view-start .layout{grid-template-columns:1fr}
       body.chat-stage #view-start .layout>.qcol{display:none}
-      body.chat-stage #view-start .pv-mini-panel .pv-scale{height:230px !important}
+      /* the chat is the ONLY panel on stage: the preview rail and the brief
+         panel leave the stage entirely, so the chat can never end up buried
+         below them (on phones it sat under the preview, off-screen, and the
+         button looked dead). The preview stays one tap away inside the chat. */
+      body.chat-stage #view-start .side-stack>*:not(#chat-panel){display:none}
+      body.chat-stage #chat-launcher{display:none}
+      #chat-panel{scroll-margin-top:84px}
       body.chat-stage #chat-panel{height:min(74vh,780px);max-height:none}
       @media (max-width:920px){body.chat-stage #chat-panel{height:72svh}}
       /* ---------- finish-by-chat call to action ---------- */
@@ -925,6 +931,12 @@
           <div class="panel" id="chat-stage-bar">
             <p><b>You're finishing your website by chat.</b> Everything you've picked so far — style, colours, sections, details — is already in, and the chat below opens at your latest message.</p>
             <button class="btn ghost small" type="button" id="chat-stage-close">← Back to the questions</button>
+          </div>
+          <div class="panel finish-chat-cta" id="chat-launcher" style="margin-top:18px">
+            <button class="btn block" type="button" id="finish-by-chat-3">Finish your website — just by chatting
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <p>One tap opens the site chat as the main stage — no scrolling past the questions or the preview — at your latest message, with everything you've picked so far already in.</p>
           </div>
           <div class="layout">
             <div class="qcol">
@@ -2821,17 +2833,34 @@
        the message list on the latest message. Closing restores the layout —
        nothing about the conversation is reset either way. */
     function scrollChatLatest(){var box=$("chat-msgs");if(box)box.scrollTop=box.scrollHeight}
-    function openChatStage(){
-      showView("start");
-      document.body.classList.add("chat-stage");
-      setTimeout(function(){scrollChatLatest();fixPvHeights()},90);
-      setTimeout(scrollChatLatest,450);
+    /* Bring the chat itself into view — not the top of the page. Before this,
+       opening the stage scrolled to the very top of Step 1 and left the chat
+       below the preview panel and off-screen on phones, so the button looked
+       like it did nothing. Repeat over ~1s so the view animation, the layout
+       switch and the chat's first (async) message cannot push it away again. */
+    function bringChatIntoView(){
+      var panel=$("chat-panel");
+      if(panel&&panel.scrollIntoView){try{panel.scrollIntoView({block:"start",behavior:"smooth"})}catch(err){panel.scrollIntoView()}}
+      scrollChatLatest();
     }
-    function closeChatStage(){document.body.classList.remove("chat-stage");setTimeout(fixPvHeights,60)}
+    var chatStageOpenedAt=0;
+    function openChatStage(){
+      var now=Date.now(),again=now-chatStageOpenedAt<500;chatStageOpenedAt=now;
+      if(!again){showView("start");document.body.classList.add("chat-stage")}
+      setTimeout(function(){bringChatIntoView();fixPvHeights()},80);
+      setTimeout(bringChatIntoView,380);
+      setTimeout(bringChatIntoView,1050);
+    }
+    function closeChatStage(){document.body.classList.remove("chat-stage");window.scrollTo({top:0});setTimeout(fixPvHeights,60)}
     $("finish-by-chat").addEventListener("click",openChatStage);
     $("finish-by-chat-2").addEventListener("click",openChatStage);
+    $("finish-by-chat-3").addEventListener("click",openChatStage);
     $("chat-stage-close").addEventListener("click",closeChatStage);
     document.addEventListener("click",function(e){
+      /* delegated back-up for the same buttons, so the chat opens even if a
+         direct binding is ever lost; openChatStage debounces the double hit */
+      var fc=e.target.closest?e.target.closest("#finish-by-chat,#finish-by-chat-2,#finish-by-chat-3"):null;
+      if(fc){openChatStage();return}
       var nav=e.target.closest("[data-nav]");
       if(nav){e.preventDefault();var v=nav.getAttribute("data-nav");showView(v);
         var an=nav.getAttribute("data-anchor");if(an)setTimeout(function(){var el=$(an);if(el)el.scrollIntoView({behavior:"smooth"})},60);return}
