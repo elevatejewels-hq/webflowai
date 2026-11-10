@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <meta name="description" content="WebFlowAI — the guided AI website creator. Answer easy questions, get a tailored blueprint presented as a professional project brief, and check out in minutes." />
-    <link rel="icon" href="data:," />
+    <link rel="icon" href="assets/logo-dark.png" />
     <title>WebFlowAI — Guided AI Website Creator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -30,8 +30,9 @@
           --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -12px rgba(0,0,0,.55);
           color-scheme:dark;
         }
-        /* dark surfaces get the dark glass-orb logo; light mode keeps the light medallion */
-        img[src="assets/logo.png"]{content:url("assets/logo-dark.png")}
+        /* One logo everywhere: the dark glass-orb medallion (assets/logo-dark.png).
+           Its dark background is intentional — it reads clearly on the light
+           header and entry screen as well as on dark surfaces, in both schemes. */
       }
       *{box-sizing:border-box}
       html{scroll-behavior:smooth}
@@ -48,23 +49,28 @@
       .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
       /* ---------- header ---------- */
       header.site{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
-      .site-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
-      .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:"Inter Tight",sans-serif;font-weight:800;font-size:21px}
-      .logo img{width:38px;height:38px;border-radius:50%;box-shadow:0 2px 8px -2px rgba(20,16,60,.45)}
+      .site-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;min-width:0}
+      .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:"Inter Tight",sans-serif;font-weight:800;font-size:21px;flex:1 1 auto;min-width:0}
+      .logo img{width:38px;height:38px;border-radius:50%;box-shadow:0 2px 8px -2px rgba(20,16,60,.45);flex:none;background:#0b1120}
+      .logo-word{display:inline-flex;align-items:baseline;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
       .logo b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
-      nav.main{display:flex;align-items:center;gap:26px}
+      nav.main{display:flex;align-items:center;gap:26px;flex:none;min-width:0}
+      #signin-btn{white-space:nowrap}
       nav.main a.nl{color:var(--ink);text-decoration:none;font-size:15px;opacity:.85}
       nav.main a.nl:hover{opacity:1;color:var(--brand-2)}
       @media (max-width:640px){
         nav.main a.nl,nav.main a[data-nav="pro"]{display:none}
         header.site .wrap{padding:0 14px}
         .site-in{gap:10px;padding:10px 0}
-        .logo{font-size:18px;gap:8px;white-space:nowrap;flex:none}
+        /* the logo area is the flexible part: it shrinks first (wordmark ellipsises)
+           so the sign-in pill and Start designing are never pushed off or clipped */
+        .logo{font-size:18px;gap:8px;white-space:nowrap;flex:1 1 auto;min-width:0}
         .logo img{width:32px;height:32px;border-radius:50%}
         nav.main{gap:8px;flex:none}
         nav.main .btn{white-space:nowrap;flex:none}
         nav.main .btn.small{padding:8px 12px;font-size:13.5px}
         .si-wrap{flex:none}
+        #signin-btn{max-width:44vw}
       }
       @media (max-width:430px){
         header.site .wrap{padding:0 12px}
@@ -73,7 +79,6 @@
         .logo img{width:29px;height:29px;border-radius:50%}
         nav.main{gap:6px}
         nav.main .btn.small{padding:7px 10px;font-size:13px;border-radius:9px}
-        #signin-btn{max-width:118px;overflow:hidden;text-overflow:ellipsis}
       }
       @media (max-width:380px){
         header.site .wrap{padding:0 10px}
@@ -82,7 +87,6 @@
         .logo img{width:27px;height:27px}
         nav.main{gap:5px}
         nav.main .btn.small{padding:6px 8px;font-size:12.5px}
-        #signin-btn{max-width:100px}
       }
       /* ---------- buttons & chips ---------- */
       .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;
@@ -416,6 +420,10 @@
       .sig-card.on{border:2px solid var(--brand-2);padding:12px 13px;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand-2) 16%,transparent)}
       .sig-card.on::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad)}
       .si-done-check{width:64px;height:64px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;margin:6px auto 0}
+      .si-name-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+      .si-name-grid .field{margin-top:8px}
+      .si-name-grid label{display:block;font-weight:600}
+      @media (max-width:380px){.si-name-grid{grid-template-columns:1fr}}
       /* ---------- account entry page (owner's screenshot style) ---------- */
       body[data-view="entry"] header.site,body[data-view="entry"] footer.site{display:none}
       body[data-view="entry"] .view{padding-bottom:0}
@@ -426,7 +434,7 @@
       .entry-logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:#141c2e;font-family:"Inter Tight",sans-serif;font-weight:800;font-size:clamp(21px,3vw,30px);position:relative;isolation:isolate}
       .entry-logo::before{content:"";position:absolute;z-index:-1;left:-46px;top:50%;width:230px;height:230px;transform:translateY(-50%);border-radius:50%;pointer-events:none;
         background:radial-gradient(circle,rgba(147,51,234,.30) 0%,rgba(59,130,246,.16) 45%,transparent 70%);animation:entrypulseL 6s ease-in-out infinite}
-      .entry-logo img{width:clamp(38px,5vw,54px);height:clamp(38px,5vw,54px);border-radius:50%;box-shadow:0 4px 14px -4px rgba(20,16,60,.4)}
+      .entry-logo img{width:clamp(38px,5vw,54px);height:clamp(38px,5vw,54px);border-radius:50%;box-shadow:0 4px 14px -4px rgba(20,16,60,.4);background:#0b1120;flex:none}
       .entry-logo b{background:linear-gradient(92deg,#7c3aed,#2563eb,#06b6d4);-webkit-background-clip:text;background-clip:text;color:transparent}
       .entry-login{background:none;border:0;font-size:clamp(16px,2vw,20px);font-weight:500;color:#141c2e;padding:10px 14px;border-radius:10px}
       .entry-login:hover{background:rgba(20,28,46,.06)}
@@ -734,7 +742,7 @@
   <body>
     <header class="site">
       <div class="wrap site-in">
-        <a class="logo" href="#" data-nav="home"><img src="assets/logo.png" alt="" />WebFlow<b>AI</b></a>
+        <a class="logo" href="#" data-nav="home"><img src="assets/logo-dark.png" alt="WebFlowAI logo" /><span class="logo-word">WebFlow<b>AI</b></span></a>
         <nav class="main" aria-label="Main">
           <a class="nl" href="#" data-nav="home" data-anchor="how">How it works</a>
           <a class="nl" href="#" data-nav="home" data-anchor="pricing">Pricing</a>
@@ -780,7 +788,7 @@
         </div>
         <div class="entry-glow" aria-hidden="true"><span class="glow-blob b1"></span><span class="glow-blob b2"></span><span class="glow-blob b3"></span></div>
         <div class="entry-top">
-          <a class="entry-logo" href="#" data-nav="entry"><img src="assets/logo.png" alt="" />WebFlow<b>AI</b></a>
+          <a class="entry-logo" href="#" data-nav="entry"><img src="assets/logo-dark.png" alt="WebFlowAI logo" />WebFlow<b>AI</b></a>
           <button class="entry-login" id="entry-login" type="button">Login</button>
         </div>
         <div class="entry-center">
@@ -788,7 +796,7 @@
           <div class="entry-panel">
             <button class="entry-cta" id="entry-create" type="button">Create new account</button>
             <p class="entry-note">Start for free. You can create your website without spending anything — only at the last step, after you confirm, will you see the small charges.</p>
-            <p class="entry-note" style="margin-top:12px;font-size:15.5px">Sign in is by email — enter your email address and your sign-in code and updates are sent there. No phone number needed.</p>
+            <p class="entry-note" style="margin-top:12px;font-size:15.5px">Sign in is by email — enter your first and last name plus your email address, and your sign-in code and updates are sent there. We greet you by name; your email is never shown. No phone number needed.</p>
             <p class="entry-contact">Questions? Email us at <a href="mailto:webflowai301@gmail.com">webflowai301@gmail.com</a></p>
             <button class="entry-explore" data-nav="home" type="button">See how WebFlowAI works &amp; pricing →</button>
           </div>
@@ -828,7 +836,7 @@
               </div>
               <div class="how-cell">
                 <h3>3. Send to Build Extension</h3>
-                <div class="be-row"><img src="assets/logo.png" alt="" />BUILD EXTENSION</div>
+                <div class="be-row"><img src="assets/logo-dark.png" alt="" />BUILD EXTENSION</div>
                 <button class="btn small block" style="margin-top:12px" data-nav="start">Send to Build Extension</button>
               </div>
             </div>
@@ -1115,7 +1123,7 @@
               <button class="btn block" style="margin-top:12px" data-preview>Preview my website</button>
               <p style="font-weight:600;margin-top:22px">Option 2 · Send it to be built</p>
               <button class="addon" data-target="build" style="margin-top:10px">
-                <img src="assets/logo.png" alt="" style="width:34px;height:34px;border-radius:50%" />
+                <img src="assets/logo-dark.png" alt="" style="width:34px;height:34px;border-radius:50%" />
                 <span><span style="font-weight:700;display:block">WebFlowAI Builder</span><span style="color:var(--muted);font-size:13.5px">We create the full website from this brief</span></span>
                 <span style="margin-left:auto;color:var(--brand-2);font-weight:700">Send →</span>
               </button>
@@ -1270,7 +1278,7 @@
       </div>
       <div class="wrap studio-wrap">
         <div class="studio-top">
-          <div class="studio-brand"><img src="assets/logo.png" alt="" /><span>WebFlow<b>AI</b> Studio</span></div>
+          <div class="studio-brand"><img src="assets/logo-dark.png" alt="" /><span>WebFlow<b>AI</b> Studio</span></div>
           <div class="studio-tabs" role="tablist" aria-label="Studio modes">
             <button class="studio-tab on" type="button" data-sttab="builder" role="tab" aria-selected="true">Visual Builder</button>
             <button class="studio-tab" type="button" data-sttab="quiz" role="tab" aria-selected="false">Smart Questionnaire</button>
@@ -1353,7 +1361,7 @@
 
         <div id="pro-gate" class="panel" style="padding:28px;margin-top:26px;display:none">
           <div style="display:flex;align-items:center;gap:12px">
-            <img src="assets/logo.png" alt="" style="width:46px;height:46px;border-radius:50%" />
+            <img src="assets/logo-dark.png" alt="" style="width:46px;height:46px;border-radius:50%" />
             <h1 style="font-size:28px;font-weight:800" id="pro-gate-title">Your Pro workspace</h1>
           </div>
           <p class="sub" id="pro-gate-copy" style="max-width:640px"></p>
@@ -1379,7 +1387,7 @@
             <!-- dashboard header -->
             <div class="dash-head">
               <div class="dash-brand">
-                <img src="assets/logo.png" alt="" />
+                <img src="assets/logo-dark.png" alt="" />
                 <span>WebFlow<b>AI</b></span>
                 <span class="dash-tag">Pro back end</span>
               </div>
@@ -1668,7 +1676,7 @@
             </div>
           </div>
 
-          <p class="polish-line" style="max-width:none"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span id="pro-ai-id">How the builder AI sees you: by your sign-in code only — your sign-in (login) email address is never shown on the AI side. Only contact details you provided to show on your website go to the builder, as site content.</span></p>
+          <p class="polish-line" style="max-width:none"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span id="pro-ai-id">How the builder AI sees you: by your name and sign-in code — your sign-in (login) email address is never shown on the AI side. Only contact details you provided to show on your website go to the builder, as site content.</span></p>
           <p style="color:var(--muted);font-size:13.5px;margin-top:12px">This dashboard, the Studio and the code view all hold the same website — one document, edited in one place. Press <b>Save / Update</b> in the dashboard header to save your document; it opens exactly the same in the code reader.</p>
           <button class="backlink" data-nav="home">← Back to the website</button>
         </div>
@@ -1777,7 +1785,7 @@
         <div class="panel stepbar"><p>WebFlowAI · Extension — the back entrance</p><div class="track"><div class="fill" style="width:100%"></div></div></div>
 
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:26px">
-          <img src="assets/logo.png" alt="" style="width:44px;height:44px;border-radius:50%" />
+          <img src="assets/logo-dark.png" alt="" style="width:44px;height:44px;border-radius:50%" />
           <div>
             <h1 style="font-size:28px;font-weight:800">The Extension</h1>
             <p style="color:var(--muted);font-size:14px">Where customer requests get answered — by the owner, and by the AI models the owner lets in.</p>
@@ -1939,7 +1947,7 @@
     <div id="q-overlay" role="dialog" aria-modal="true" aria-labelledby="q-title" style="display:none;position:fixed;inset:0;z-index:71;background:rgba(8,12,20,.62);backdrop-filter:blur(4px);padding:18px;overflow-y:auto">
       <div class="panel q-panel">
         <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap">
-          <img src="assets/logo.png" alt="" style="width:40px;height:40px;border-radius:50%" />
+          <img src="assets/logo-dark.png" alt="" style="width:40px;height:40px;border-radius:50%" />
           <div>
             <h3 id="q-title" style="font-size:21px">Smart Questionnaire</h3>
             <p style="color:var(--muted);font-size:13.5px">The same questions as Step 1 — in card form. Your canvas updates as you choose.</p>
@@ -1964,13 +1972,23 @@
     <div id="signin-overlay" role="dialog" aria-modal="true" aria-labelledby="si-title" style="display:none;position:fixed;inset:0;z-index:72;background:rgba(8,12,20,.62);backdrop-filter:blur(4px);padding:18px;overflow-y:auto">
       <div class="panel" style="max-width:440px;margin:6vh auto;padding:26px">
         <div style="display:flex;align-items:center;gap:11px;margin-bottom:16px">
-          <img src="assets/logo.png" alt="" style="width:44px;height:44px;border-radius:50%" />
+          <img src="assets/logo-dark.png" alt="" style="width:44px;height:44px;border-radius:50%" />
           <span style="font-family:'Inter Tight',sans-serif;font-weight:800;font-size:20px">WebFlow<b style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">AI</b></span>
         </div>
         <div id="si-step1">
           <h3 id="si-title" style="font-size:21px">Sign in with your email</h3>
-          <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Enter your email address to sign in or create a new account. Your 6-digit sign-in code and your updates are sent to that email — no phone number needed.</p>
-          <label for="si-email" style="display:block;font-weight:600;margin-top:18px">Email address</label>
+          <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Enter your name and email address to sign in or create a new account. We greet you by name — your email itself is never shown on screen. Your 6-digit sign-in code and your updates are sent to that email — no phone number needed.</p>
+          <div class="si-name-grid">
+            <div>
+              <label for="si-first">First name</label>
+              <input class="field" id="si-first" type="text" autocomplete="given-name" placeholder="First name" />
+            </div>
+            <div>
+              <label for="si-last">Last name</label>
+              <input class="field" id="si-last" type="text" autocomplete="family-name" placeholder="Last name" />
+            </div>
+          </div>
+          <label for="si-email" style="display:block;font-weight:600;margin-top:16px">Email address</label>
           <input class="field" id="si-email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" />
           <p style="color:var(--muted);font-size:13px;margin-top:8px">Your code and notifications go to the email you enter here. WebFlowAI&rsquo;s own website email is set in this site as <a href="mailto:webflowai301@gmail.com">webflowai301@gmail.com</a>.</p>
           <p class="err" id="si-err" role="alert"></p>
@@ -2017,7 +2035,7 @@
     <!-- ================= WAITING OVERLAY ================= -->
     <div id="wait-overlay" role="alertdialog" aria-label="Sending your request" style="display:none;position:fixed;inset:0;z-index:75;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(5px);place-items:center;padding:20px">
       <div class="panel" style="max-width:430px;width:100%;padding:34px;text-align:center">
-        <img src="assets/logo.png" alt="" style="width:64px;height:64px;border-radius:50%;margin:0 auto;animation:logospin 1.6s linear infinite" />
+        <img src="assets/logo-dark.png" alt="" style="width:64px;height:64px;border-radius:50%;margin:0 auto;animation:logospin 1.6s linear infinite" />
         <h3 style="font-size:21px;margin-top:18px">Sending your request…</h3>
         <p style="color:var(--muted);margin-top:8px;font-size:15px" id="wait-msg">Wrapping up your details and sending them over.</p>
         <p style="color:var(--muted);margin-top:6px;font-size:14px">This takes just a moment — please keep this page open.</p>
@@ -2166,15 +2184,19 @@
     var cardLast4 = null, rating = 0, orders = [], promptOverride = null, textNotices = [];
     var ownerCode = null, ownerUnlocked = false;
     var userImages = [];
-    var customerEmail = null; /* signed-in customer's account key: their email address — owner-only data; sign-in codes and notifications are sent to this email */
-    var customerCode = null; /* the fresh 6-digit sign-in code emailed for that address — the ONLY identifier the AI side ever sees */
+    var customerEmail = null; /* signed-in customer's account key: their email address — owner-only data, stored invisibly in this page only; sign-in codes and notifications are sent to this email. It is NEVER rendered in any customer-facing greeting, menu, message or line — the customer is shown by name only. */
+    var customerFirstName = null; /* customer's first name, collected at sign-in/sign-up — this is what the AI and the header greet them by */
+    var customerLastName = null; /* customer's last name, collected at sign-in/sign-up alongside the first name */
+    function customerFullName(){var f=(customerFirstName||"").trim(),l=(customerLastName||"").trim();return (f+" "+l).trim()||null}
+    function customerGreetingName(){var f=(customerFirstName||"").trim();if(f)return f;var full=customerFullName();return full?full.split(/\s+/)[0]:null}
+    var customerCode = null; /* the fresh 6-digit sign-in code emailed for that address — on the AI side the customer is identified by name + this code, never by email */
     var aiImageRequest = ""; /* customer's request for WebFlowAI-created (always people-free) images */
     var savedCodes = {}; /* code-editor saves, keyed per site, held in this page */
     function fmtPhone(d){return "+1 ("+d.slice(0,3)+") "+d.slice(3,6)+"-"+d.slice(6)}
     function fmtCode(c){return c?String(c).slice(0,3)+" "+String(c).slice(3,6):"—"}
     function genCode(){return String(Math.floor(100000+Math.random()*900000))}
     function maskPhone(d){return "+1 (***) ***-"+d.slice(6)}
-    function maskEmail(e){var at=String(e||"").indexOf("@");if(at<1)return String(e||"");return e.slice(0,1)+"***"+e.slice(at)}
+    /* No masked-email helper: the customer's email is never rendered at all — not even masked. The customer is greeted and identified by name only. */
 
     /* ============ helpers ============ */
     function $(id){return document.getElementById(id)}
@@ -2228,7 +2250,7 @@
       return esc(text).split(re).map(function(part){return HL.indexOf(part.toLowerCase())>=0?'<mark>'+part+'</mark>':part}).join("");
     }
     function orderPackage(){
-      return {reference:refCode(), account:customerEmail?{email:customerEmail,keyedBy:"email address",ownerOnly:true}:null, signinCode:customerCode||null, aiSideIdentity:customerCode?("Customer · Code "+fmtCode(customerCode)):"Guest (not signed in)",
+      return {reference:refCode(), account:customerEmail?{email:customerEmail,keyedBy:"email address",ownerOnly:true}:null, customerName:customerFullName()?{firstName:customerFirstName,lastName:customerLastName,fullName:customerFullName(),greetingName:customerGreetingName(),note:"Collected at sign-in/sign-up so the AI can address the customer by name. The name is shown to the customer and the AI; the sign-in email stays owner-only and is never part of the AI-side identity."}:null, signinCode:customerCode||null, aiSideIdentity:customerCode?((customerFullName()?customerFullName()+" · ":"Customer · ")+"Code "+fmtCode(customerCode)):"Guest (not signed in)",
         displayContacts:{phone:S.displayPhone||null, email:S.displayEmail||null, label:"For the website — provided by the customer", note:"Contact details the customer provided to be shown on their website. Website content: the builder AI sees these and places them on the site exactly as given. This is NOT the sign-in/login email address, which is never included for the AI."},
         createdImagesRequest:aiImageRequest||null, createdImagesRule:"WebFlowAI-created images are always people-free — products, objects, places, interiors and screens only; never any image of a female and no people at all.", business:S.name||"My Website", purpose:S.purpose, style:S.style, audience:S.audience,
         sections:S.pages, features:S.features, colours:S.colors, brandKit:S.kit||null, primaryColour:{name:effPrimary().name, hex:effPrimary().hex}, accentColour:{name:effAccent().name, hex:effAccent().hex}, backgroundColour:{hex:effBg()}, colourBalance:{mainColour:effPrimary().name, mainPct:S.balanceMain, secondColour:effAccent().name, secondPct:S.balanceSecond}, colourMixer:{mainAdjust:S.mixMain, secondAdjust:S.mixSecond, backgroundAdjust:S.mixBg}, tone:S.tone, layout:S.layout, fontStyle:S.font,
@@ -2249,7 +2271,7 @@
       var addonRows=ADDONS.filter(function(a){return addons[a.key]}).map(function(a){
         return '<tr><th>'+esc(a.name)+'</th><td style="text-align:right">$'+a.price.toFixed(2)+' / month</td></tr>'}).join("");
       var html='<div class="doc" role="document" aria-label="'+(isOrder?"Website order":"Project brief")+'">'
-        +'<div class="doc-head"><div class="doc-brand"><img src="assets/logo.png" alt="" />WebFlowAI</div>'
+        +'<div class="doc-head"><div class="doc-brand"><img src="assets/logo-dark.png" alt="" />WebFlowAI</div>'
         +'<div class="doc-meta"><b>'+(isOrder?"WEBSITE ORDER":"PROJECT BRIEF")+'</b><br />Reference '+refCode()+'<br />2 November 2026</div></div>'
         +'<h2 class="doctitle">'+esc(S.name?('"'+S.name+'"'):"Your website")+' — '+(isOrder?"Order & Build Request":"Project Brief")+'</h2>'
         +'<p class="docsub">Prepared by WebFlowAI · The guided AI website creator</p>'
@@ -2261,8 +2283,9 @@
         +'<tr><th>Business / site name</th><td>'+esc(S.name||"— to be confirmed —")+'</td></tr>'
         +(S.displayPhone?'<tr><th>Phone — to show on your website</th><td>'+esc(S.displayPhone)+' — provided by the customer for the website; the builder places it on the site.</td></tr>':"")
         +(S.displayEmail?'<tr><th>Email — to show on your website</th><td>'+esc(S.displayEmail)+' — provided by the customer for the website; the builder places it on the site.</td></tr>':"")
-        +(customerEmail?'<tr><th>Customer account</th><td>Signed in by email · '+esc(customerEmail)+' — owner-only: only the owner ever sees this full sign-in (login) email address.</td></tr>':"")
-        +(customerCode?'<tr><th>AI-side identity</th><td>Customer · Code '+esc(fmtCode(customerCode))+' — the builder AI sees this code only, never the sign-in (login) email address.</td></tr>':"")
+        +(customerFullName()?'<tr><th>Customer</th><td>'+esc(customerFullName())+' — the AI addresses this customer by their first name, '+esc(customerGreetingName()||"")+'.</td></tr>':"")
+        +(customerEmail&&!customerFullName()?'<tr><th>Customer account</th><td>Signed in by email — the address itself is never shown here; it stays owner-only in the order package.</td></tr>':"")
+        +(customerCode?'<tr><th>AI-side identity</th><td>'+esc(customerFullName()?customerFullName()+" · ":"Customer · ")+'Code '+esc(fmtCode(customerCode))+' — the builder AI sees the customer&rsquo;s name and this code, never the sign-in (login) email address.</td></tr>':"")
         +(aiImageRequest?'<tr><th>Images to create</th><td>“'+esc(aiImageRequest)+'” — created by WebFlowAI, always people-free (products, objects, places, interiors, screens only; never any image of a female, no people at all).</td></tr>':"")
         +'<tr><th>Purpose</th><td>'+esc(S.purpose)+'</td></tr>'
         +'<tr><th>Visual style</th><td>'+esc(S.style)+'</td></tr>'
@@ -2923,6 +2946,7 @@
       var lines=[];
       lines.push("WebFlowAI — NEW PROJECT HANDOFF FOR THE OWNER");
       lines.push("Reference: "+refCode());
+      if(customerFullName()){lines.push("Customer: "+customerFullName()+" — address this customer by their first name, "+(customerGreetingName()||"")+", in every reply. (Their sign-in email is owner-only and is not included here.)")}
       lines.push("");
       lines.push("BUSINESS & STYLE DETAILS (collected in the chat)");
       lines.push("Business / site name: "+(S.name||"— to be confirmed —"));
@@ -2996,14 +3020,16 @@
           var bSteps=b.steps.map(function(st,si){
             return '<li class="'+(st.done?"done":((!b.finished&&si===nextIx)?"doing":""))+'"><span class="bk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>'+esc(st.label)+'</span></li>';
           }).join("");
-          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo.png" alt="" /><div class="build-card"><p class="build-now"><span>'+(b.finished?"All built — looking lovely!":("Building now: "+esc(b.current)+"…"))+'</span><span class="pct">'+b.pct+'%</span></p><div class="build-track"><div class="build-fill" style="width:'+b.pct+'%"></div></div><ul class="build-steps">'+bSteps+'</ul></div></div>';
+          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="build-card"><p class="build-now"><span>'+(b.finished?"All built — looking lovely!":("Building now: "+esc(b.current)+"…"))+'</span><span class="pct">'+b.pct+'%</span></p><div class="build-track"><div class="build-fill" style="width:'+b.pct+'%"></div></div><ul class="build-steps">'+bSteps+'</ul></div></div>';
         }
         if(m.kind==="site"){
-          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo.png" alt="" /><div class="site-card"><div class="pv-scale crop" style="height:150px;border:0;border-radius:0"><div class="pv-scale-in"><div>'+pvHTML()+'</div></div></div><div class="sc-body"><p class="sc-name">'+esc(S.name||"Your Business")+'</p><p class="sc-url">'+esc(pvUrlText().replace("https://",""))+'</p><button class="btn small block" data-preview style="margin-top:10px">Open my website</button><p class="sc-note">This is your instant front-end preview, made from your answers. Your finished website is built from these same details by a real AI run, and arrives on a temporary address within a few hours of your order.</p></div></div></div>';
+          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="site-card"><div class="pv-scale crop" style="height:150px;border:0;border-radius:0"><div class="pv-scale-in"><div>'+pvHTML()+'</div></div></div><div class="sc-body"><p class="sc-name">'+esc(S.name||"Your Business")+'</p><p class="sc-url">'+esc(pvUrlText().replace("https://",""))+'</p><button class="btn small block" data-preview style="margin-top:10px">Open my website</button><p class="sc-note">This is your instant front-end preview, made from your answers. Your finished website is built from these same details by a real AI run, and arrives on a temporary address within a few hours of your order.</p></div></div></div>';
         }
         if(m.kind==="handoff"){
           var hf=ensureStyleFlow();
-          var hRows=[
+          var hRows=[];
+          if(customerFullName())hRows.push(["Customer",customerFullName()+" — replies greet them as "+(customerGreetingName()||"")]);
+          hRows.push(
             ["Business",S.name||"— to be confirmed —"],
             ["Purpose",S.purpose+" · for "+S.audience],
             ["Style","Started as "+(hf.initialStyle||S.style)+" · now "+S.style],
@@ -3011,13 +3037,13 @@
             ["Sections",S.pages.join(", ")||"—"],
             ["Features",S.features.join(", ")||"—"],
             ["Look & feel",S.tone+" tone · "+S.layout+" · "+S.font+" · "+S.btnShape+" buttons"]
-          ];
+          );
           if(S.tagline)hRows.push(["Tagline","“"+S.tagline+"”"]);
           if(S.displayPhone||S.displayEmail)hRows.push(["On the site",[S.displayPhone,S.displayEmail].filter(Boolean).join(" · ")]);
           if(userImages.length)hRows.push(["Images",userImages.length+" supplied by the customer"]);
           else if(aiImageRequest)hRows.push(["Images","To be created, people-free: "+aiImageRequest]);
           var hList=hRows.map(function(r){return '<li><b>'+esc(r[0])+'</b><span>'+esc(r[1])+'</span></li>'}).join("");
-          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo.png" alt="" /><div class="handoff-card">'
+          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="handoff-card">'
             +'<span class="handoff-tag">For the owner · Back-end handoff</span>'
             +'<h4 style="margin-top:9px">Ready to send to the owner</h4>'
             +'<p style="color:var(--muted);font-size:13.5px;line-height:1.55;margin-top:5px">Everything you just answered, packaged as one brief — business, style and details together. This is the exact brief the owner works from behind the scenes.</p>'
@@ -3045,7 +3071,7 @@
               credit='<div class="credit-window" role="group" aria-label="Add credit for more style tries"><h5>'+(sf.packs>0?"Your style tries are used up":"Your free style changes are used up")+'</h5><p>Add <b>$5 credit</b> and you get <b>10 more style tries</b>. Like the style you have? You don&rsquo;t need credit at all — just continue to checkout to confirm it.</p><button class="btn small block" type="button" data-addcredit style="margin-top:11px">Add $5 credit — get 10 more style tries</button><p><b>No card is charged in this demo.</b> Adding real credit requires a connected payment provider. Tapping the button only adds demo credit and tries inside this page, so you can see exactly how it will work.</p></div>';
             }
           }
-          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo.png" alt="" /><div class="styletry-card">'
+          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="styletry-card">'
             +'<span class="handoff-tag">Style tries</span>'
             +'<h4 style="margin-top:9px">Like this style? Confirm it — or try a different one</h4>'
             +'<p style="color:var(--muted);font-size:13.5px;line-height:1.55;margin-top:5px">Your preview above is already wearing <b style="color:var(--ink)">'+esc(S.style)+'</b>, built from your business details. Pick a different style below and the same business, colours and sections re-dress in that style at once.</p>'
@@ -3074,14 +3100,14 @@
               +(userImages.length?'<button type="button" data-chatimg="done">Done — use these images</button>':'<button type="button" data-chatimg="skip">I don\'t have images</button>')
               +'</div></div>';
           }
-          return '<div class="msg"><img class="avatar'+spin+'" src="assets/logo.png" alt="" /><div><div class="bubble">'+esc(m.text)+'</div>'+opts+imgUI+'</div></div>';
+          return '<div class="msg"><img class="avatar'+spin+'" src="assets/logo-dark.png" alt="" /><div><div class="bubble">'+esc(m.text)+'</div>'+opts+imgUI+'</div></div>';
         }
         var prev=chat.msgs[i-1],canEdit=prev&&prev.step&&CHAT_STEPS[prev.step]&&CHAT_STEPS[prev.step].field&&!chat.done;
         return '<div class="msg me">'+(canEdit?'<button class="iconbtn" data-edit="'+esc(prev.step)+'" aria-label="Edit answer" style="padding:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>':"")
           +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand-2)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div class="bubble">'+esc(m.text)+'</div></div>';
       }).join("");
       if(chat.thinking){
-        html+='<div class="msg"><img class="avatar spin" src="assets/logo.png" alt="" /><div class="dots"><span></span><span></span><span></span></div></div>';
+        html+='<div class="msg"><img class="avatar spin" src="assets/logo-dark.png" alt="" /><div class="dots"><span></span><span></span><span></span></div></div>';
       }
       if(chat.done&&!chat.thinking){
         html+='<div class="donebox"><p>All saved. Here is a first look at your website — made from your answers, in your style and your colours.</p>'
@@ -3180,10 +3206,10 @@
         if(isEmail(siMail)&&!customerEmail){customerEmail=siMail;customerCode=(v||"").replace(/\D/g,"").slice(0,6)||"483920";renderSigninState()}
         /* the chat request is delivered into the owner side place, marked as received "by email" */
         textNotices.push({when:"2 Nov 2026", kind:next==="create"?"New chat — sign-up completed":"Chat — returning customer signed in", code:customerCode||genCode(),
-          detail:["Name: "+(chat.data.name||S.name||"—"),"Email: "+(chat.data.contactEmail||"—"),"Phone: "+(chat.data.phone||"—")].join(" · ")});
+          detail:["Customer: "+(customerFullName()||chat.data.customerName||"—"),"Business: "+(chat.data.name||S.name||"—"),"Email: "+(chat.data.contactEmail||"—"),"Phone: "+(chat.data.phone||"—")].join(" · ")});
         if(next==="login"){
           chat.done=true;
-          chatSay("Welcome back — you're in! Your website preview is below. Take a look, change anything you like, and tap Continue when you're happy.").then(function(){chatRender()});
+          chatSay((customerGreetingName()?("Welcome back, "+customerGreetingName()+" — you're in! "):"Welcome back — you're in! ")+"Your website preview is below. Take a look, change anything you like, and tap Continue when you're happy.").then(function(){chatRender()});
           return;
         }
         /* the finishing sequence: this customer's real build steps check off one by one in the chat,
@@ -3195,7 +3221,7 @@
           chat.msgs.push({id:chat.idc++,from:"ai",kind:"site"});
           chat.msgs.push({id:chat.idc++,from:"ai",kind:"handoff"});
           chat.msgs.push({id:chat.idc++,from:"ai",kind:"styletry"});
-          chatSay("All done — that was easy! Your first style is in the preview card above, and everything you answered is packaged in the “Ready to send to the owner” block under it. Like this style? Continue to checkout to confirm it. Want a different look? You have 3 free style changes in the Style tries card — after those, $5 credit adds 10 more tries.").then(function(){chatRender()});
+          chatSay((customerGreetingName()?("All done, "+customerGreetingName()+" — that was easy! "):"All done — that was easy! ")+"Your first style is in the preview card above, and everything you answered is packaged in the “Ready to send to the owner” block under it. Like this style? Continue to checkout to confirm it. Want a different look? You have 3 free style changes in the Style tries card — after those, $5 credit adds 10 more tries.").then(function(){chatRender()});
         });
         return;
       }
@@ -3276,12 +3302,12 @@
       list.innerHTML=notices+orders.map(function(o,i){
         return '<button class="panel" data-order="'+i+'" style="padding:16px 18px;text-align:left;display:flex;gap:14px;align-items:center;flex-wrap:wrap">'
         +'<span class="status-pill" style="color:var(--brand-2)">New request · by email</span>'
-        +'<span><b>'+esc(o.pkg.business)+'</b> · '+esc(o.pkg.purpose)+' · '+esc(o.pkg.style)+'<br /><span style="color:var(--muted);font-size:13.5px">Ref '+o.ref+' · '+o.when+' · '+(o.pkg.account?'Account '+esc(o.pkg.account.email)+' · ':"")+'Due today '+money(o.pkg.plan.dueToday)+(o.pkg.plan.monthly?' · '+money(o.pkg.plan.monthly)+' / month add-ons':"")+'</span></span>'
+        +'<span><b>'+esc(o.pkg.business)+'</b> · '+esc(o.pkg.purpose)+' · '+esc(o.pkg.style)+'<br /><span style="color:var(--muted);font-size:13.5px">Ref '+o.ref+' · '+o.when+' · '+(o.pkg.customerName?'Customer '+esc(o.pkg.customerName.fullName)+' · ':"")+(o.pkg.account?'Account '+esc(o.pkg.account.email)+' · ':"")+'Due today '+money(o.pkg.plan.dueToday)+(o.pkg.plan.monthly?' · '+money(o.pkg.plan.monthly)+' / month add-ons':"")+'</span></span>'
         +'<span style="margin-left:auto;color:var(--brand-2);font-weight:600">Open in full →</span></button>'}).join("");
     }
     $("owner-list").addEventListener("click",function(e){
       var b=e.target.closest("[data-order]");if(!b)return;var i=+b.getAttribute("data-order");var o=orders[i];
-      $("owner-detail").innerHTML=o.html+'<p style="color:var(--muted);font-size:13.5px;margin-top:12px">This is the complete request to build from — the customer saw this same design as a live front-end preview and confirmed it with Continue. Delivery promise made to this customer: a link to their website on a temporary address within a few hours (a real website needs a real AI run). On the AI side this customer is <b>Customer · Code '+esc(fmtCode(o.code))+'</b> — the sign-in (login) email above is visible to you, the owner, only; the contact details marked “to show on your website” are site content and do go to the AI.</p>'
+      $("owner-detail").innerHTML=o.html+'<p style="color:var(--muted);font-size:13.5px;margin-top:12px">This is the complete request to build from — the customer saw this same design as a live front-end preview and confirmed it with Continue. Delivery promise made to this customer: a link to their website on a temporary address within a few hours (a real website needs a real AI run). On the AI side this customer is <b>'+esc(o.pkg.aiSideIdentity||("Customer · Code "+fmtCode(o.code)))+'</b> — the AI knows them by name and code; the sign-in (login) email above is visible to you, the owner, only; the contact details marked “to show on your website” are site content and do go to the AI.</p>'
         +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><button class="btn" data-code-order="'+i+'" type="button">Open this site&rsquo;s code — read &amp; edit</button><button class="btn ghost" id="owner-detail-ai" type="button">See it on the AI side (code only)</button></div>';
       $("owner-detail").scrollIntoView({behavior:"smooth",block:"start"});
       var ab=$("owner-detail-ai");if(ab)ab.addEventListener("click",function(){showView("ai")});
@@ -3373,7 +3399,7 @@
       var gate=$("pro-gate"),main=$("pro-main");if(!gate||!main)return;
       if(customerEmail&&hasBackend()){
         gate.style.display="none";main.style.display="";
-        $("pro-ai-id").innerHTML="How the builder AI sees you: <b>Customer · Code "+esc(fmtCode(customerCode))+"</b> — requests from this workspace are keyed by that code only. Your sign-in (login) email address is never shown on the AI side; only the owner sees it. Contact details you provided to show on your website are site content and go to the builder with your request.";
+        $("pro-ai-id").innerHTML="How the builder AI sees you: <b>"+esc(customerFullName()?customerFullName()+" · ":"Customer · ")+"Code "+esc(fmtCode(customerCode))+"</b> — the AI knows your name so it can greet you by it, and requests from this workspace are keyed by your name and that code. Your sign-in (login) email address is never shown on the AI side; only the owner sees it. Contact details you provided to show on your website are site content and go to the builder with your request.";
         renderDash();
       }else{
         main.style.display="none";gate.style.display="";
@@ -3381,7 +3407,7 @@
         $("pro-gate-title").textContent=needSignin?"Sign in to open your workspace":"This workspace comes with the back end";
         $("pro-gate-copy").textContent=needSignin
           ?"The Pro workspace is part of the back-end plan (+$12/month). Sign in with your email address first — then we check your plan and open your pages."
-          :"You're signed in — good. Your plan doesn't include the back end yet, so your workspace isn't open. Add the back end and these pages are yours — everything below is really included:";
+          :("You're signed in"+(customerGreetingName()?", "+esc(customerGreetingName()):"")+" — good. Your plan doesn't include the back end yet, so your workspace isn't open. Add the back end and these pages are yours — everything below is really included:");
         $("pro-gate-signin").style.display=needSignin?"":"none";
         $("pro-gate-add").style.display=needSignin?"none":"";
       }
@@ -3410,12 +3436,12 @@
     var proMsgs=[],proBusy=false;
     function renderProChat(){
       var box=$("pro-msgs");if(!box)return;
-      if(!proMsgs.length)proMsgs.push({from:"ai",text:"Hi! This is your workspace. Tap a style on the left to see it big, pick your colours, or just tell me what to change — plain words are enough."});
+      if(!proMsgs.length)proMsgs.push({from:"ai",text:(customerGreetingName()?("Hi "+customerGreetingName()+"! "):"Hi! ")+"This is your workspace. Tap a style on the left to see it big, pick your colours, or just tell me what to change — plain words are enough."});
       var lastAi=-1;proMsgs.forEach(function(m,i){if(m.from==="ai")lastAi=i});
       box.innerHTML=proMsgs.map(function(m,i){
-        if(m.from==="ai")return '<div class="msg"><img class="avatar'+(i===lastAi&&!proBusy?" spin":"")+'" src="assets/logo.png" alt="" /><div><div class="bubble">'+esc(m.text)+'</div></div></div>';
+        if(m.from==="ai")return '<div class="msg"><img class="avatar'+(i===lastAi&&!proBusy?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div><div class="bubble">'+esc(m.text)+'</div></div></div>';
         return '<div class="msg me"><div class="bubble">'+esc(m.text)+'</div></div>';
-      }).join("")+(proBusy?'<div class="msg"><img class="avatar spin" src="assets/logo.png" alt="" /><div class="dots"><span></span><span></span><span></span></div></div>':"");
+      }).join("")+(proBusy?'<div class="msg"><img class="avatar spin" src="assets/logo-dark.png" alt="" /><div class="dots"><span></span><span></span><span></span></div></div>':"");
       box.scrollTo({top:box.scrollHeight,behavior:"smooth"});
     }
     function proSay(text){proBusy=true;renderProChat();setTimeout(function(){proBusy=false;proMsgs.push({from:"ai",text:text});renderProChat()},650)}
@@ -3543,7 +3569,7 @@
       var items=orders.map(function(o,i){return{o:o,i:i}}).filter(function(x){var s=extOf(x.o).status;return s==="checking"||s==="checked"});
       if(!items.length){box.innerHTML='<div class="ai-card" style="text-align:center;color:var(--muted)">Nothing waiting for a check. When an AI model returns finished work, it appears here for Muse\u2019s check before anything reaches the customer.</div>';return}
       box.innerHTML=items.map(function(x){var o=x.o,en=extOf(o);var vers=extVersions(o);
-        return '<div class="ai-card"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="ai-code-tag">Customer · Code '+esc(fmtCode(o.code))+'</span><span class="status-pill" style="color:'+EXT_COLOR[en.status]+'">'+EXT_STATUS[en.status]+'</span></div>'
+        return '<div class="ai-card"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="ai-code-tag">'+esc(o.pkg.aiSideIdentity||("Customer · Code "+fmtCode(o.code)))+'</span><span class="status-pill" style="color:'+EXT_COLOR[en.status]+'">'+EXT_STATUS[en.status]+'</span></div>'
         +'<p style="font-weight:600;margin-top:10px">'+esc(o.pkg.business)+' — returned by '+esc(en.holder||"an AI model")+'</p>'
         +'<p style="color:var(--muted);font-size:14px;margin-top:3px">One delivery · '+vers.length+' version'+(vers.length===1?"":"s")+': '+vers.map(function(v,i){return 'Version '+(i+1)+(v.style?' — '+esc(v.style):"")}).join(' · ')+'<br />Temporary address: '+(en.work&&en.work.address?esc(en.work.address):"— not given —")+'<br />Notes: '+(en.work&&en.work.notes?esc(en.work.notes):"—")+'</p>'
         +'<div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px">'
@@ -3559,7 +3585,7 @@
       box.innerHTML=orders.map(function(o,i){var en=extOf(o);
         return '<button class="panel" data-extoopen="'+i+'" type="button" style="padding:16px 18px;text-align:left;display:flex;gap:14px;align-items:center;flex-wrap:wrap;width:100%">'
         +'<span class="status-pill" style="color:'+EXT_COLOR[en.status]+'">'+EXT_STATUS[en.status]+'</span>'
-        +'<span><b>'+esc(o.pkg.business)+'</b> · '+esc(o.pkg.purpose)+' · '+esc(o.pkg.style)+'<br /><span style="color:var(--muted);font-size:13.5px">Ref '+o.ref+' · Customer '+(o.pkg.account?esc(o.pkg.account.email):"— not signed in —")+' · AI side: Code '+esc(fmtCode(o.code))+' · '+(en.holder?("Held by "+esc(en.holder)):"Not held yet")+'</span></span>'
+        +'<span><b>'+esc(o.pkg.business)+'</b> · '+esc(o.pkg.purpose)+' · '+esc(o.pkg.style)+'<br /><span style="color:var(--muted);font-size:13.5px">Ref '+o.ref+' · Customer '+(o.pkg.customerName?esc(o.pkg.customerName.fullName)+(o.pkg.account?' ('+esc(o.pkg.account.email)+')':""):(o.pkg.account?esc(o.pkg.account.email):"— not signed in —"))+' · AI side: '+(o.pkg.aiSideIdentity?esc(o.pkg.aiSideIdentity):('Code '+esc(fmtCode(o.code))))+' · '+(en.holder?("Held by "+esc(en.holder)):"Not held yet")+'</span></span>'
         +'<span style="margin-left:auto;color:var(--brand-2);font-weight:600">Open in full →</span></button>'}).join("");
     }
     $("ext-owner-list").addEventListener("click",function(e){
@@ -3575,7 +3601,7 @@
         +(en.status==="checked"?'<button class="btn small" data-extrelease="'+i+'" type="button">Release to customer</button>':"")
         +'</div></div>';
       }
-      $("ext-owner-detail").innerHTML=o.html+'<p style="color:var(--muted);font-size:13.5px;margin-top:12px">Extension status: <b>'+EXT_STATUS[en.status]+'</b>'+(en.holder?' · Held by <b>'+esc(en.holder)+'</b>':"")+' · On the AI side this customer is <b>Customer · Code '+esc(fmtCode(o.code))+'</b> — the sign-in (login) number in this document is visible to you, the owner, only; contact details marked “to show on your website” are site content and do appear in the AI package.</p>'+work;
+      $("ext-owner-detail").innerHTML=o.html+'<p style="color:var(--muted);font-size:13.5px;margin-top:12px">Extension status: <b>'+EXT_STATUS[en.status]+'</b>'+(en.holder?' · Held by <b>'+esc(en.holder)+'</b>':"")+' · On the AI side this customer is <b>'+esc(o.pkg.aiSideIdentity||("Customer · Code "+fmtCode(o.code)))+'</b> — the AI knows them by name and code; the sign-in (login) email in this document is visible to you, the owner, only; contact details marked “to show on your website” are site content and do appear in the AI package.</p>'+work;
       $("ext-owner-detail").scrollIntoView({behavior:"smooth",block:"start"});
     });
     /* shared owner actions inside the Extension (queue + full-detail) */
@@ -3587,7 +3613,7 @@
       var cd=e.target.closest("[data-extcode]");
       if(cd){openExtCode(+cd.getAttribute("data-extcode"),+(cd.getAttribute("data-extver")||0));return}
       var pk=e.target.closest("[data-extpkg]");
-      if(pk){var o3=orders[+pk.getAttribute("data-extpkg")];if(o3){$("ext-owner-detail").innerHTML='<div class="panel" style="padding:22px"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="ai-code-tag">Customer · Code '+esc(fmtCode(o3.code))+'</span><span class="status-pill" style="color:'+EXT_COLOR[extOf(o3).status]+'">'+EXT_STATUS[extOf(o3).status]+'</span></div><h3 style="font-size:19px;margin-top:14px">'+esc(o3.pkg.business)+' — the complete request, as the AI sees it</h3>'+extPackageHTML(o3)+'<p style="color:var(--muted);font-size:13px;margin-top:16px">This is the same complete package the AI model works from — keyed by sign-in code only.</p></div>';$("ext-owner-detail").scrollIntoView({behavior:"smooth",block:"start"})}return}
+      if(pk){var o3=orders[+pk.getAttribute("data-extpkg")];if(o3){$("ext-owner-detail").innerHTML='<div class="panel" style="padding:22px"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="ai-code-tag">'+esc(o3.pkg.aiSideIdentity||("Customer · Code "+fmtCode(o3.code)))+'</span><span class="status-pill" style="color:'+EXT_COLOR[extOf(o3).status]+'">'+EXT_STATUS[extOf(o3).status]+'</span></div><h3 style="font-size:19px;margin-top:14px">'+esc(o3.pkg.business)+' — the complete request, as the AI sees it</h3>'+extPackageHTML(o3)+'<p style="color:var(--muted);font-size:13px;margin-top:16px">This is the same complete package the AI model works from — keyed by sign-in code only.</p></div>';$("ext-owner-detail").scrollIntoView({behavior:"smooth",block:"start"})}return}
     });
     function openExtCode(i,ver){
       var o=orders[i];if(!o||!extOf(o).work){toast("No returned work to read yet.");return}
@@ -3595,7 +3621,7 @@
       ver=Math.max(0,Math.min(ver||0,vers.length-1));
       var raw=vers[ver].html;
       codeCtx={source:"ext",orderIndex:i,key:"ext-"+o.ref+"-v"+(ver+1),biz:o.pkg.business||"",generated:/<html[\s>]/i.test(raw)?raw:wrapSiteHTML(raw,o.pkg.business)};
-      $("code-context").textContent="Returned by "+(w.by||extOf(o).holder||"an AI model")+" for "+o.pkg.business+" — Version "+(ver+1)+" of "+vers.length+(vers[ver].style?(" ("+vers[ver].style+")"):"")+" · Customer · Code "+fmtCode(o.code)+". One version of the three in this delivery, exactly as handed in for Muse's check.";
+      $("code-context").textContent="Returned by "+(w.by||extOf(o).holder||"an AI model")+" for "+o.pkg.business+" — Version "+(ver+1)+" of "+vers.length+(vers[ver].style?(" ("+vers[ver].style+")"):"")+" · "+(o.pkg.aiSideIdentity||("Customer · Code "+fmtCode(o.code)))+". One version of the three in this delivery, exactly as handed in for Muse's check.";
       var ed=$("code-editor");ed.value=savedCodes[codeCtx.key]||codeCtx.generated;
       $("code-status").textContent=savedCodes[codeCtx.key]?"Showing your saved edited version. Reset brings back the returned code.":"Showing the returned code, exactly as handed in.";
       showView("code");updateCodePreview();
@@ -3608,7 +3634,7 @@
       if(!orders.length){box.innerHTML='<div class="ai-card" style="text-align:center;color:var(--muted)">No customer requests yet. When a customer submits at checkout, their request appears on this board, keyed by their sign-in code.</div>';$("ext-detail").innerHTML="";return}
       box.innerHTML=orders.map(function(o,i){var en=extOf(o),p=o.pkg,mine=en.holder===extSession.name,heldOther=en.holder&&!mine;
         var planBits=["Front-end website $9.48"];p.plan.addOns.forEach(function(a){planBits.push(a.label+" +$"+a.price.toFixed(2)+"/mo")});
-        return '<div class="ai-card"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="ai-code-tag">Customer · Code '+esc(fmtCode(o.code))+'</span><span class="status-pill" style="color:'+EXT_COLOR[en.status]+'">'+EXT_STATUS[en.status]+'</span>'
+        return '<div class="ai-card"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="ai-code-tag">'+esc(o.pkg.aiSideIdentity||("Customer · Code "+fmtCode(o.code)))+'</span><span class="status-pill" style="color:'+EXT_COLOR[en.status]+'">'+EXT_STATUS[en.status]+'</span>'
         +(en.holder?'<span class="status-pill">'+(mine?"Held by you":"Held by "+esc(en.holder))+'</span>':"")
         +'</div>'
         +'<p style="font-weight:600;margin-top:10px">'+esc(p.business)+'</p>'
@@ -3649,6 +3675,7 @@
       +'<p style="color:var(--muted);font-size:13.5px;margin-top:3px">The customer&rsquo;s complete brief — their words, polished into the brief text, with everything they gave. Nothing is trimmed.</p>'
       +'<p style="font-size:15px;line-height:1.65;margin-top:10px">'+esc(p.brief)+'</p>'
       +'<table class="spec" style="margin-top:12px;width:100%"><tbody>'
+      +(p.customerName?row("Customer",esc(p.customerName.fullName)+" — address them by their first name, "+esc(p.customerName.greetingName||"")):"")
       +row("Business",esc(p.business))
       +'<tr><th colspan="2" style="color:var(--brand-2);font-size:13.5px;padding-top:16px">For the website — provided by the customer<span style="display:block;font-weight:400;color:var(--muted);font-size:12.5px;margin-top:2px">Contact details this customer gave to be shown on their website. Website content — place them on the site exactly as given. (Their sign-in/login number and account email are never included in this package.)</span></th></tr>'
       +row("Phone — to show on the website",(p.displayContacts&&p.displayContacts.phone)?esc(p.displayContacts.phone):"— not provided —")
@@ -3698,10 +3725,10 @@
       var box=$("ext-detail");var o=orders[extOpenIdx];if(!o){box.innerHTML="";return}
       var en=extOf(o),p=o.pkg,mine=en.holder===extSession.name;
       extReturnWarned=false;
-      var html='<div class="panel" style="padding:22px"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="ai-code-tag">Customer · Code '+esc(fmtCode(o.code))+'</span><span class="status-pill" style="color:'+EXT_COLOR[en.status]+'">'+EXT_STATUS[en.status]+'</span>'+(en.holder?'<span class="status-pill">Held by '+esc(en.holder)+'</span>':"")+'</div>'
+      var html='<div class="panel" style="padding:22px"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="ai-code-tag">'+esc(o.pkg.aiSideIdentity||("Customer · Code "+fmtCode(o.code)))+'</span><span class="status-pill" style="color:'+EXT_COLOR[en.status]+'">'+EXT_STATUS[en.status]+'</span>'+(en.holder?'<span class="status-pill">Held by '+esc(en.holder)+'</span>':"")+'</div>'
       +'<h3 style="font-size:19px;margin-top:14px">'+esc(p.business)+' — the complete request</h3>'
       +extPackageHTML(o)
-      +'<p style="color:var(--muted);font-size:13px;margin-top:16px">Identified by sign-in code only — the customer&rsquo;s sign-in (login) email address is never part of this view. Any phone or email shown above is one the customer provided to be shown on their website.</p>';
+      +'<p style="color:var(--muted);font-size:13px;margin-top:16px">Identified by the customer&rsquo;s name and sign-in code — the customer&rsquo;s sign-in (login) email address is never part of this view. Any phone or email shown above is one the customer provided to be shown on their website.</p>';
       if(en.work){
         var vers=extVersions(o);
         html+='<div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px"><p style="font-weight:600">Work returned by '+esc(en.holder||"an AI model")+' — '+vers.length+' version'+(vers.length===1?"":"s")+', one delivery</p>'
@@ -3777,7 +3804,7 @@
       }else{
         if(!customerEmail||!hasBackend()){toast("The code view opens for back-end customers, in their Pro workspace.");showView("pro");return}
         codeCtx={source:"pro",orderIndex:null,key:"my-site",biz:S.name||"",generated:wrapSiteHTML(pvHTML(),S.name||"My Website")};
-        $("code-context").textContent="Your website's full HTML code, all in one place — Customer · Code "+fmtCode(customerCode)+". Only you, the owner of this site, can open it.";
+        $("code-context").textContent="Your website's full HTML code, all in one place — "+(customerFullName()?customerFullName()+" · ":"Customer · ")+"Code "+fmtCode(customerCode)+". Only you, the owner of this site, can open it.";
       }
       var ed=$("code-editor");
       ed.value=savedCodes[codeCtx.key]||codeCtx.generated;
@@ -3802,7 +3829,7 @@
     /* the dashboard's Export Code + code buttons wire to this same editor — see the dashboard block below */
 
     /* ============ sign-in by email address (front-end demo; in-page only) ============ */
-    var siEmail="", siVerifying=false, siPendingCode=null, siIntent="login";
+    var siEmail="", siFirstName="", siLastName="", siVerifying=false, siPendingCode=null, siIntent="login";
     function siNewCode(){
       siPendingCode=genCode(); /* a fresh 6-digit code is created for this email, every time */
       $("si-demo-code").textContent="Your demo code: "+fmtCode(siPendingCode);
@@ -3821,25 +3848,30 @@
     }
     function siBoxes(){return Array.prototype.slice.call(document.querySelectorAll(".code-box"))}
     function siShow(n){$("si-step1").style.display=n===1?"":"none";$("si-step2").style.display=n===2?"":"none";$("si-done").style.display=n===3?"":"none"}
-    function openSignin(){siShow(1);$("signin-overlay").style.display="block";document.body.style.overflow="hidden";setTimeout(function(){$("si-email").focus()},40)}
+    function openSignin(){siShow(1);$("signin-overlay").style.display="block";document.body.style.overflow="hidden";setTimeout(function(){var f=$("si-first");if(f&&(f.value||"").trim()){$("si-email").focus()}else if(f){f.focus()}else{$("si-email").focus()}},40)}
     function closeSignin(){$("signin-overlay").style.display="none";if($("preview-overlay").style.display==="none")document.body.style.overflow=""}
     function renderSigninState(){
       var btn=$("signin-btn"),menu=$("signin-menu");
       if(customerEmail){
-        btn.textContent="Hi · "+maskEmail(customerEmail);
-        menu.innerHTML='<p>Signed in as <b style="overflow-wrap:anywhere">'+esc(customerEmail)+'</b><br />Your sign-in code for this session: <b>Code '+esc(fmtCode(customerCode))+'</b> — that code is all the builder AI ever sees; your email stays owner-only.<br />Your details and orders are saved to this account — we recognise you by your email address, and your code and updates are sent there.</p>'
+        /* Name ONLY in the header — never the email, not even masked.
+           First name only keeps the pill short enough at phone widths. */
+        var greet=customerGreetingName();
+        btn.textContent=greet?("Hi · "+greet):"Hi";
+        btn.title=greet?("Signed in as "+customerFullName()):"Signed in";
+        var full=customerFullName();
+        menu.innerHTML='<p>Signed in as <b style="overflow-wrap:anywhere">'+esc(full||"you")+'</b><br />Your sign-in code for this session: <b>Code '+esc(fmtCode(customerCode))+'</b> — the builder AI knows you by your name and that code; your email stays owner-only and is never shown.<br />Your details and orders are saved to this account — your code and updates are sent to your email address.</p>'
           +(hasBackend()?'<button class="btn small block" id="si-pro" type="button" style="margin-top:10px">Open my Pro workspace</button>':'<p style="margin-top:8px">The Pro workspace opens with the back-end add-on.</p>')
           +'<button class="btn ghost small block" id="si-signout" type="button" style="margin-top:8px">Sign out</button>';
         var sp=$("si-pro");if(sp)sp.addEventListener("click",function(){menu.hidden=true;showView("pro")});
-        var so=$("si-signout");if(so)so.addEventListener("click",function(){customerEmail=null;customerCode=null;menu.hidden=true;renderSigninState();renderAll();toast("Signed out")});
+        var so=$("si-signout");if(so)so.addEventListener("click",function(){customerEmail=null;customerCode=null;customerFirstName=null;customerLastName=null;siFirstName="";siLastName="";var fi=$("si-first"),la=$("si-last");if(fi)fi.value="";if(la)la.value="";menu.hidden=true;renderSigninState();renderAll();toast("Signed out")});
       }else{
-        btn.textContent="Sign in";menu.hidden=true;menu.innerHTML="";
+        btn.textContent="Sign in";btn.removeAttribute("title");menu.hidden=true;menu.innerHTML="";
       }
       var co=$("checkout-signin");
       if(co){
         co.innerHTML=customerEmail
-          ? '<p style="font-size:14px"><b>Signed in</b> · <span style="overflow-wrap:anywhere">'+esc(customerEmail)+'</span><br /><span style="color:var(--muted);font-size:13.5px">This order is saved to your account — we remember you by this email address, and updates are sent there.</span></p>'
-          : '<p style="font-size:14px"><b>Have an account?</b><br /><span style="color:var(--muted);font-size:13.5px">Sign in with just your email address and this order is saved to your account — your code is emailed to you.</span></p><button class="btn ghost small block" id="co-signin" type="button" style="margin-top:9px">Sign in with your email</button>';
+          ? '<p style="font-size:14px"><b>Signed in</b>'+(customerFullName()?' · <span style="overflow-wrap:anywhere">'+esc(customerFullName())+'</span>':'')+'<br /><span style="color:var(--muted);font-size:13.5px">This order is saved to your account — we greet you by name, and updates are sent to your email address (never shown here).</span></p>'
+          : '<p style="font-size:14px"><b>Have an account?</b><br /><span style="color:var(--muted);font-size:13.5px">Sign in with your name and email address and this order is saved to your account — your code is emailed to you.</span></p><button class="btn ghost small block" id="co-signin" type="button" style="margin-top:9px">Sign in with your email</button>';
         var cb=$("co-signin");if(cb)cb.addEventListener("click",openSignin);
       }
     }
@@ -3855,22 +3887,30 @@
       siEmail=e.target.value.trim();
       $("si-err").textContent="";
     });
+    $("si-first").addEventListener("input",function(e){siFirstName=e.target.value; $("si-err").textContent="";});
+    $("si-last").addEventListener("input",function(e){siLastName=e.target.value; $("si-err").textContent="";});
+    $("si-first").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();$("si-continue").click()}});
+    $("si-last").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();$("si-continue").click()}});
     $("si-email").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();$("si-continue").click()}});
     $("si-continue").addEventListener("click",function(){
+      siFirstName=($("si-first").value||"").trim();
+      siLastName=($("si-last").value||"").trim();
+      if(!siFirstName){$("si-err").textContent="Please enter your first name — so we can greet you by name.";$("si-first").focus();return}
+      if(!siLastName){$("si-err").textContent="Please enter your last name — we need both your first and last name.";$("si-last").focus();return}
       siEmail=($("si-email").value||"").trim().toLowerCase();
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(siEmail)){$("si-err").textContent="Please enter a valid email address — your sign-in code is sent there.";return}
       siNewCode();
-      $("si-sent-to").textContent="We've emailed a fresh 6-digit code to "+siEmail+" — check your inbox. (In this preview build, use the demo code shown below.)";
+      $("si-sent-to").textContent="Thanks, "+siFirstName+" — we've emailed a fresh 6-digit code to your email address. Check your inbox. (In this preview build, use the demo code shown below.)";
       siShow(2);var b=siBoxes();b.forEach(function(x){x.value=""});setTimeout(function(){b[0].focus()},40);
       siResendCooldown();
     });
-    $("si-back").addEventListener("click",function(){siShow(1);setTimeout(function(){$("si-email").focus()},40)});
+    $("si-back").addEventListener("click",function(){siShow(1);setTimeout(function(){$("si-first").focus()},40)});
     $("si-resend").addEventListener("click",function(){
       siNewCode(); /* a brand-new code replaces the old one and goes to the same email the customer entered */
       var b=siBoxes();b.forEach(function(x){x.value=""});b[0].focus();
       $("si-err2").textContent="";
-      $("si-sent-to").textContent="A new 6-digit code was sent to "+siEmail+" just now — check your inbox. (In this preview build, use the demo code shown below.)";
-      toast("A fresh 6-digit code was sent to "+siEmail);
+      $("si-sent-to").textContent="A new 6-digit code was sent to your email address just now — check your inbox. (In this preview build, use the demo code shown below.)";
+      toast("A fresh 6-digit code was sent to your email");
       siResendCooldown();
     });
     function siVerify(){
@@ -3883,13 +3923,22 @@
       setTimeout(function(){
         siVerifying=false;btn.disabled=false;btn.textContent="Verify & Access";
         customerEmail=siEmail;customerCode=code;
+        /* the name is the customer's public identity in this page: the header,
+           the AI and the brief use it; the email stays stored invisibly, owner-only */
+        customerFirstName=(siFirstName||"").trim()||customerFirstName;
+        customerLastName=(siLastName||"").trim()||customerLastName;
+        if(customerFirstName)chat.data.customerFirstName=customerFirstName;
+        if(customerLastName)chat.data.customerLastName=customerLastName;
+        if(customerFullName())chat.data.customerName=customerFullName();
         if(!chat.data.loginEmail)chat.data.loginEmail=siEmail;
         if(!chat.data.contactEmail)chat.data.contactEmail=siEmail;
-        $("si-done-msg").textContent="You're signed in as "+siEmail+". Your code and updates go to that email. On the builder AI side you appear only as Customer · Code "+fmtCode(code)+" — your email stays owner-only.";
+        var dn=customerFullName();
+        $("si-done-msg").textContent=dn?("You're signed in, "+dn+". Welcome — the AI will greet you by name, "+(customerGreetingName()||"")+". Your code and updates go to your email address, which is never shown on screen. On the builder AI side you appear as "+dn+" · Code "+fmtCode(code)+"."):("You're signed in. Your code and updates go to your email address, which is never shown on screen.");
         siShow(3);renderSigninState();
         setTimeout(function(){closeSignin();renderAll();var v=document.body.getAttribute("data-view");
-          if(siIntent==="create"){siIntent="login";showView("start");toast("Account created — let's build your website")}
-          else{if(v==="pro")renderPro();if(v==="entry")showView("home");toast("Signed in — you're right back where you left off")}},1400);
+          var gn=customerGreetingName();
+          if(siIntent==="create"){siIntent="login";showView("start");toast(gn?("Account created — welcome, "+gn+"! Let's build your website"):"Account created — let's build your website")}
+          else{if(v==="pro")renderPro();if(v==="entry")showView("home");toast(gn?("Signed in — welcome back, "+gn+"!"):"Signed in — you're right back where you left off")}},1400);
       },900);
     }
     $("si-verify").addEventListener("click",siVerify);
@@ -3939,7 +3988,7 @@
     var SS_MOTIFS={
       "cyber-dragon":{label:"NEO-DRAGON",color:"#22d3ee",svg:'<svg width="54" height="54" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.6 1.6c.3 3.2-.9 5.2-2.4 6.9C9.7 10.2 8.4 11.7 8.4 14a4.7 4.7 0 0 0 9.4 0c0-1.3-.5-2.5-1.2-3.6-.5 1.1-1.3 1.9-2.4 2.4.4-3.2-.2-7.6-2.6-10.5-.4-.5 1.7-1.2 2-.7z"/><path d="M6.2 20.6c1.7 1.2 3.7 1.9 5.9 1.9 2.5 0 4.8-.9 6.6-2.4-1 .3-2 .2-2.8-.3-1.1 1-2.5 1.5-3.9 1.5-1.5 0-2.9-.6-4-1.6-.6.4-1.2.7-1.8.9z"/></svg>'},
       "ai-brain":{label:"NEURAL MESH",color:"#c084fc",svg:'<svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><circle cx="4.6" cy="5.4" r="1.8"/><circle cx="19.4" cy="5.4" r="1.8"/><circle cx="4.6" cy="18.6" r="1.8"/><circle cx="19.4" cy="18.6" r="1.8"/><circle cx="12" cy="3.4" r="1.5"/><circle cx="12" cy="20.6" r="1.5"/><path d="M10.1 10.3 6 6.7M13.9 10.3 18 6.7M10.1 13.7 6 17.3M13.9 13.7 18 17.3M12 9.5V4.9M12 19.1v-4.6"/></svg>'},
-      "minimal-logo":{label:"WEBFLOW AI",color:"#fbbf24",svg:'<img src="assets/logo.png" alt="" style="width:48px;height:48px;border-radius:50%" />'},
+      "minimal-logo":{label:"WEBFLOW AI",color:"#fbbf24",svg:'<img src="assets/logo-dark.png" alt="" style="width:48px;height:48px;border-radius:50%" />'},
       "astro-skull":{label:"CYBER SKULL",color:"#fb7185",svg:'<svg width="54" height="54" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1.8a8.2 8.2 0 0 0-8.2 8.2c0 3 1.6 5.2 3.6 6.4v2.9a2 2 0 0 0 2 2h5.2a2 2 0 0 0 2-2v-2.9c2-1.2 3.6-3.4 3.6-6.4A8.2 8.2 0 0 0 12 1.8z"/><circle cx="8.5" cy="10.8" r="2" fill="#0b1120"/><circle cx="15.5" cy="10.8" r="2" fill="#0b1120"/><path d="M12 13.4l-1.2 2.4h2.4z" fill="#0b1120"/></svg>'}
     };
     var SS_GLOWS={"dark-luxury":"rgba(124,58,237,.32)","cyan-neon":"rgba(34,211,238,.35)","sunset-warm":"rgba(245,158,11,.38)","emerald-tech":"rgba(16,185,129,.35)","clean-light":"rgba(168,85,247,.22)"};
@@ -4026,7 +4075,7 @@
       $("dash-node4-tip").textContent=dashMode==="site"?"Your Website Controls":"T-Shirt & Product Controls";
       $("dash-domain").textContent=dashMode==="site"?pvUrlText():"https://tshirt-master.webflowai.app";
       $("dash-mode-note").innerHTML=dashMode==="site"
-        ?"<b>Your website</b><span>— live in the canvas below. The same site as your Studio and your code view: change it anywhere, it's one document.</span><span style='opacity:.75'>Signed in as Customer · Code "+esc(fmtCode(customerCode))+"</span>"
+        ?"<b>Your website</b><span>— live in the canvas below. The same site as your Studio and your code view: change it anywhere, it's one document.</span><span style='opacity:.75'>Signed in as "+esc(customerFullName()?customerFullName()+" · ":"Customer · ")+"Code "+esc(fmtCode(customerCode))+"</span>"
         :"<b>Sample store</b><span>— a labelled sample, shown because your own website doesn't exist yet. Try every control on it; when your site exists, this canvas becomes yours.</span><button class='btn small' type='button' data-nav='start' style='padding:7px 14px;font-size:13px'>Start your own website</button>";
       if(dashMode==="site"){$("dash-name-in").value=S.name||"";$("dash-tagline-in").value=S.tagline||""}
       ssApplyThemeVisual();ssSetColor(ssState.color,true);ssSetMotif(ssState.motif,true);ssSetPrice(ssState.price,true);
@@ -4089,14 +4138,14 @@
       var box=$("dash-msgs");if(!box)return;
       var lastAi=-1;dashMsgs.forEach(function(m,i){if(m.from==="ai")lastAi=i});
       box.innerHTML=dashMsgs.map(function(m,i){
-        if(m.from==="build")return '<div class="dmsg"><img class="av spin" src="assets/logo.png" alt="" /><div style="flex:1;min-width:0"><div class="build-card"><div class="build-now">Building now… <span class="pct" data-bpct>0%</span></div><div class="build-track"><div class="build-fill" data-bfill style="width:0%"></div></div><ul class="build-steps"><li data-bs="0"><span class="bk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Layout</li><li data-bs="1"><span class="bk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Colours</li><li data-bs="2"><span class="bk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Text</li></ul></div></div></div>';
+        if(m.from==="build")return '<div class="dmsg"><img class="av spin" src="assets/logo-dark.png" alt="" /><div style="flex:1;min-width:0"><div class="build-card"><div class="build-now">Building now… <span class="pct" data-bpct>0%</span></div><div class="build-track"><div class="build-fill" data-bfill style="width:0%"></div></div><ul class="build-steps"><li data-bs="0"><span class="bk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Layout</li><li data-bs="1"><span class="bk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Colours</li><li data-bs="2"><span class="bk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Text</li></ul></div></div></div>';
         if(m.from==="ai"){
           var opts=m.opts&&m.opts.length?'<div class="dopts">'+m.opts.map(function(o){return '<button type="button" data-dashopt="'+o.k+'">'+esc(o.label)+'</button>'}).join("")+'</div>':"";
-          return '<div class="dmsg"><img class="av'+(i===lastAi&&!dashBusy?" spin":"")+'" src="assets/logo.png" alt="" /><div style="min-width:0"><div class="db">'+m.html+'</div>'+opts+'</div></div>';
+          return '<div class="dmsg"><img class="av'+(i===lastAi&&!dashBusy?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div style="min-width:0"><div class="db">'+m.html+'</div>'+opts+'</div></div>';
         }
         return '<div class="dmsg me"><div class="db">'+esc(m.text)+'</div></div>';
       }).join("")+(dashBusy&&!dashMsgs.some(function(m){return m.from==="build"})
-        ?'<div class="dmsg"><img class="av spin" src="assets/logo.png" alt="" /><div class="dots"><span></span><span></span><span></span></div></div>':"");
+        ?'<div class="dmsg"><img class="av spin" src="assets/logo-dark.png" alt="" /><div class="dots"><span></span><span></span><span></span></div></div>':"");
       box.scrollTo({top:box.scrollHeight,behavior:"smooth"});
     }
     function dashSay(html,opts){dashMsgs.push({from:"ai",html:html,opts:opts||null});renderDashMsgs()}
@@ -4117,7 +4166,7 @@
       return h;
     }
     function dashWelcome(){
-      dashAiReply("Hi, I'm your AI. I'm here to help you change colors or other style ideas.");
+      dashAiReply((customerGreetingName()?("Hi "+esc(customerGreetingName())+", I'm your AI. "):"Hi, I'm your AI. ")+"I'm here to help you change colors or other style ideas.");
       setTimeout(function(){dashAiReply(dashPlayback())},1600);
     }
 
@@ -4309,9 +4358,9 @@
       var box=$("studio-msgs");if(!box)return;
       var lastAi=-1;stMsgs.forEach(function(m,i){if(m.from==="ai")lastAi=i});
       box.innerHTML=stMsgs.map(function(m,i){
-        if(m.from==="ai")return '<div class="msg"><img class="avatar'+(i===lastAi&&!stBusy?" spin":"")+'" src="assets/logo.png" alt="" /><div><div class="bubble">'+esc(m.text)+'</div></div></div>';
+        if(m.from==="ai")return '<div class="msg"><img class="avatar'+(i===lastAi&&!stBusy?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div><div class="bubble">'+esc(m.text)+'</div></div></div>';
         return '<div class="msg me"><div class="bubble">'+esc(m.text)+'</div></div>';
-      }).join("")+(stBusy?'<div class="msg"><img class="avatar spin" src="assets/logo.png" alt="" /><div class="dots"><span></span><span></span><span></span></div></div>':"");
+      }).join("")+(stBusy?'<div class="msg"><img class="avatar spin" src="assets/logo-dark.png" alt="" /><div class="dots"><span></span><span></span><span></span></div></div>':"");
       box.scrollTo({top:box.scrollHeight,behavior:"smooth"});
     }
     function stSay(text){stBusy=true;renderStChat();setTimeout(function(){stBusy=false;stMsgs.push({from:"ai",text:text});renderStChat()},600)}
@@ -4370,7 +4419,7 @@
     function renderStudio(){
       $("studio-url").textContent=pvUrlText();
       renderMinis();setTimeout(fixPvHeights,90);
-      if(!stWelcomed){stWelcomed=true;stSay("Hi! This is your Studio — your website is on the left, big and live. Tell me what to change, tap a quick option, or open the Smart Questionnaire up top for the full card questions.")}
+      if(!stWelcomed){stWelcomed=true;stSay((customerGreetingName()?("Hi "+customerGreetingName()+"! "):"Hi! ")+"This is your Studio — your website is on the left, big and live. Tell me what to change, tap a quick option, or open the Smart Questionnaire up top for the full card questions.")}
       if(!$("studio-code").hidden)renderStudioCode();
     }
     document.addEventListener("click",function(e){
