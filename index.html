@@ -389,14 +389,30 @@
       .pv-fade>*{grid-area:1/1;min-width:0;transition:opacity .35s ease}
       #mobile-preview{display:none}
       @media (max-width:920px){
-        body[data-view="start"] #mobile-preview,body[data-view="details"] #mobile-preview{display:block;position:fixed;left:0;right:0;bottom:0;z-index:35;background:var(--surface);border-top:1px solid var(--cardbd);box-shadow:0 -8px 24px rgba(16,24,40,.12);padding:8px 12px calc(8px + env(safe-area-inset-bottom))}
-        #view-start,#view-details{padding-bottom:200px}
-        .toast{bottom:200px}
+        body[data-view="start"] #mobile-preview,body[data-view="details"] #mobile-preview{display:block;position:fixed;left:0;right:0;bottom:0;z-index:35;background:var(--surface);border-top:1px solid var(--cardbd);box-shadow:0 -8px 24px rgba(16,24,40,.12);padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
+        body.chat-stage #mobile-preview{display:none}
+        #view-start,#view-details{padding-bottom:104px}
+        .toast{bottom:104px}
       }
-      .mp-head{display:flex;align-items:center;gap:8px;margin-bottom:7px}
-      .mp-head b{font-size:13px}
-      .mp-head span{color:var(--muted);font-size:12px}
-      .mp-head .btn{margin-left:auto}
+      .mp-open{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:15px 18px;font-size:16.5px}
+      /* ---------- collapsible preview rail ---------- */
+      .pv-toggle{margin-left:auto;flex:none}
+      body.pv-hidden .pv-mini-panel .pv-body{display:none}
+      body.pv-hidden .pv-mini-panel .pv-mini-head{margin-bottom:0}
+      /* ---------- chat as the main stage ---------- */
+      #chat-stage-bar{display:none}
+      body.chat-stage #chat-stage-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:20px;padding:13px 16px}
+      #chat-stage-bar p{font-size:14.5px;color:var(--muted);flex:1;min-width:200px}
+      #chat-stage-bar p b{color:var(--ink)}
+      body.chat-stage #view-start .layout{grid-template-columns:1fr}
+      body.chat-stage #view-start .layout>.qcol{display:none}
+      body.chat-stage #view-start .pv-mini-panel .pv-scale{height:230px !important}
+      body.chat-stage #chat-panel{height:min(74vh,780px);max-height:none}
+      @media (max-width:920px){body.chat-stage #chat-panel{height:72svh}}
+      /* ---------- finish-by-chat call to action ---------- */
+      .finish-chat-cta{margin-top:34px;padding:22px;text-align:center}
+      .finish-chat-cta .btn{padding:17px 22px;font-size:17.5px}
+      .finish-chat-cta p{color:var(--muted);font-size:14px;line-height:1.55;margin-top:12px;max-width:520px;margin-left:auto;margin-right:auto}
       .ripple-ink{position:absolute;border-radius:50%;background:currentColor;opacity:.16;transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none;z-index:2}
       @keyframes rip{to{transform:scale(2.6);opacity:0}}
       .si-wrap{position:relative;display:inline-flex}
@@ -906,8 +922,12 @@
       <section class="view" id="view-start">
         <div class="wrap">
           <div class="panel stepbar"><p>Step 1 of 3 · Style &amp; Purpose</p><div class="track"><div class="fill" style="width:33%"></div></div></div>
+          <div class="panel" id="chat-stage-bar">
+            <p><b>You're finishing your website by chat.</b> Everything you've picked so far — style, colours, sections, details — is already in, and the chat below opens at your latest message.</p>
+            <button class="btn ghost small" type="button" id="chat-stage-close">← Back to the questions</button>
+          </div>
           <div class="layout">
-            <div>
+            <div class="qcol">
               <p class="eyebrow" style="margin-top:6px">Smart questionnaire</p>
               <h1 style="font-size:clamp(32px,4.6vw,48px);font-weight:800;margin-top:6px">What are we building today?</h1>
               <p class="sub">Answer a few quick questions to capture your style, and we'll generate the perfect AI prompt for you.</p>
@@ -934,12 +954,14 @@
             </div>
             <div class="side-stack">
               <aside class="panel pv-mini-panel pv-sticky" aria-label="Live preview of your website">
-                <div class="pv-mini-head"><b>Live preview</b><span>Updates the moment you choose a style</span></div>
+                <div class="pv-mini-head"><b>Live preview</b><span>Updates the moment you choose a style</span><button class="btn ghost small pv-toggle" type="button" data-pv-toggle aria-expanded="true">Hide preview</button></div>
+                <div class="pv-body">
                 <div class="pv-chrome"><i></i><i></i><i></i><span class="pv-url-mini"></span></div>
                 <div class="pv-scale" id="pv-scale-1"><div class="pv-scale-in"><div class="pv-fade" id="pv-fade-1"></div></div></div>
                 <button class="btn ghost small block" style="margin-top:10px" data-preview>Open the full preview</button>
+                </div>
               </aside>
-              <aside class="panel chat" aria-label="Chat setup">
+              <aside class="panel chat" id="chat-panel" aria-label="Chat setup">
                 <div class="chat-head">
                   <h3>Chat &amp; set up WebFlowAI</h3>
                   <button class="iconbtn" id="sound-btn" aria-label="Turn sound off" title="Sound on/off">
@@ -966,6 +988,7 @@
                 <button class="btn block" style="margin-top:14px" data-nav="details">Next: details &amp; generate
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </button>
+                <button class="btn ghost block" type="button" id="finish-by-chat-2" style="margin-top:10px">Or finish by chatting instead</button>
               </div>
             </div>
           </div>
@@ -1056,14 +1079,23 @@
               <label for="f-demail" style="display:block;font-weight:600;font-size:14.5px;margin-top:14px">Email address — to show on your website</label>
               <input class="field" id="f-demail" type="email" inputmode="email" autocomplete="email" placeholder="e.g. hello@yourbusiness.com" style="margin-top:8px" />
 
+              <div class="panel finish-chat-cta">
+                <button class="btn block" type="button" id="finish-by-chat">Finish your website — just by chatting
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </button>
+                <p>Prefer talking it through? This opens the site chat as the main stage — everything you've picked here (style, colours, sections and details) comes with you, and the chat opens at your latest message so you can pick up exactly where you left off.</p>
+              </div>
+
               <button class="backlink" data-nav="start">← Back to Step 1</button>
             </div>
             <div class="side-stack">
               <aside class="panel pv-mini-panel pv-sticky" aria-label="Live preview of your website">
-                <div class="pv-mini-head"><b>Live preview</b><span>Recolours the moment you pick</span></div>
+                <div class="pv-mini-head"><b>Live preview</b><span>Recolours the moment you pick</span><button class="btn ghost small pv-toggle" type="button" data-pv-toggle aria-expanded="true">Hide preview</button></div>
+                <div class="pv-body">
                 <div class="pv-chrome"><i></i><i></i><i></i><span class="pv-url-mini"></span></div>
                 <div class="pv-scale" id="pv-scale-2"><div class="pv-scale-in"><div class="pv-fade" id="pv-fade-2"></div></div></div>
                 <button class="btn ghost small block" style="margin-top:10px" data-preview>Open the full preview</button>
+                </div>
               </aside>
             <aside class="panel" style="padding:22px">
               <h3 style="font-size:19px">Your AI prompt builder</h3>
@@ -2024,10 +2056,13 @@
       </div>
     </div>
 
-    <!-- phone-width live preview: pinned while choosing style & colours -->
-    <div id="mobile-preview" aria-label="Live preview of your website">
-      <div class="mp-head"><b>Live preview</b><span class="pv-url-mini"></span><button class="btn ghost small" data-preview>Full preview</button></div>
-      <div class="pv-scale crop" id="pv-scale-m"><div class="pv-scale-in"><div class="pv-fade" id="pv-fade-m"></div></div></div>
+    <!-- phone-width: the preview lives behind one big button — it opens full-screen
+         and closing it returns to exactly this spot in the questions / chat -->
+    <div id="mobile-preview">
+      <button class="btn mp-open" type="button" data-preview aria-label="See your website — open the full preview">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        See your website
+      </button>
     </div>
 
     <div class="toast" id="toast" role="status"></div>
@@ -2757,7 +2792,7 @@
     function renderMinis(instant){
       var html=pvHTML();
       document.querySelectorAll(".pv-url-mini").forEach(function(el){el.textContent=pvUrlText().replace("https://","")});
-      ["pv-fade-1","pv-fade-2","pv-fade-m","pv-fade-pro","pv-fade-dash","pv-fade-studio"].forEach(function(id){var h=$(id);if(h)fadeSwap(h,html,instant)});
+      ["pv-fade-1","pv-fade-2","pv-fade-pro","pv-fade-dash","pv-fade-studio"].forEach(function(id){var h=$(id);if(h)fadeSwap(h,html,instant)});
       fixPvHeights();
     }
     window.addEventListener("resize",function(){fixPvHeights()});
@@ -2768,22 +2803,44 @@
     var chatStarted=false;
     function showView(name){
       document.body.setAttribute("data-view",name);
+      if(name!=="start")document.body.classList.remove("chat-stage");
       document.querySelectorAll(".view").forEach(function(v){v.classList.toggle("active",v.id==="view-"+name)});
       window.scrollTo({top:0});
       setTimeout(fixPvHeights,60);
       if(name==="start"&&!chatStarted){chatStarted=true;chatGoTo("hello")}
+      else if(name==="start"&&chatStarted)setTimeout(scrollChatLatest,90);
       if(name==="owner")renderOwnerGate();
       if(name==="pro")renderPro();
       if(name==="studio")renderStudio();
       if(name==="ai")renderAI();
       if(name==="ext")renderExt();
     }
+    /* ============ chat as the main stage ============
+       The guided chat keeps its full state in memory; opening the stage only
+       changes the layout (questions column away, chat full width) and lands
+       the message list on the latest message. Closing restores the layout —
+       nothing about the conversation is reset either way. */
+    function scrollChatLatest(){var box=$("chat-msgs");if(box)box.scrollTop=box.scrollHeight}
+    function openChatStage(){
+      showView("start");
+      document.body.classList.add("chat-stage");
+      setTimeout(function(){scrollChatLatest();fixPvHeights()},90);
+      setTimeout(scrollChatLatest,450);
+    }
+    function closeChatStage(){document.body.classList.remove("chat-stage");setTimeout(fixPvHeights,60)}
+    $("finish-by-chat").addEventListener("click",openChatStage);
+    $("finish-by-chat-2").addEventListener("click",openChatStage);
+    $("chat-stage-close").addEventListener("click",closeChatStage);
     document.addEventListener("click",function(e){
       var nav=e.target.closest("[data-nav]");
       if(nav){e.preventDefault();var v=nav.getAttribute("data-nav");showView(v);
         var an=nav.getAttribute("data-anchor");if(an)setTimeout(function(){var el=$(an);if(el)el.scrollIntoView({behavior:"smooth"})},60);return}
       var sc=e.target.closest("[data-scroll]");
       if(sc){var t=$(sc.getAttribute("data-scroll"));if(t)t.scrollIntoView({behavior:"smooth"});return}
+      var pvt=e.target.closest("[data-pv-toggle]");
+      if(pvt){var hid=document.body.classList.toggle("pv-hidden");
+        document.querySelectorAll("[data-pv-toggle]").forEach(function(b){b.textContent=hid?"Show preview":"Hide preview";b.setAttribute("aria-expanded",hid?"false":"true")});
+        setTimeout(fixPvHeights,40);return}
       if(e.target.closest("[data-preview]")){openPreview();return}
       if(e.target.closest("[data-target]")){toast("Brief sent to the WebFlowAI Builder — continue to checkout to place the order.");showView("checkout");return}
       var ad=e.target.closest("[data-addon]");
