@@ -387,12 +387,12 @@
       .pv-scale-in{width:760px;transform-origin:top left}
       .pv-fade{display:grid}
       .pv-fade>*{grid-area:1/1;min-width:0;transition:opacity .35s ease}
-      #mobile-preview{display:none}
+      .mobile-preview{display:none}
       @media (max-width:920px){
-        body[data-view="start"] #mobile-preview,body[data-view="details"] #mobile-preview{display:block;position:fixed;left:0;right:0;bottom:0;z-index:35;background:var(--surface);border-top:1px solid var(--cardbd);box-shadow:0 -8px 24px rgba(16,24,40,.12);padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
-        body.chat-stage #mobile-preview{display:none}
-        #view-start,#view-details{padding-bottom:104px}
-        .toast{bottom:104px}
+        /* in-flow, at the top of the side-stack where the preview panel sits:
+           it scrolls with the page and never covers any card or content */
+        .mobile-preview{display:block}
+        body.chat-stage .mobile-preview{display:none}
       }
       .mp-open{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:15px 18px;font-size:16.5px}
       /* ---------- collapsible preview rail ---------- */
@@ -965,6 +965,15 @@
               <button class="backlink" data-nav="home">← Back to home</button>
             </div>
             <div class="side-stack">
+              <!-- phone-width: one big in-flow button where the preview panel sits —
+                   it scrolls with the page, opens the preview full-screen, and
+                   closing the preview returns to exactly this spot -->
+              <div class="mobile-preview">
+                <button class="btn mp-open" type="button" data-preview aria-label="See your website — open the full preview">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                  See your website
+                </button>
+              </div>
               <aside class="panel pv-mini-panel pv-sticky" aria-label="Live preview of your website">
                 <div class="pv-mini-head"><b>Live preview</b><span>Updates the moment you choose a style</span><button class="btn ghost small pv-toggle" type="button" data-pv-toggle aria-expanded="true">Hide preview</button></div>
                 <div class="pv-body">
@@ -1101,6 +1110,12 @@
               <button class="backlink" data-nav="start">← Back to Step 1</button>
             </div>
             <div class="side-stack">
+              <div class="mobile-preview">
+                <button class="btn mp-open" type="button" data-preview aria-label="See your website — open the full preview">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                  See your website
+                </button>
+              </div>
               <aside class="panel pv-mini-panel pv-sticky" aria-label="Live preview of your website">
                 <div class="pv-mini-head"><b>Live preview</b><span>Recolours the moment you pick</span><button class="btn ghost small pv-toggle" type="button" data-pv-toggle aria-expanded="true">Hide preview</button></div>
                 <div class="pv-body">
@@ -2066,15 +2081,6 @@
         </div>
         <p style="color:var(--muted);font-size:12.5px;text-align:center;margin-top:18px">By continuing, you agree to our Terms of Service and Privacy Policy.</p>
       </div>
-    </div>
-
-    <!-- phone-width: the preview lives behind one big button — it opens full-screen
-         and closing it returns to exactly this spot in the questions / chat -->
-    <div id="mobile-preview">
-      <button class="btn mp-open" type="button" data-preview aria-label="See your website — open the full preview">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
-        See your website
-      </button>
     </div>
 
     <div class="toast" id="toast" role="status"></div>
