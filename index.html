@@ -2905,16 +2905,20 @@
       how:{say:"Perfect. Two easy ways to go from here. We can fill in your details together, one small step at a time. Or we jump straight to your email.",options:[
         {label:"Step by step, please",go:"name"},{label:"Jump to email",go:"email"}]},
       name:{say:"Easy one: what's the name of your business or website?",field:"name",next:"email"},
-      email:{say:"Saved. Next: your email address — the one to show on your website, so your visitors can reach you.",field:"email",next:"images"},
+      email:{say:"Saved. Next: your email address — the one to show on your website, so your visitors can reach you. It's also where your sign-in code and updates are sent.",field:"email",next:"custFirst"},
+      custFirst:{say:"Thank you. Now — what's your first name? Together with your email, it's how your account knows you, and I'll greet you by name from here on. Your email itself is never shown anywhere — only your name.",field:"custFirst",next:"custLast"},
+      custLast:{say:"And your last name? First and last name together are what we keep with your account, so the AI can respond to you by name.",field:"custLast",next:"images"},
       code:{say:"Last one — and no passwords here, ever. You sign in with a fresh 6-digit code sent to your email. For this demo, type the 6 digits 4-8-3-9-2-0; once email sending is connected, your own fresh code arrives in your inbox.",field:"code",next:"create"},
       images:{say:"Now — pictures! Do you have images for your website? Your logo, your products, your place, your work — up to 10 of them. Add them right here with the button below, and pop a little note on each one if you like. No images? Just tap “I don't have images”.",images:true,next:"code"},
       imgalt:{say:"No problem at all — that never stops a website. We can create the images for you instead: just tell me what they should show. Or carry on with no images at all.",options:[{label:"Create images for me",go:"imgreq"},{label:"No images, thanks",go:"code"}]},
       imgreq:{say:"Lovely. In a few words: what should the created images show? For example: “our shop counter, shelves of products, the storefront in daylight”.",field:"imgreq",next:"code"},
-      loginEmail:{say:"Welcome back! What's your email? We'll send your sign-in code there.",field:"loginEmail",next:"loginCode"},
+      loginEmail:{say:"Welcome back! What's your email? We'll send your sign-in code there.",field:"loginEmail",next:"loginFirst"},
+      loginFirst:{say:"And so I can greet you properly — what's your first name? Only your name is ever shown, never your email.",field:"custFirst",next:"loginLast"},
+      loginLast:{say:"And your last name? Then we're set.",field:"custLast",next:"loginCode"},
       loginCode:{say:"Now the 6-digit code sent to your email — for this demo, type 4-8-3-9-2-0. No passwords, ever.",field:"loginCode",next:"login"}
     };
     var CHAT_ORDER=["phone","name","email","images","code"];
-    var CHAT_PLACEHOLDER={phone:"Enter your phone number…",name:"Enter your business name…",email:"Enter your email address…",code:"Enter the 6-digit code…",loginEmail:"Enter your email address…",loginCode:"Enter the 6-digit code…",imgreq:"Describe the images you'd like…"};
+    var CHAT_PLACEHOLDER={phone:"Enter your phone number…",name:"Enter your business name…",email:"Enter your email address…",custFirst:"Enter your first name…",custLast:"Enter your last name…",code:"Enter the 6-digit code…",loginEmail:"Enter your email address…",loginCode:"Enter the 6-digit code…",imgreq:"Describe the images you'd like…"};
     var isEmail=function(v){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim())};
     var isPhone=function(v){return v.replace(/\D/g,"").length>=7&&/^[+\d\s().-]+$/.test(v.trim())};
     var chat={msgs:[],step:"hello",data:{},thinking:false,sound:true,done:false,building:false,idc:1};
@@ -3134,7 +3138,10 @@
     function chatAdd(from,text,step){chat.msgs.push({id:chat.idc++,from:from,text:text,step:step})}
     function chatSay(text,step){return new Promise(function(res){chat.thinking=true;chatRender();
       setTimeout(function(){chat.thinking=false;chatAdd("ai",text,step);ding();chatRender();res()},900)})}
-    function chatGoTo(s){return chatSay(CHAT_STEPS[s].say,s).then(function(){chat.step=s;chatRender()})}
+    function chatGoTo(s){var say=CHAT_STEPS[s].say;
+      if(s==="hello"){var gn=customerGreetingName();if(gn)say="Hi "+gn+"! Let's get your website started. It's easy — I'll ask one small thing at a time. First: do you have a phone number we can use for your website?"}
+      if(s==="custLast"&&customerFirstName)say="Lovely to meet you, "+customerFirstName+". And your last name? First and last name together are what we keep with your account, so the AI can respond to you by name.";
+      return chatSay(say,s).then(function(){chat.step=s;chatRender()})}
     $("chat-msgs").addEventListener("click",function(e){
       if(chat.building)return;
       var stb=e.target.closest("[data-styletry]");
@@ -3198,6 +3205,10 @@
       if(field==="email"){S.displayEmail=v.trim();var def=$("f-demail");if(def)def.value=S.displayEmail;renderDocs()}
       if(field==="imgreq"){aiImageRequest=v.trim();$("f-img-req").value=aiImageRequest;renderAll()}
       if(field==="email"||field==="loginEmail")chat.data.contactEmail=v.trim();
+      /* the customer's own first + last name, collected alongside their email:
+         this is the identity the AI greets and answers by — the email stays unshown */
+      if(field==="custFirst"){customerFirstName=v.trim();siFirstName=customerFirstName;chat.data.customerFirstName=customerFirstName}
+      if(field==="custLast"){customerLastName=v.trim();siLastName=customerLastName;chat.data.customerLastName=customerLastName;if(customerFullName())chat.data.customerName=customerFullName()}
       var next=step.next;
       if(next==="create"||next==="login"){
         /* the chat signs the customer in by email + code, exactly like the Sign in button:
