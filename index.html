@@ -6,6 +6,8 @@
     <meta name="color-scheme" content="light dark" />
     <meta name="description" content="WebFlowAI — the guided AI website creator. Answer easy questions, get a tailored blueprint presented as a professional project brief, and check out in minutes." />
     <link rel="icon" href="assets/logo-dark.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png" />
     <title>WebFlowAI — Guided AI Website Creator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -287,6 +289,10 @@
       .chat-input input{flex:1;min-width:0;border:0;background:transparent;padding:8px 10px;font-size:15px;color:var(--ink)}
       .chat-input input:focus{outline:none}
       .chat-input .send{border:0;border-radius:8px;background:var(--grad);color:#fff;font-weight:600;padding:9px 15px;display:inline-flex;gap:6px;align-items:center}
+      .chat-input textarea{flex:1;min-width:0;border:0;background:transparent;padding:8px 10px;font-size:15px;font-family:inherit;line-height:1.5;color:var(--ink);resize:vertical;min-height:66px}
+      .chat-input textarea:focus{outline:none}
+      .chat-skip{display:block;margin:9px auto 0;background:none;border:0;color:var(--muted);font-size:13.5px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:2px 6px}
+      .chat-skip:hover{color:var(--ink)}
       .err{color:var(--bad);font-size:13.5px;margin-top:8px}
       .donebox{border:1px solid var(--border);border-radius:12px;padding:14px;font-size:14px;background:var(--surface-2)}
       /* ---------- chat finishing sequence: building steps + finished-site card ---------- */
@@ -1006,15 +1012,17 @@
                     <svg id="sound-off-ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M11 5 6 9H2v6h4l5 4V5z"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>
                   </button>
                 </div>
-                <div class="chat-prog" id="chat-prog"><p id="chat-prog-label">Question 1 of 4</p><div class="track"><div class="fill" id="chat-prog-fill" style="width:25%"></div></div></div>
+                <div class="chat-prog" id="chat-prog"><p id="chat-prog-label">Question 1 of 7</p><div class="track"><div class="fill" id="chat-prog-fill" style="width:14.3%"></div></div></div>
                 <div class="chat-msgs" id="chat-msgs" aria-live="polite"></div>
                 <form class="chat-form" id="chat-form" style="display:none">
                   <div class="chat-input">
                     <input id="chat-text" type="text" autocomplete="off" />
+                    <textarea id="chat-vision" rows="3" style="display:none" placeholder="Describe the website you imagine — a few words or a few sentences…" aria-label="In your own words: the website you imagine"></textarea>
                     <button class="send" type="submit" id="chat-send">Continue
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                     </button>
                   </div>
+                  <button class="chat-skip" type="button" id="chat-skip" style="display:none">Skip for now</button>
                   <p class="err" id="chat-err" role="alert"></p>
                 </form>
                 <input type="file" id="chat-img-file" accept="image/*" multiple hidden />
@@ -1044,6 +1052,7 @@
 
               <h2 class="q"><span class="qnum" aria-hidden="true">1</span>What's your website or business name?</h2>
               <input class="field" id="f-name" type="text" placeholder="e.g. Studio Nova" autocomplete="organization" />
+              <p id="f-name-warn" hidden style="color:#b3261e;font-size:12.5px;margin-top:6px">That looks like an email address, so it isn't saved as your business name — your email belongs in the email field further down.</p>
 
               <h2 class="q"><span class="qnum" aria-hidden="true">2</span>Which sections do you need?</h2>
               <div class="chips" id="pages"></div>
@@ -1109,12 +1118,18 @@
               <h2 class="q"><span class="qnum" aria-hidden="true">11</span>Anything else? <span style="color:var(--muted);font-weight:400;font-size:15px">(optional)</span></h2>
               <textarea class="field" id="f-custom" rows="3" placeholder="e.g. Add a big photo of our studio, opening hours on the home page…"></textarea>
 
-              <h2 class="q"><span class="qnum" aria-hidden="true">12</span>Contact details to show on your website <span style="color:var(--muted);font-weight:400;font-size:15px">(optional)</span></h2>
+              <h2 class="q"><span class="qnum" aria-hidden="true">12</span>In your own words — the website you imagine <span style="color:var(--muted);font-weight:400;font-size:15px">(optional)</span></h2>
+              <p style="color:var(--muted);font-size:14.5px;margin-top:6px">A few sentences is perfect: what your website is for, what it should offer, and the feeling you want people to get from it. We keep your words exactly as you write them and build from them — and if you write it here, the chat won&rsquo;t ask you again.</p>
+              <textarea class="field" id="f-vision" rows="3" placeholder="e.g. A warm, elegant site for my bakery — people should see the menu, photos of the cakes, and be able to order for pickup."></textarea>
+
+              <h2 class="q"><span class="qnum" aria-hidden="true">13</span>Contact details to show on your website <span style="color:var(--muted);font-weight:400;font-size:15px">(optional)</span></h2>
               <p style="color:var(--muted);font-size:14.5px;margin-top:6px">The phone number and email address your visitors should see on your finished website — in the contact section, header or footer. These are website content: they go to the builder exactly as you type them, so your site shows them. They are separate from the email address you sign in with, which is never shown to the builder.</p>
               <label for="f-dphone" style="display:block;font-weight:600;font-size:14.5px;margin-top:14px">Phone number — to show on your website</label>
               <input class="field" id="f-dphone" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. (555) 019-2834" style="margin-top:8px" />
+              <p id="f-dphone-warn" hidden style="color:#b3261e;font-size:12.5px;margin-top:6px">That doesn't look like a phone number yet, so it isn't saved — it saves here once it has at least 7 digits.</p>
               <label for="f-demail" style="display:block;font-weight:600;font-size:14.5px;margin-top:14px">Email address — to show on your website</label>
               <input class="field" id="f-demail" type="email" inputmode="email" autocomplete="email" placeholder="e.g. hello@yourbusiness.com" style="margin-top:8px" />
+              <p id="f-demail-warn" hidden style="color:#b3261e;font-size:12.5px;margin-top:6px">That doesn't look like an email address yet, so it isn't saved — it saves here once it looks like name@example.com.</p>
 
               <div class="panel finish-chat-cta">
                 <button class="btn block" type="button" id="finish-by-chat">Create your whole website — just by chatting
@@ -1989,7 +2004,8 @@
         <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap">
           <h3 id="pv-title" style="font-size:18px">Your website preview</h3>
           <span style="color:var(--muted);font-size:13px">Front-end preview · generated instantly from your answers</span>
-          <button class="btn ghost small" id="pv-close" style="margin-left:auto">Close ✕</button>
+          <button class="btn small" id="pv-back-chat" style="margin-left:auto">← Continue in the chat</button>
+          <button class="btn ghost small" id="pv-close" style="margin-left:8px">Close ✕</button>
         </div>
         <div style="padding:18px">
           <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)">
@@ -2243,9 +2259,9 @@
       {label:"🛍 Shop", data:{purpose:"E-Commerce / Shop", style:"Bold & Colorful", audience:"General public", name:"Pop Store", features:["Online shop","Newsletter","Socials"], tone:"Playful", colors:"Sunset Coral", tagline:"New drops every Friday"}},
       {label:"🎨 Portfolio", data:{purpose:"Portfolio", style:"Modern & Minimalist", audience:"Creative professionals", name:"Studio Nova", features:["Gallery","Forms","Socials"], tone:"Professional", colors:"Cyan & Purple", tagline:"Design that speaks for itself"}}
     ];
-    var DEFAULTS = {purpose:"Portfolio", style:"Modern & Minimalist", audience:"Creative professionals", name:"",
+    var DEFAULTS = {purpose:"Portfolio", style:"Modern & Minimalist", stylePicked:false, audience:"Creative professionals", name:"",
       pages:["Hero","Project Showcase","About Me","Contact form"], features:["Gallery","Forms"],
-      colors:"Cyan & Purple", primaryPick:null, accentPick:null, kit:"", tone:"Professional", complex:true, pageCount:"1", custom:"", tagline:"",
+      colors:"Cyan & Purple", primaryPick:null, accentPick:null, kit:"", tone:"Professional", complex:true, pageCount:"1", custom:"", tagline:"", vision:"",
       layout:"Centred hero", font:"Clean sans", btnShape:"Rounded", balanceMain:50, balanceSecond:50, mixMain:0, mixSecond:0, mixBg:0,
       displayPhone:"", displayEmail:""}; /* contact details the customer provides TO BE SHOWN on their website — website content, not the sign-in/login number */
     var S = JSON.parse(JSON.stringify(DEFAULTS));
@@ -2305,6 +2321,7 @@
       if(b.mixMain||b.mixSecond||b.mixBg){function mxw(v){v=v||0;return v===0?"left original":(v>0?("made "+v+"% lighter"):("made "+(-v)+"% darker"))}
         p+=' In the colour mixer, the customer fine-tuned the colours themselves: the main colour was '+mxw(b.mixMain)+', the second colour was '+mxw(b.mixSecond)+', and the background tone was '+mxw(b.mixBg)+' — so the final colours to use are primary '+effPrimary().hex+', accent '+effAccent().hex+' and background '+effBg()+'.';}
       if(b.kit)p+=' The design starts from the '+b.kit+' brand kit — its primary colour, accent colour and font applied together.';
+      if(b.vision)p+=' In their own words, the customer describes the website they imagine: "'+b.vision+'" — keep that description at the centre of the build: what the site is for, what it should offer, and the feeling it should give people.';
       if(userImages.length)p+=' The customer supplied '+userImages.length+' of their own image'+(userImages.length===1?"":"s")+' to include: '+userImages.map(function(im){return '"'+(im.name||"image")+'"'+(im.slot&&im.slot!=="Auto"?" as the "+im.slot.toLowerCase():"")+(im.note?' ('+im.note+")":"")}).join(", ")+'.';
       if(aiImageRequest)p+=' The customer also asked WebFlowAI to create images showing: "'+aiImageRequest+'" — created images must be completely people-free (products, objects, places, interiors and screens only; never any image of a female and no people at all).';
       if(b.tagline)p+=' The site tagline is: "'+b.tagline+'".';
@@ -2321,9 +2338,10 @@
     function orderPackage(){
       return {reference:refCode(), account:customerEmail?{email:customerEmail,keyedBy:"email address",ownerOnly:true}:null, customerName:customerFullName()?{firstName:customerFirstName,lastName:customerLastName,fullName:customerFullName(),greetingName:customerGreetingName(),note:"Collected at sign-in/sign-up so the AI can address the customer by name. The name is shown to the customer and the AI; the sign-in email stays owner-only and is never part of the AI-side identity."}:null, signinCode:customerCode||null, aiSideIdentity:customerCode?((customerFullName()?customerFullName()+" · ":"Customer · ")+"Code "+fmtCode(customerCode)):"Guest (not signed in)",
         displayContacts:{phone:S.displayPhone||null, email:S.displayEmail||null, label:"For the website — provided by the customer", note:"Contact details the customer provided to be shown on their website. Website content: the builder AI sees these and places them on the site exactly as given. This is NOT the sign-in/login email address, which is never included for the AI."},
-        createdImagesRequest:aiImageRequest||null, createdImagesRule:"WebFlowAI-created images are always people-free — products, objects, places, interiors and screens only; never any image of a female and no people at all.", business:S.name||"My Website", purpose:S.purpose, style:S.style, audience:S.audience,
+        createdImagesRequest:aiImageRequest||null, createdImagesRule:"WebFlowAI-created images are always people-free — products, objects, places, interiors and screens only; never any image of a female and no people at all.", business:S.name||"My Website", purpose:S.purpose, style:S.style, confirmedStyle:(typeof chatConfirmedStyle!=="undefined"&&chatConfirmedStyle)||S.style, audience:S.audience,
         sections:S.pages, features:S.features, colours:S.colors, brandKit:S.kit||null, primaryColour:{name:effPrimary().name, hex:effPrimary().hex}, accentColour:{name:effAccent().name, hex:effAccent().hex}, backgroundColour:{hex:effBg()}, colourBalance:{mainColour:effPrimary().name, mainPct:S.balanceMain, secondColour:effAccent().name, secondPct:S.balanceSecond}, colourMixer:{mainAdjust:S.mixMain, secondAdjust:S.mixSecond, backgroundAdjust:S.mixBg}, tone:S.tone, layout:S.layout, fontStyle:S.font,
         buttonShape:S.btnShape, complexity:S.complex?"Complex":"Simple", pageCount:S.pageCount, tagline:S.tagline||null,
+        ownWords:S.vision||null, ownWordsLabel:"In their own words — the customer's own description of the website they imagine, kept word for word; if null, the customer did not provide one.",
         notes:S.custom||null, brief:buildPrompt(S),
         plan:{website:{label:"Front-end website", price:BASE_PRICE, billing:"one-time"},
           addOns:ADDONS.filter(function(a){return addons[a.key]}).map(function(a){return{label:a.name, price:a.price, billing:"per month"}}),
@@ -2350,6 +2368,7 @@
           : '<p class="prompt-text">'+highlighted(buildPrompt(S))+'</p>')
         +'<h3>2 · Specification</h3><table class="spec"><tbody>'
         +'<tr><th>Business / site name</th><td>'+esc(S.name||"— to be confirmed —")+'</td></tr>'
+        +'<tr><th>In their own words</th><td>'+(S.vision?('“'+esc(S.vision)+'” — the customer&rsquo;s own description of the website they imagine, kept word for word.'):'Not provided')+'</td></tr>'
         +(S.displayPhone?'<tr><th>Phone — to show on your website</th><td>'+esc(S.displayPhone)+' — provided by the customer for the website; the builder places it on the site.</td></tr>':"")
         +(S.displayEmail?'<tr><th>Email — to show on your website</th><td>'+esc(S.displayEmail)+' — provided by the customer for the website; the builder places it on the site.</td></tr>':"")
         +(customerFullName()?'<tr><th>Customer</th><td>'+esc(customerFullName())+' — the AI addresses this customer by their first name, '+esc(customerGreetingName()||"")+'.</td></tr>':"")
@@ -2438,8 +2457,9 @@
       document.querySelectorAll("[data-totals]").forEach(function(el){el.innerHTML=totalsHTML()});
       $("mini-prompt").textContent=buildPrompt(S);
       $("details-prompt").textContent=buildPrompt(S);
-      $("f-name").value=S.name; $("f-tagline").value=S.tagline; $("f-custom").value=S.custom;
+      $("f-name").value=S.name; $("f-tagline").value=S.tagline; $("f-custom").value=S.custom; $("f-vision").value=S.vision||"";
       $("f-dphone").value=S.displayPhone||""; $("f-demail").value=S.displayEmail||"";
+      if(typeof formWarns==="function")formWarns();
       $("pay-btn").innerHTML="Submit order &amp; add card — "+money(BASE_PRICE)+" due today";
     }
     function renderSwatches(container){
@@ -2915,18 +2935,18 @@
         for(var ki=0;ki<KITS.length;ki++){if(KITS[ki].name===kn){S.primaryPick={name:KITS[ki].pn,hex:KITS[ki].primary};S.accentPick={name:KITS[ki].an,hex:KITS[ki].accent};S.font=KITS[ki].font;S.kit=KITS[ki].name}}
         S.mixMain=0;S.mixSecond=0;S.mixBg=0;promptOverride=null;renderAll();toast(kn+" brand kit applied — colours and font together");return}
       var st=e.target.closest("[data-starter]");
-      if(st){Object.assign(S,JSON.parse(JSON.stringify(STARTERS[+st.getAttribute("data-starter")].data)));S.primaryPick=null;S.accentPick=null;S.kit="";S.mixMain=0;S.mixSecond=0;S.mixBg=0;renderAll();toast("Quick start applied — check the brief preview");return}
+      if(st){Object.assign(S,JSON.parse(JSON.stringify(STARTERS[+st.getAttribute("data-starter")].data)));S.stylePicked=true;S.primaryPick=null;S.accentPick=null;S.kit="";S.mixMain=0;S.mixSecond=0;S.mixBg=0;renderAll();toast("Quick start applied — check the brief preview");return}
     });
     $("surprise").addEventListener("click",function(){
       function pick(a){return a[Math.floor(Math.random()*a.length)]}
-      S.purpose=pick(PURPOSES);S.style=pick(STYLES);S.audience=pick(AUDIENCES);renderAll();toast("Surprise combination applied");
+      S.purpose=pick(PURPOSES);S.style=pick(STYLES);S.stylePicked=true;S.audience=pick(AUDIENCES);renderAll();toast("Surprise combination applied");
     });
     function bindChips(containerId,fn){
       $(containerId).addEventListener("click",function(e){var b=e.target.closest("[data-val]");if(!b)return;promptOverride=null;fn(b.getAttribute("data-val"))});
     }
     bindChips("purposes",function(v){S.purpose=v;renderAll()});
-    bindChips("styles",function(v){S.style=v;renderAll()});
-    bindChips("signatures",function(v){S.style=v;renderAll()});
+    bindChips("styles",function(v){S.style=v;S.stylePicked=true;renderAll()});
+    bindChips("signatures",function(v){S.style=v;S.stylePicked=true;renderAll()});
     bindChips("audiences",function(v){S.audience=v;renderAll()});
     bindChips("pages",function(v){S.pages=toggleIn(S.pages,v);renderAll()});
     bindChips("features",function(v){S.features=toggleIn(S.features,v);renderAll()});
@@ -2937,16 +2957,25 @@
     bindChips("pagecount",function(v){S.pageCount=v;renderAll()});
     bindChips("feat-quick",function(v){S.features=toggleIn(S.features,v);renderAll()});
     bindChips("pv-layouts",function(v){S.layout=v;renderAll()});
-    $("f-name").addEventListener("input",function(e){promptOverride=null;S.name=e.target.value;renderDocs();renderMinis();$("mini-prompt").textContent=buildPrompt(S);$("details-prompt").textContent=buildPrompt(S)});
+    /* the step-form fields type-check before saving, exactly like the chat:
+       a value that fails is never stored, and a short note under the field
+       says so — nothing is silently swallowed */
+    function formWarns(){var a=$("f-name-warn"),b=$("f-dphone-warn"),c=$("f-demail-warn");if(!a||!b||!c||typeof isEmail!=="function"||typeof isPhone!=="function")return;
+      a.hidden=!($("f-name").value.indexOf("@")>=0);
+      b.hidden=!($("f-dphone").value.trim()&&!isPhone($("f-dphone").value));
+      c.hidden=!($("f-demail").value.trim()&&!isEmail($("f-demail").value))}
+    $("f-name").addEventListener("input",function(e){promptOverride=null;if(e.target.value.indexOf("@")<0)S.name=e.target.value;formWarns();renderDocs();renderMinis();$("mini-prompt").textContent=buildPrompt(S);$("details-prompt").textContent=buildPrompt(S)});
     $("f-tagline").addEventListener("input",function(e){promptOverride=null;S.tagline=e.target.value;renderDocs();$("details-prompt").textContent=buildPrompt(S);$("mini-prompt").textContent=buildPrompt(S)});
     $("f-custom").addEventListener("input",function(e){promptOverride=null;S.custom=e.target.value;renderDocs();$("details-prompt").textContent=buildPrompt(S);$("mini-prompt").textContent=buildPrompt(S)});
-    $("f-dphone").addEventListener("input",function(e){promptOverride=null;S.displayPhone=e.target.value;renderDocs();$("details-prompt").textContent=buildPrompt(S);$("mini-prompt").textContent=buildPrompt(S)});
-    $("f-demail").addEventListener("input",function(e){promptOverride=null;S.displayEmail=e.target.value;renderDocs();$("details-prompt").textContent=buildPrompt(S);$("mini-prompt").textContent=buildPrompt(S)});
+    $("f-vision").addEventListener("input",function(e){promptOverride=null;S.vision=e.target.value;renderDocs();$("details-prompt").textContent=buildPrompt(S);$("mini-prompt").textContent=buildPrompt(S)});
+    $("f-dphone").addEventListener("input",function(e){promptOverride=null;if(!e.target.value.trim()||isPhone(e.target.value))S.displayPhone=e.target.value;formWarns();renderDocs();$("details-prompt").textContent=buildPrompt(S);$("mini-prompt").textContent=buildPrompt(S)});
+    $("f-demail").addEventListener("input",function(e){promptOverride=null;if(!e.target.value.trim()||isEmail(e.target.value))S.displayEmail=e.target.value;formWarns();renderDocs();$("details-prompt").textContent=buildPrompt(S);$("mini-prompt").textContent=buildPrompt(S)});
     $("complex-switch").addEventListener("click",function(){S.complex=!S.complex;renderAll()});
     document.querySelectorAll("[data-complex]").forEach(function(b){b.addEventListener("click",function(){S.complex=b.getAttribute("data-complex")==="true";renderAll()})});
 
     /* ============ preview pop-up controls ============ */
     $("pv-close").addEventListener("click",closePreview);
+    $("pv-back-chat").addEventListener("click",function(){closePreview();var p=$("chat-panel");if(p)p.scrollIntoView({behavior:"smooth",block:"start"});var b=$("chat-msgs");if(b)setTimeout(function(){b.scrollTo({top:b.scrollHeight,behavior:"auto"})},60)});
     $("pv-keep").addEventListener("click",closePreview);
     $("preview-overlay").addEventListener("click",function(e){if(e.target===this)closePreview()});
     document.addEventListener("keydown",function(e){if(e.key==="Escape")closePreview()});
@@ -3019,8 +3048,12 @@
       virtual:{say:"No problem at all. We can set up a new number for you. It can answer texts for you too — that's part of the phone add-on at the end (+$12 a month). Nothing to decide now.",options:[{label:"Sounds good",go:"how"}]},
       how:{say:"Perfect. Two easy ways to go from here. We can fill in your details together, one small step at a time. Or we jump straight to your email.",options:[
         {label:"Step by step, please",go:"name"},{label:"Jump to email",go:"email"}]},
-      name:{say:"Easy one: what's the name of your business or website?",field:"name",next:"email"},
-      email:{say:"Saved. Next: your email address — the one to show on your website, so your visitors can reach you. It's also where your sign-in code and updates are sent.",field:"email",next:"custFirst"},
+      name:{say:"Easy one: what's the name of your business or website?",field:"name",next:"style"},
+      style:{say:function(d){return "Quick style check before we go on. On the side you picked "+S.style+". Is that the style you want for your website?"},options:[
+        {label:"Yes, that's my style",go:"vision",act:"styleYes"},{label:"Show me other styles",go:"stylepick"}]},
+      stylepick:{say:"Here are the styles to choose from — tap the one that feels right for your website. Don't worry about getting it perfect: you still get free style changes later, after your first version.",options:STYLES.map(function(s){return {label:s,style:s}})},
+      vision:{say:"Now in your own words: what do you imagine your website should be? A few sentences is perfect — what it's for, what it should offer, and the feeling you want people to get from it. For example: “A warm, elegant site for my bakery — people should see the menu, photos of the cakes, and be able to order for pickup.” Type it in the box below — your words are kept exactly as you write them. Rather come back to it? Just tap “Skip for now”.",field:"vision",next:"email"},
+      email:{say:function(d){var base="Saved. Next: your email address — the one to show on your website, so your visitors can reach you. It's also where your sign-in code and updates are sent.";return d.suggestedEmail?(base+" Earlier you gave me "+d.suggestedEmail+" — if that's the one to use, it's already in the box below: just tap Continue. A different one? Simply type over it."):base},field:"email",next:"custFirst"},
       custFirst:{say:"Thank you. Now — what's your first name? Together with your email, it's how your account knows you, and I'll greet you by name from here on. Your email itself is never shown anywhere — only your name.",field:"custFirst",next:"custLast"},
       custLast:{say:"And your last name? First and last name together are what we keep with your account, so the AI can respond to you by name.",field:"custLast",next:"images"},
       code:{say:"Last one — and no passwords here, ever. You sign in with a fresh 6-digit code sent to your email. For this demo, type the 6 digits 4-8-3-9-2-0; once email sending is connected, your own fresh code arrives in your inbox.",field:"code",next:"create"},
@@ -3032,17 +3065,46 @@
       loginLast:{say:"And your last name? Then we're set.",field:"custLast",next:"loginCode"},
       loginCode:{say:"Now the 6-digit code sent to your email — for this demo, type 4-8-3-9-2-0. No passwords, ever.",field:"loginCode",next:"login"}
     };
-    var CHAT_ORDER=["phone","name","email","images","code"];
-    var CHAT_PLACEHOLDER={phone:"Enter your phone number…",name:"Enter your business name…",email:"Enter your email address…",custFirst:"Enter your first name…",custLast:"Enter your last name…",code:"Enter the 6-digit code…",loginEmail:"Enter your email address…",loginCode:"Enter the 6-digit code…",imgreq:"Describe the images you'd like…"};
+    var CHAT_ORDER=["phone","name","style","vision","email","images","code"];
+    /* the counter segment for every step: side questions (your name after the
+       email, the images follow-ups, the returning-customer branch) sit inside
+       the segment they belong to, so "Question X of 7" always matches the
+       question actually being asked and never falls back to 1 */
+    var CHAT_PROG={hello:1,phone:1,virtual:1,how:1,name:2,style:3,stylepick:3,vision:4,email:5,custFirst:5,custLast:5,images:6,imgalt:6,imgreq:6,code:7,loginEmail:5,loginFirst:5,loginLast:5,loginCode:7};
+    var CHAT_PLACEHOLDER={phone:"Enter your phone number…",name:"Enter your business name…",vision:"Describe the website you imagine…",email:"Enter your email address…",custFirst:"Enter your first name…",custLast:"Enter your last name…",code:"Enter the 6-digit code…",loginEmail:"Enter your email address…",loginCode:"Enter the 6-digit code…",imgreq:"Describe the images you'd like…"};
     var isEmail=function(v){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim())};
     var isPhone=function(v){return v.replace(/\D/g,"").length>=7&&/^[+\d\s().-]+$/.test(v.trim())};
-    var chat={msgs:[],step:"hello",data:{},thinking:false,sound:true,done:false,building:false,idc:1};
+    /* what a typed "name" actually looks like: an email address, a website
+       address / domain, or a real name ("" = nothing recognisable either way) */
+    function nameLooksLike(v){var t=String(v||"").trim().toLowerCase();
+      if(t.indexOf("@")>=0)return "email";
+      if(t.indexOf("www.")>=0||t.indexOf("://")>=0)return "web";
+      if(/\.(com|app|net|org|io|co|ai|nyc|us|uk|info|biz|dev|site|online|store|shop|xyz|me|tv|cc)([/?#\s]|$)/.test(t))return "web";
+      if(!/\s/.test(t)&&/^[^\s]+\.[a-z]{2,}$/i.test(t))return "web";
+      return ""}
+    /* a person's name must contain at least one letter and must not look like
+       an email or a website — digits-only and punctuation-only fail the letter test */
+    function isPersonName(v){var t=String(v||"").trim();if(!t)return false;if(nameLooksLike(t))return false;return /[a-zA-ZÀ-ÖØ-öø-ÿ]/.test(t)}
+    /* what a wrong-kind answer actually looks like, so a re-ask can name it:
+       an email address, a street/postal address, or a phone number */
+    function givenLooksLike(v){var t=String(v||"").trim();
+      if(t.indexOf("@")>=0)return "email";
+      if(/\d/.test(t)&&(/,/.test(t)||/\b(st|ave|blvd|rd|ln|dr|street|avenue|road|lane|drive|suite|apt|floor)\b/i.test(t)||/\b[A-Z]{2}\s+\d{5}\b/.test(t)))return "address";
+      if(isPhone(t))return "phone";
+      return ""}
+    /* a rejected answer: nothing is saved, the counter does not move, and the
+       assistant replies in the thread in its warm voice, asking once more */
+    function chatRejectSay(msg){$("chat-text").value="";$("chat-err").textContent="";chatSay(msg,chat.step).then(function(){chatRender()})}
+    var chat={msgs:[],step:"hello",data:{},thinking:false,sound:true,done:false,building:false,idc:1,howSaid:false,creating:null};
     var buildTimer=null;
     /* ---- style tries & owner handoff (this page only, in memory — nothing is stored) ----
        The first style is free to keep. The customer then gets up to 3 free style
        changes in the chat. After those, a $5 credit pack adds 10 more tries.
        No tries are granted any other way in the chat, so switches cannot run forever. */
     var OWNER_EMAIL="webflowai301@gmail.com";
+    /* the style the customer CONFIRMED in the chat (confirming the side pick,
+       or choosing in the chat) — this is the style the brief builds in */
+    var chatConfirmedStyle="";
     var styleFlow=null;
     function freshStyleFlow(){
       return {pool:[],initialStyle:"",freeLeft:3,paidLeft:0,balance:0,packs:0,changesUsed:0};
@@ -3069,9 +3131,11 @@
       lines.push("");
       lines.push("BUSINESS & STYLE DETAILS (collected in the chat)");
       lines.push("Business / site name: "+(S.name||"— to be confirmed —"));
+      lines.push("In their own words: "+(S.vision?('"'+S.vision+'" (the customer\u2019s own description of the website they imagine — kept word for word; build to it)'):"— not provided —"));
       lines.push("Purpose: "+S.purpose);
       lines.push("Target audience: "+S.audience);
       lines.push("Chosen style (current): "+S.style+"  (started as: "+(f.initialStyle||S.style)+")");
+      lines.push("Style CONFIRMED by the customer in the chat: "+(chatConfirmedStyle||S.style)+" — build in this style.");
       lines.push("Colour mood: "+S.colors+" — primary "+effPrimary().name+" ("+effPrimary().hex+"), accent "+effAccent().name+" ("+effAccent().hex+"), background "+effBg());
       if(S.kit)lines.push("Brand kit: "+S.kit);
       lines.push("Colour balance: main "+S.balanceMain+"% / second "+S.balanceSecond+"%");
@@ -3126,6 +3190,40 @@
       if(rm){while(i<steps.length)stepDone();return}
       buildTimer=setInterval(stepDone,540);
     }
+    /* the creating screen: a calm 5-minute countdown while the first version
+       is produced from the customer's details (the same step timing as the
+       build sequence). The Open button appears the moment the version is
+       ready — seconds in, long before 00:00. If the clock ever reached 00:00
+       first, the card switches to "Still finishing" and keeps waiting:
+       never an error, never a dead end. */
+    var creatingTimer=null,creatingClock=null;
+    function startCreating(done){
+      var steps=buildStepsList();
+      chat.creating={startedAt:Date.now(),ready:false,pct:0,current:steps[0].label};
+      chat.msgs.push({id:chat.idc++,from:"ai",kind:"creating"});
+      chatRender();ding();
+      var i=0,rm=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      function finish(){
+        if(creatingTimer){clearInterval(creatingTimer);creatingTimer=null}
+        if(creatingClock){clearInterval(creatingClock);creatingClock=null}
+        if(chat.creating){chat.creating.ready=true;chat.creating.pct=100;chat.creating.current=""}
+        chatRender();setTimeout(done,rm?60:430);
+      }
+      function stepDone(){
+        if(i<steps.length){i++;if(chat.creating){chat.creating.pct=Math.round(i/steps.length*100);chat.creating.current=i<steps.length?steps[i].label:""}chatRender();ding()}
+        if(i>=steps.length)finish();
+      }
+      creatingClock=setInterval(function(){
+        if(!chat.creating||chat.creating.ready){if(creatingClock){clearInterval(creatingClock);creatingClock=null}return}
+        var el=document.querySelector("[data-ctime]");if(!el)return;
+        var crem=Math.max(0,300-Math.floor((Date.now()-chat.creating.startedAt)/1000));
+        var cmm=String(Math.floor(crem/60)),css=String(crem%60);if(css.length<2)css="0"+css;if(cmm.length<2)cmm="0"+cmm;
+        el.textContent=cmm+":"+css;
+        if(crem<=0){var st=document.querySelector("[data-cstatus]");if(st)st.textContent="Still finishing — just a moment more. Your Open button will appear right here the moment your website is ready.";if(creatingClock){clearInterval(creatingClock);creatingClock=null}}
+      },1000);
+      if(rm){i=steps.length;finish();return}
+      creatingTimer=setInterval(stepDone,540);
+    }
     function ding(){if(!chat.sound)return;try{var Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;var ctx=ding._c||(ding._c=new Ctx());if(ctx.state==="suspended")ctx.resume();
       [880,1320].forEach(function(f,i){var o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=f;var t=ctx.currentTime+i*0.09;
       g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.1,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+0.35);
@@ -3134,6 +3232,24 @@
       var box=$("chat-msgs");
       var lastAi=-1;chat.msgs.forEach(function(m,i){if(m.from==="ai")lastAi=i});
       var html=chat.msgs.map(function(m,i){
+        if(m.kind==="creating"){
+          var cr=chat.creating||{startedAt:Date.now(),ready:false,pct:0};
+          var cel=Math.floor((Date.now()-cr.startedAt)/1000),crem=Math.max(0,300-cel);
+          var cmm=String(Math.floor(crem/60)),css=String(crem%60);if(css.length<2)css="0"+css;if(cmm.length<2)cmm="0"+cmm;
+          var csteps=[{label:"Details received",done:true,doing:false},
+            {label:"Style confirmed — "+(chatConfirmedStyle||S.style),done:true,doing:false},
+            {label:"Building your pages"+(cr.current&&!cr.ready?" — "+cr.current:""),done:!!cr.ready||cr.pct>=70,doing:!cr.ready&&cr.pct<70},
+            {label:"Final polish",done:!!cr.ready,doing:!cr.ready&&cr.pct>=70}];
+          var cSteps=csteps.map(function(st){return '<li class="'+(st.done?"done":(st.doing?"doing":""))+'"><span class="bk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>'+esc(st.label)+'</span></li>'}).join("");
+          var cStatus=cr.ready
+            ?'<p style="font-weight:700;margin-top:12px">Your first version is ready.</p><button class="btn block" data-preview style="margin-top:10px">Open your website</button><p style="color:var(--muted);font-size:12.5px;margin-top:9px">It opens full-screen — and there is a “Continue in the chat” button at the top whenever you want to come back here.</p>'
+            :(crem>0
+              ?'<p data-cstatus style="color:var(--muted);font-size:13.5px;margin-top:12px">Creating… your Open button appears here the moment your website is ready — usually long before the clock runs out.</p>'
+              :'<p data-cstatus style="color:var(--muted);font-size:13.5px;margin-top:12px">Still finishing — just a moment more. Your Open button will appear right here the moment your website is ready.</p>');
+          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="build-card"><h4 style="font-size:17px">We’re creating your website</h4><p style="color:var(--muted);font-size:13.5px;line-height:1.55;margin-top:5px">Please wait — we’re now building your website professionally, from everything you told us.</p>'
+            +(cr.ready?'':'<div data-ctime style="font-size:42px;font-weight:800;letter-spacing:1px;margin:12px 0 4px">'+cmm+':'+css+'</div>')
+            +'<ul class="build-steps" style="margin-top:10px">'+cSteps+'</ul>'+cStatus+'</div></div>';
+        }
         if(m.kind==="build"){
           var b=m.build,nextIx=b.steps.findIndex(function(x){return !x.done});
           var bSteps=b.steps.map(function(st,si){
@@ -3150,8 +3266,9 @@
           if(customerFullName())hRows.push(["Customer",customerFullName()+" — replies greet them as "+(customerGreetingName()||"")]);
           hRows.push(
             ["Business",S.name||"— to be confirmed —"],
+            ["In their own words",S.vision||"Not provided yet"],
             ["Purpose",S.purpose+" · for "+S.audience],
-            ["Style","Started as "+(hf.initialStyle||S.style)+" · now "+S.style],
+            ["Style","Confirmed in chat: "+(chatConfirmedStyle||S.style)+" · started as "+(hf.initialStyle||S.style)],
             ["Colours",S.colors+" — "+effPrimary().name+" "+effPrimary().hex+" / "+effAccent().name+" "+effAccent().hex],
             ["Sections",S.pages.join(", ")||"—"],
             ["Features",S.features.join(", ")||"—"],
@@ -3168,7 +3285,7 @@
             +'<p style="color:var(--muted);font-size:13.5px;line-height:1.55;margin-top:5px">Everything you just answered, packaged as one brief — business, style and details together. This is the exact brief the owner works from behind the scenes.</p>'
             +'<ul class="handoff-list">'+hList+'</ul>'
             +'<p class="handoff-note"><b style="color:var(--ink)">Owner&rsquo;s next step:</b> take this brief to Gemini on the best Gemini model available, ask Gemini to return the complete live HTML, then paste that HTML back so the first full preview appears here in this chat for you to confirm.</p>'
-            +'<div class="handoff-actions"><a class="btn small" href="'+esc(handoffMailtoHref())+'">Open email draft to owner</a><button class="btn ghost small" type="button" data-copyhandoff>Copy the brief</button></div>'
+            +'<div class="handoff-actions"><a class="btn small" href="'+esc(handoffMailtoHref())+'">Open email draft to owner</a><button class="btn ghost small" type="button" data-copyhandoff>Copy the brief</button>'+(S.vision?"":'<button class="btn ghost small" type="button" data-addvision>Add your own-words description</button>')+'</div>'
             +'<p class="handoff-note">Not sent yet — nothing has been emailed and no Gemini build has run. The button above opens a pre-filled email draft to '+esc(OWNER_EMAIL)+' in your own mail app, ready for you to send. Automatic sending to the owner and the Gemini build switch on only when the real email + Gemini back end is connected.</p>'
             +'</div></div>';
         }
@@ -3241,11 +3358,22 @@
       var form=$("chat-form");
       if(step&&step.field&&!chat.done&&!chat.building){form.style.display="block";var inp=$("chat-text");
         inp.placeholder=CHAT_PLACEHOLDER[step.field];
-        inp.type=(step.field==="phone"?"tel":(step.field.indexOf("mail")>=0?"email":"text"));
+        /* never type="email": the browser would block the submit with its own
+           bubble before the chat's warm, naming re-ask can run — the keyboard
+           still gets the email layout via inputmode */
+        inp.type=(step.field==="phone"?"tel":"text");
+        inp.setAttribute("inputmode",step.field==="phone"?"tel":(step.field.indexOf("mail")>=0?"email":((step.field==="code"||step.field==="loginCode")?"numeric":"text")));
         inp.setAttribute("autocomplete",(step.field==="code"||step.field==="loginCode")?"one-time-code":step.field==="phone"?"tel":step.field.indexOf("mail")>=0?"email":"organization");
+        /* an email address the customer offered at the business-name question
+           is only a suggestion: pre-filled here for them to confirm or replace —
+           it is never saved as the email answer until they send it themselves */
+        if(step.field==="email"&&chat.data.suggestedEmail&&!inp.value)inp.value=chat.data.suggestedEmail;
+        var isV=step.field==="vision";
+        inp.style.display=isV?"none":"";
+        $("chat-vision").style.display=isV?"block":"none";
+        $("chat-skip").style.display=isV?"block":"none";
       }else form.style.display="none";
-      var idx=CHAT_ORDER.indexOf(chat.step);
-      var prog=chat.done?CHAT_ORDER.length:Math.max(1,idx+1);
+      var prog=chat.done?CHAT_ORDER.length:(CHAT_PROG[chat.step]||1);
       $("chat-prog-label").textContent=chat.building?"Building your website…":(chat.done?"All questions answered":"Question "+prog+" of "+CHAT_ORDER.length);
       setTimeout(fixPvHeights,40);
       $("chat-prog-fill").style.width=(prog/CHAT_ORDER.length*100)+"%";
@@ -3255,9 +3383,31 @@
     function chatAdd(from,text,step){chat.msgs.push({id:chat.idc++,from:from,text:text,step:step})}
     function chatSay(text,step){return new Promise(function(res){chat.thinking=true;chatRender();
       setTimeout(function(){chat.thinking=false;chatAdd("ai",text,step);ding();chatRender();res()},900)})}
-    function chatGoTo(s){var say=CHAT_STEPS[s].say;
+    function chatGoTo(s){
+      if(s==="how"){
+        /* the "two ways" prompt is said once per conversation — if the flow
+           arrives here again (the other phone branch, an edited answer),
+           go straight to the next unanswered question instead of repeating it */
+        if(chat.howSaid)return chatGoTo(!chat.data.name?"name":(!chat.data.styleConfirmed?"style":(!chat.data.email?"email":"images")));
+        chat.howSaid=true;
+      }
+      if(s==="style"&&!(S.stylePicked&&S.style)){
+        /* no style was picked on the side — don't ask them to confirm a pick
+           they never made; offer the styles to choose from instead */
+        return chatGoTo("stylepick");
+      }
+      var say=CHAT_STEPS[s].say;
+      if(typeof say==="function")say=say(chat.data);
       if(s==="hello"){var gn=customerGreetingName();if(gn)say="Hi "+gn+"! Let's get your website started. It's easy — I'll ask one small thing at a time. First: do you have a phone number we can use for your website?"}
       if(s==="custLast"&&customerFirstName)say="Lovely to meet you, "+customerFirstName+". And your last name? First and last name together are what we keep with your account, so the AI can respond to you by name.";
+      if(s==="vision"&&(S.vision||"").trim()){
+        /* the customer already described it in their own words in the step forms —
+           carry it in word for word and do not ask twice */
+        return chatSay("You've already described it in your own words in the details — I've kept it word for word, so I won't ask twice. Here it is, exactly as you wrote it:",s).then(function(){
+          chat.data.vision=S.vision;chat.data.visionSkipped=false;chatAdd("me",S.vision);chatRender();
+          return chatGoTo("email");
+        });
+      }
       return chatSay(say,s).then(function(){chat.step=s;chatRender()})}
     $("chat-msgs").addEventListener("click",function(e){
       if(chat.building)return;
@@ -3283,6 +3433,16 @@
       }
       var chb=e.target.closest("[data-copyhandoff]");
       if(chb){copyText(handoffPlainText(),"Owner handoff copied — the full brief, ready to paste or send.");return}
+      var avb=e.target.closest("[data-addvision]");
+      if(avb&&!chat.thinking){
+        /* revisit the own-words question from the details summary: wind the chat
+           back to just before the finishing cards and ask it again */
+        var cut=chat.msgs.findIndex(function(m){return m.kind==="build"||m.kind==="site"||m.kind==="handoff"||m.kind==="styletry"});
+        if(cut>=0)chat.msgs=chat.msgs.slice(0,cut);
+        chat.done=false;chat.building=false;chatRender();
+        chatGoTo("vision");
+        return;
+      }
       var ci=e.target.closest("[data-chatimg]");
       if(ci&&!chat.thinking){
         var act=ci.getAttribute("data-chatimg");
@@ -3291,7 +3451,15 @@
         if(act==="skip"){chatAdd("me","I don't have images");chatRender();chatGoTo("imgalt");return}
       }
       var o=e.target.closest("[data-opt]");
-      if(o&&!chat.thinking){var opt=CHAT_STEPS[chat.step].options[+o.getAttribute("data-opt")];chatAdd("me",opt.label);chatRender();chatGoTo(opt.go);return}
+      if(o&&!chat.thinking){var opt=CHAT_STEPS[chat.step].options[+o.getAttribute("data-opt")];chatAdd("me",opt.label);chatRender();
+        if(opt.style){ /* a style chosen from the chat's own style list: it becomes
+             the project style, confirmed in words, and overrides any earlier pick */
+          S.style=opt.style;S.stylePicked=true;chat.data.styleConfirmed=opt.style;chatConfirmedStyle=opt.style;renderAll();
+          chatSay("Lovely — "+opt.style+" it is. That's the style we'll build in — confirmed.",chat.step).then(function(){chatGoTo("vision")});return}
+        if(opt.act==="styleYes"){ /* the side pick, confirmed in the chat */
+          chat.data.styleConfirmed=S.style;chatConfirmedStyle=S.style;
+          chatSay("Perfect — "+S.style+" is confirmed as your style.",chat.step).then(function(){chatGoTo("vision")});return}
+        chatGoTo(opt.go);return}
       var ed=e.target.closest("[data-edit]");
       if(ed&&!chat.thinking){var s=ed.getAttribute("data-edit");var idx=chat.msgs.findIndex(function(m){return m.step===s});
         if(idx>=0)chat.msgs=chat.msgs.slice(0,idx+1);chat.step=s;chat.done=false;chatRender()}
@@ -3305,21 +3473,58 @@
     $("chat-form").addEventListener("submit",function(e){
       e.preventDefault();if(chat.thinking||chat.building)return;
       var step=CHAT_STEPS[chat.step];if(!step||!step.field)return;
-      var field=step.field,v=$("chat-text").value,err="";
-      if(field==="phone"&&!isPhone(v))err="That number looks too short. Try it like this: (555) 019-2834.";
-      else if((field==="email"||field==="loginEmail")&&!isEmail(v))err="That email doesn't look right. Try something like you@example.com.";
-      else if((field==="code"||field==="loginCode")&&v.replace(/\D/g,"").length!==6)err="The code is 6 digits — for this demo, type 483920.";
+      var field=step.field,v=(field==="vision"?$("chat-vision").value:$("chat-text").value),err="";
+      /* EVERY typed answer is type-checked before it is saved. A wrong-kind
+         answer is stored nowhere, never advances the counter and never gets a
+         "Saved" — the assistant names what was actually given and asks again,
+         in the thread, in its warm voice. */
+      var given=givenLooksLike(v);
+      if((field==="custFirst"||field==="custLast")&&v.trim()&&!isPersonName(v)){
+        var askQ=field==="custFirst"?"what's your first name?":"what's your last name?",lk=nameLooksLike(v);
+        chatRejectSay(lk==="email"?("That looks like an email address, not a name — "+askQ)
+          :lk==="web"?("That looks like a website address, not a name — "+askQ)
+          :("Hmm, that doesn't look like a name — "+askQ+" Just the name itself is perfect."));
+        return;
+      }
+      if(field==="name"&&v.indexOf("@")>=0){
+        /* an email address is never a business name — it is not saved here;
+           a well-formed one is kept only as a suggestion for the email question */
+        if(isEmail(v))chat.data.suggestedEmail=v.trim();
+        chatRejectSay("That looks like an email address — I'll keep it safe for the email question. First, what's the name of your business or website?");
+        return;
+      }
+      if((field==="email"||field==="loginEmail")&&v.trim()&&!isEmail(v)){
+        chatRejectSay(given==="address"
+          ?"That looks like a street address, not an email — I need an email address with an @ in it, like name@example.com."
+          :given==="phone"
+          ?"That looks like a phone number, not an email — I need an email address with an @ in it, like name@example.com."
+          :"That doesn't look like an email address yet — I need one with an @ in it, like name@example.com. Could you check it and type it once more?");
+        return;
+      }
+      if(field==="phone"&&v.trim()&&!isPhone(v)){
+        chatRejectSay(given==="email"
+          ?"That looks like an email address, not a phone number — just the digits of the number are perfect, like (555) 019-2834."
+          :/[a-zA-Z]/.test(v)
+          ?"That looks like words, not a phone number — I need at least 7 digits, like (555) 019-2834."
+          :"That number looks too short — I need at least 7 digits, like (555) 019-2834.");
+        return;
+      }
+      if((field==="code"||field==="loginCode")&&v.replace(/\D/g,"").length!==6)err="The code is 6 digits — for this demo, type 483920.";
+      else if(field==="vision"&&!v.trim())err="A few words is plenty — or tap “Skip for now” just below the box.";
       else if(!v.trim())err="Type your answer first, then tap Continue.";
       if(err){$("chat-err").textContent=err;return}
       $("chat-err").textContent="";
-      chat.data[field]=v;$("chat-text").value="";
+      chat.data[field]=v;$("chat-text").value="";$("chat-vision").value="";
       chatAdd("me",field.indexOf("assword")>=0?"••••••••":v.trim());chatRender();
       if(field==="name"){S.name=v.trim();renderAll()}
+      /* the own-words description is kept word for word in the project details,
+         alongside everything else the chat collects */
+      if(field==="vision"){S.vision=v.trim();chat.data.visionSkipped=false;renderAll()}
       /* the phone and email the customer gives in the chat for their website are
          display contacts (website content for the builder), stored alongside the sign-in,
          which stays separate: the email used to sign in is never shown to the AI */
       if(field==="phone"){S.displayPhone=v.trim();var dpf=$("f-dphone");if(dpf)dpf.value=S.displayPhone;renderDocs()}
-      if(field==="email"){S.displayEmail=v.trim();var def=$("f-demail");if(def)def.value=S.displayEmail;renderDocs()}
+      if(field==="email"){S.displayEmail=v.trim();var def=$("f-demail");if(def)def.value=S.displayEmail;renderDocs();if(chat.data.suggestedEmail)delete chat.data.suggestedEmail}
       if(field==="imgreq"){aiImageRequest=v.trim();$("f-img-req").value=aiImageRequest;renderAll()}
       if(field==="email"||field==="loginEmail")chat.data.contactEmail=v.trim();
       /* the customer's own first + last name, collected alongside their email:
@@ -3340,10 +3545,11 @@
           chatSay((customerGreetingName()?("Welcome back, "+customerGreetingName()+" — you're in! "):"Welcome back — you're in! ")+"Your website preview is below. Take a look, change anything you like, and tap Continue when you're happy.").then(function(){chatRender()});
           return;
         }
-        /* the finishing sequence: this customer's real build steps check off one by one in the chat,
-           then the finished website arrives in the chat as a card */
+        /* the finish: the creating screen (5-minute countdown) shows while the
+           first version is produced; the moment it is ready, its Open button
+           appears and the finished website arrives in the chat as cards */
         chat.building=true;chatRender();
-        runBuildSequence(function(){
+        startCreating(function(){
           chat.building=false;chat.done=true;
           initStyleFlow();
           chat.msgs.push({id:chat.idc++,from:"ai",kind:"site"});
@@ -3356,11 +3562,19 @@
       chatGoTo(next);
     });
     $("chat-text").addEventListener("input",function(){$("chat-err").textContent=""});
+    $("chat-vision").addEventListener("input",function(){$("chat-err").textContent=""});
+    /* "Skip for now" on the own-words question: nobody gets stuck — the answer is
+       recorded as not provided, and it can be added later from the summary */
+    $("chat-skip").addEventListener("click",function(){
+      if(chat.thinking||chat.building||chat.done||chat.step!=="vision")return;
+      chat.data.visionSkipped=true;$("chat-err").textContent="";$("chat-vision").value="";
+      chatAdd("me","Skip for now");chatRender();chatGoTo("email");
+    });
     $("sound-btn").addEventListener("click",function(){
       chat.sound=!chat.sound;this.setAttribute("aria-label",chat.sound?"Turn sound off":"Turn sound on");
       $("sound-on-ic").style.display=chat.sound?"":"none";$("sound-off-ic").style.display=chat.sound?"none":"";
     });
-    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}styleFlow=null;chat={msgs:[],step:"hello",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1};chatRender();chatGoTo("hello")}
+    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}if(typeof creatingTimer!=="undefined"&&creatingTimer){clearInterval(creatingTimer);creatingTimer=null}if(typeof creatingClock!=="undefined"&&creatingClock){clearInterval(creatingClock);creatingClock=null}styleFlow=null;chatConfirmedStyle="";chat={msgs:[],step:"hello",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1,howSaid:false,creating:null};chatRender();chatGoTo("hello")}
 
     /* ============ card form + order submission ============ */
     function luhn(num){var sum=0,alt=false;for(var i=num.length-1;i>=0;i--){var d=+num[i];if(alt){d*=2;if(d>9)d-=9}sum+=d;alt=!alt}return num.length>=15&&sum%10===0}
@@ -3805,6 +4019,7 @@
       +'<table class="spec" style="margin-top:12px;width:100%"><tbody>'
       +(p.customerName?row("Customer",esc(p.customerName.fullName)+" — address them by their first name, "+esc(p.customerName.greetingName||"")):"")
       +row("Business",esc(p.business))
+      +row("In their own words",p.ownWords?("&ldquo;"+esc(p.ownWords)+"&rdquo; — the customer&rsquo;s own description of the website they imagine, kept word for word"):"— not provided —")
       +'<tr><th colspan="2" style="color:var(--brand-2);font-size:13.5px;padding-top:16px">For the website — provided by the customer<span style="display:block;font-weight:400;color:var(--muted);font-size:12.5px;margin-top:2px">Contact details this customer gave to be shown on their website. Website content — place them on the site exactly as given. (Their sign-in/login number and account email are never included in this package.)</span></th></tr>'
       +row("Phone — to show on the website",(p.displayContacts&&p.displayContacts.phone)?esc(p.displayContacts.phone):"— not provided —")
       +row("Email — to show on the website",(p.displayContacts&&p.displayContacts.email)?esc(p.displayContacts.email):"— not provided —")
@@ -4033,6 +4248,8 @@
       siLastName=($("si-last").value||"").trim();
       if(!siFirstName){$("si-err").textContent="Please enter your first name — so we can greet you by name.";$("si-first").focus();return}
       if(!siLastName){$("si-err").textContent="Please enter your last name — we need both your first and last name.";$("si-last").focus();return}
+      if(!isPersonName(siFirstName)){$("si-err").textContent=(nameLooksLike(siFirstName)?"That looks like "+(nameLooksLike(siFirstName)==="email"?"an email address":"a website address")+", not a name":"That doesn't look like a first name")+" — please enter your first name.";$("si-first").focus();return}
+      if(!isPersonName(siLastName)){$("si-err").textContent=(nameLooksLike(siLastName)?"That looks like "+(nameLooksLike(siLastName)==="email"?"an email address":"a website address")+", not a name":"That doesn't look like a last name")+" — please enter your last name.";$("si-last").focus();return}
       siEmail=($("si-email").value||"").trim().toLowerCase();
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(siEmail)){$("si-err").textContent="Please enter a valid email address — your sign-in code is sent there.";return}
       siNewCode();
