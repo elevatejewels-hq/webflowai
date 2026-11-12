@@ -37,7 +37,10 @@
            header and entry screen as well as on dark surfaces, in both schemes. */
       }
       *{box-sizing:border-box}
-      html{scroll-behavior:smooth;scroll-padding-top:84px}
+      html{scroll-behavior:smooth;scroll-padding-top:96px}
+      /* anchored or scrolled-to cards/sections clear the sticky header
+         (header height + margin) instead of slicing under it */
+      .view,.style-card,.sig-card,.addon,.q{scroll-margin-top:96px}
       body{margin:0;background:var(--bg);color:var(--ink);
         font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
         font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
@@ -50,10 +53,13 @@
       :focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:6px}
       .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
       /* ---------- header ---------- */
-      /* sticky header stays cheap: near-opaque solid fill, no backdrop blur —
-         a blurred sticky bar repaints the whole viewport on every scroll frame */
-      header.site{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 97%,transparent);border-bottom:1px solid var(--border);transform:translateZ(0)}
+      /* sticky header stays cheap: solid opaque fill, no backdrop blur —
+         a blurred sticky bar repaints the whole viewport on every scroll frame,
+         and a translucent one ghosts scrolled page text through the header */
+      header.site{position:sticky;top:0;z-index:40;background:var(--bg);border-bottom:1px solid var(--border);transform:translateZ(0)}
       .site-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;min-width:0}
+      /* header actions keep a full-size hit area at every width */
+      header.site .btn,header.site .logo{min-height:40px}
       .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:"Inter Tight",sans-serif;font-weight:800;font-size:21px;flex:1 1 auto;min-width:0}
       .logo img{width:38px;height:38px;border-radius:50%;box-shadow:0 2px 8px -2px rgba(20,16,60,.45);flex:none;background:#0b1120}
       .logo-word{display:inline-flex;align-items:baseline;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -123,6 +129,12 @@
       .field:focus{border-color:var(--brand-2);outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand-2) 20%,transparent)}
       textarea.field{resize:vertical}
       .layout{display:grid;grid-template-columns:1fr 370px;gap:28px;margin-top:28px;align-items:start}
+      /* grid/flex children must be allowed to shrink below their content's
+         intrinsic width — otherwise the 760px-wide scaled preview layer sets
+         the column width and pushes the whole column off a phone screen */
+      .layout>*{min-width:0}
+      .side-stack{min-width:0}
+      .side-stack>*{min-width:0;max-width:100%}
       @media (max-width:920px){.layout{grid-template-columns:1fr}}
       .sticky{position:sticky;top:84px}
       @media (max-width:920px){.sticky{position:static}}
@@ -164,10 +176,10 @@
       .cards3 p{color:var(--muted);font-size:14.5px;margin-top:6px}
       footer.site{border-top:1px solid var(--border);margin-top:72px;padding:26px 0 34px;text-align:center;color:var(--muted);font-size:12.5px;letter-spacing:.28em}
       .footer-contact{letter-spacing:0;font-size:15px;color:var(--ink);margin:10px 0 4px;line-height:1.5}
-      .footer-contact a{color:var(--brand-2);font-weight:700;text-decoration:none;overflow-wrap:anywhere}
+      .footer-contact a{color:var(--brand-2);font-weight:700;text-decoration:none;overflow-wrap:anywhere;display:inline-block;padding:10px 6px}
       .footer-contact a:hover{text-decoration:underline}
       .entry-contact{margin-top:18px;font-size:15px;line-height:1.5;color:#26334d}
-      .entry-contact a{color:var(--brand-2);font-weight:700;text-decoration:none;overflow-wrap:anywhere}
+      .entry-contact a{color:var(--brand-2);font-weight:700;text-decoration:none;overflow-wrap:anywhere;display:inline-block;padding:10px 4px}
       .entry-contact a:hover{text-decoration:underline}
       @media (prefers-color-scheme: dark){.entry-contact{color:#c6d3e4}}
       .contact-mail-btn{margin-top:20px}
@@ -259,7 +271,10 @@
       .doc .note{font-size:13px;color:var(--paper-muted);margin-top:14px}
       .doc-edit{width:100%;font-family:"Source Serif 4",Georgia,serif;font-size:17.5px;line-height:1.6;border:1px solid var(--paper-line);border-radius:6px;padding:12px;background:#fff;color:var(--paper-ink)}
       /* ---------- chat ---------- */
-      .chat{display:flex;flex-direction:column;height:640px;max-height:78vh;padding:18px}
+      /* height fits the conversation: the card grows with the messages
+         (capped in .chat-msgs below) instead of holding ~400px of empty
+         space under the greeting; chat-stage mode sets its own height */
+      .chat{display:flex;flex-direction:column;height:auto;max-height:78vh;padding:18px}
       .chat-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
       .chat-head h3{font-size:18px}
       .iconbtn{border:0;background:none;border-radius:12px;padding:7px;color:var(--muted);display:grid;place-items:center}
@@ -295,6 +310,52 @@
       .chat-skip:hover{color:var(--ink)}
       .err{color:var(--bad);font-size:13.5px;margin-top:8px}
       .donebox{border:1px solid var(--border);border-radius:12px;padding:14px;font-size:14px;background:var(--surface-2)}
+      /* ---------- in-chat logo question ---------- */
+      .logo-ui{margin-top:10px;display:grid;gap:9px;max-width:92%}
+      .logo-opt{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:12px 13px;color:var(--ink);transition:border-color .15s ease,background .15s ease}
+      .logo-opt:hover{border-color:var(--brand-2);background:var(--surface-2)}
+      .logo-opt .lo-num{flex:none;width:24px;height:24px;border-radius:50%;background:var(--grad);color:#fff;font-size:12.5px;font-weight:700;display:grid;place-items:center;margin-top:1px}
+      .logo-opt b{display:block;font-size:14px}
+      .logo-opt small{display:block;color:var(--muted);font-size:12.5px;line-height:1.45;margin-top:2px}
+      .logo-preview{display:flex;gap:12px;align-items:center;border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:12px;flex-wrap:wrap}
+      .logo-preview .lp-img{flex:none;width:84px;height:60px;border-radius:9px;background:var(--surface-2);border:1px solid var(--border);display:grid;place-items:center;overflow:hidden;padding:5px}
+      .logo-preview .lp-img img{max-width:100%;max-height:100%;object-fit:contain}
+      .logo-preview .lp-meta{flex:1;min-width:130px}
+      .logo-preview .lp-meta b{display:block;font-size:14px;overflow-wrap:anywhere}
+      .logo-preview .lp-meta span{color:var(--muted);font-size:12.5px;line-height:1.45;display:block;margin-top:2px}
+      .logo-actions{display:flex;gap:8px;flex-wrap:wrap}
+      .logo-actions button{border:1px solid var(--brand-2);color:var(--brand-2);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:13.5px}
+      .logo-actions button:hover{background:var(--surface-2)}
+      .logo-actions button.primary{background:var(--grad);color:#fff;border-color:transparent}
+      /* ---------- finishing preview mixers ---------- */
+      .finish-grid{display:flex;flex-wrap:wrap;align-items:stretch;margin-top:10px;border-top:1px solid var(--border)}
+      .finish-pv{flex:1 1 330px;min-width:0}
+      .mixer-panel{flex:1 1 250px;min-width:0;background:var(--surface-2);padding:17px 18px}
+      .mixer-panel h5{margin:0;font-size:14.5px;font-family:"Inter Tight",sans-serif}
+      .mix-group{margin-top:16px}
+      .mix-label{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+      .mix-swatches{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+      .mix-sw{width:31px;height:31px;border-radius:50%;border:2px solid rgba(0,0,0,.16);padding:0;cursor:pointer;flex:none;transition:transform .15s ease}
+      .mix-sw:hover{transform:scale(1.12)}
+      .mix-sw.on{border-color:#fff;box-shadow:0 0 0 2px var(--brand-2),0 2px 8px rgba(16,24,40,.25);transform:scale(1.1)}
+      .mix-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+      .mix-chips button{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 13px;font-size:13px}
+      .mix-chips button.on{border:2px solid var(--brand-2);padding:5px 12px;font-weight:600;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand-2) 15%,transparent)}
+      .mix-read{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.45}
+      .mix-note{color:var(--muted);font-size:12.5px;line-height:1.55;margin-top:13px;border-top:1px solid var(--border);padding-top:11px}
+      .mix-color-row{display:flex;gap:8px;align-items:center;margin-top:9px}
+      .mix-picker{width:46px;height:36px;flex:none;border:1px solid var(--border);border-radius:9px;padding:2px;background:var(--surface);cursor:pointer}
+      .mix-hex{flex:1;min-width:0;border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:8px 11px;font-size:14px;color:var(--ink)}
+      .mix-hex.bad{border-color:var(--bad)}
+      .mix-choices{margin-top:16px;border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:12px 14px 9px}
+      .mix-choices-title{font-weight:700;font-size:14px;font-family:"Inter Tight",sans-serif}
+      .mix-choice{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--border);font-size:13px}
+      .mix-choices [data-choices] .mix-choice:first-child{border-top:0}
+      .mix-choice>span{color:var(--muted);flex:none}
+      .mix-choice b{font-weight:600;display:inline-flex;align-items:center;gap:6px;text-align:right;min-width:0;overflow-wrap:anywhere}
+      .mix-dot{width:13px;height:13px;border-radius:50%;border:1px solid rgba(0,0,0,.22);flex:none;display:inline-block}
+      .mix-confirm-note{color:var(--good);font-size:12.5px;font-weight:600;margin-top:8px}
+      .mix-confirm{margin-top:13px}
       /* ---------- chat finishing sequence: building steps + finished-site card ---------- */
       .build-card{border:1px solid var(--border);background:var(--surface);border-radius:16px;border-top-left-radius:4px;padding:14px 15px;max-width:92%}
       .build-now{font-weight:700;font-size:14.5px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
@@ -393,6 +454,15 @@
       .pv-scale{position:relative;overflow:hidden;border-radius:12px;border:1px solid var(--cardbd);background:var(--surface-2);height:220px}
       .pv-scale.crop{height:88px;border-radius:10px}
       .pv-scale-in{width:760px;transform-origin:top left}
+      /* the small previews (side rail, in-chat finish & style cards) use a
+         narrower design width, so the scale factor stays high enough that
+         the mock's body text renders ≥11px and captions ≥10px */
+      .pv-mini-panel .pv-scale-in{width:400px}
+      .finish-pv .pv-scale-in,.styletry-card .pv-scale-in{width:360px}
+      /* on desktop the readable miniature is taller than the rail: cap the
+         box (the mock's top stays fully visible) so the sticky panel's own
+         "Open the full preview" button never ends up below the fold */
+      @media (min-width:921px){.pv-mini-panel .pv-scale{max-height:600px}}
       .pv-fade{display:grid}
       .pv-fade>*{grid-area:1/1;min-width:0;transition:opacity .35s ease}
       .mobile-preview{display:none}
@@ -420,12 +490,15 @@
          button looked dead). The preview stays one tap away inside the chat. */
       body.chat-stage #view-start .side-stack>*:not(#chat-panel){display:none}
       body.chat-stage #chat-launcher{display:none}
-      #chat-panel{scroll-margin-top:84px}
+      #chat-panel{scroll-margin-top:96px}
+      #chat-panel .chat-msgs{max-height:400px}
+      body.chat-stage #chat-panel .chat-msgs{max-height:none}
       body.chat-stage #chat-panel{height:min(74vh,780px);max-height:none}
       @media (max-width:920px){body.chat-stage #chat-panel{height:72svh}}
       /* ---------- finish-by-chat call to action ---------- */
-      .finish-chat-cta{margin-top:34px;padding:22px;text-align:center}
-      .finish-chat-cta .btn{padding:17px 22px;font-size:17.5px}
+      .finish-chat-cta{margin-top:34px;padding:22px;text-align:center;min-width:0}
+      .finish-chat-cta .btn{padding:17px 22px;font-size:17.5px;max-width:100%;white-space:normal;text-align:center;line-height:1.3}
+      .finish-chat-cta .btn svg{flex:none}
       .finish-chat-cta p{color:var(--muted);font-size:14px;line-height:1.55;margin-top:12px;max-width:520px;margin-left:auto;margin-right:auto}
       /* ---------- smooth scrolling, every surface ----------
          Momentum touch scrolling + contained overscroll on each inner scroller,
@@ -531,7 +604,7 @@
       .ext-code:focus{border-color:var(--brand-2);outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand-2) 20%,transparent)}
       .ext-ai-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;border:1px solid var(--cardbd);background:var(--surface);border-radius:12px;padding:12px 14px}
       .ext-ai-row .nm{font-weight:700;font-size:15.5px}
-      .foot-link{background:none;border:0;color:var(--muted);font-size:12.5px;letter-spacing:.08em;margin-top:10px;text-decoration:underline;padding:2px 4px}
+      .foot-link{background:none;border:0;color:var(--muted);font-size:12.5px;letter-spacing:.08em;margin-top:10px;text-decoration:underline;padding:11px 12px;min-height:40px;display:inline-flex;align-items:center}
       /* ---------- code reader / editor ---------- */
       .code-split{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;align-items:stretch}
       @media (max-width:920px){.code-split{grid-template-columns:1fr}}
@@ -570,7 +643,7 @@
       .dash-brand{display:flex;align-items:center;gap:10px;font-family:"Inter Tight",sans-serif;font-weight:800;font-size:19px;color:#fff}
       .dash-brand img{width:38px;height:38px;border-radius:50%;box-shadow:0 0 0 2px rgba(139,92,246,.55),0 4px 14px -4px rgba(124,58,237,.7)}
       .dash-brand b{background:linear-gradient(92deg,#a78bfa,#22d3ee,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent}
-      .dash-tag{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#c4b5fd;background:rgba(139,92,246,.16);border:1px solid rgba(139,92,246,.4);border-radius:999px;padding:3px 9px}
+      .dash-tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#c4b5fd;background:rgba(139,92,246,.16);border:1px solid rgba(139,92,246,.4);border-radius:999px;padding:3px 9px}
       .dash-domain{display:flex;align-items:center;gap:9px;background:rgba(2,6,23,.7);border:1px solid rgba(148,163,184,.22);border-radius:999px;padding:7px 14px;font-size:12.5px;color:#cbd5e1;max-width:100%}
       .dash-domain .mono{font-family:ui-monospace,Menlo,Consolas,monospace;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px}
       .dash-domain button{background:none;border:0;color:#94a3b8;padding:2px;display:grid;place-items:center}
@@ -627,7 +700,7 @@
       .dash-frame-head{display:flex;align-items:center;gap:8px;background:rgba(2,6,23,.85);padding:10px 14px;border-bottom:1px solid rgba(148,163,184,.16)}
       .dash-frame-head .fd{width:11px;height:11px;border-radius:50%}
       .dash-frame-head .flab{font-size:11.5px;color:#94a3b8;font-family:ui-monospace,Menlo,Consolas,monospace;margin-left:6px}
-      .dash-frame-head .ftag{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c4b5fd;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.35);border-radius:6px;padding:3px 8px}
+      .dash-frame-head .ftag{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c4b5fd;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.35);border-radius:6px;padding:3px 8px}
       .dash-dots-wrap{position:relative;margin-left:10px}
       .dash-dots{width:32px;height:32px;border-radius:50%;border:1px solid rgba(148,163,184,.35);background:rgba(255,255,255,.05);color:#e2e8f0;display:grid;place-items:center}
       .dash-dots:hover{background:rgba(255,255,255,.12)}
@@ -666,7 +739,7 @@
       .dash-proc.on{display:flex}
       .dash-send{width:44px;height:44px;border-radius:50%;border:0;background:linear-gradient(120deg,#7c3aed,#0284c7);color:#fff;display:grid;place-items:center;flex:none;box-shadow:0 8px 20px -6px rgba(124,58,237,.8)}
       .dash-plusmenu{position:absolute;left:6px;bottom:calc(100% + 10px);width:264px;background:rgba(13,18,32,.97);border:1px solid rgba(148,163,184,.3);border-radius:16px;padding:10px;z-index:50;box-shadow:0 24px 50px -16px rgba(0,0,0,.85)}
-      .dash-plusmenu p{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;padding:2px 8px 6px}
+      .dash-plusmenu p{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;padding:2px 8px 6px}
       .dash-plusmenu button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:0;color:#e2e8f0;font-size:13.5px;font-weight:600;padding:9px;border-radius:9px}
       .dash-plusmenu button:hover{background:rgba(124,58,237,.25)}
       .dash-toast{position:absolute;top:78px;right:22px;z-index:70;transform:translateX(130%);transition:transform .3s ease;background:rgba(13,18,32,.95);border:1px solid rgba(168,85,247,.55);border-radius:14px;padding:12px 15px;display:flex;gap:11px;align-items:center;max-width:320px;box-shadow:0 24px 50px -16px rgba(0,0,0,.85)}
@@ -721,7 +794,7 @@
       .ss-plan li svg{vertical-align:-2px;margin-right:7px;color:#34d399}
       .ss-plan button{margin-top:auto;border:0;border-radius:11px;padding:10px;font-weight:700;font-size:13px;background:rgba(148,163,184,.18);color:inherit}
       .ss-plan.hot button{background:#7c3aed;color:#fff}
-      .ss-pop{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#7c3aed;color:#fff;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:3px 11px;white-space:nowrap}
+      .ss-pop{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#7c3aed;color:#fff;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:3px 11px;white-space:nowrap}
       .ss-rev{max-width:1020px;margin:0 auto;background:var(--ss-card);border:1px solid var(--ss-line);border-radius:16px;padding:22px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
       .ss-avas{display:flex}
       .ss-ava{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:15px;color:#fff;border:2px solid #0a0d18;margin-left:-9px}
@@ -1012,7 +1085,7 @@
                     <svg id="sound-off-ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M11 5 6 9H2v6h4l5 4V5z"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>
                   </button>
                 </div>
-                <div class="chat-prog" id="chat-prog"><p id="chat-prog-label">Question 1 of 7</p><div class="track"><div class="fill" id="chat-prog-fill" style="width:14.3%"></div></div></div>
+                <div class="chat-prog" id="chat-prog"><p id="chat-prog-label">Question 1 of 8</p><div class="track"><div class="fill" id="chat-prog-fill" style="width:12.5%"></div></div></div>
                 <div class="chat-msgs" id="chat-msgs" aria-live="polite"></div>
                 <form class="chat-form" id="chat-form" style="display:none">
                   <div class="chat-input">
@@ -1026,6 +1099,7 @@
                   <p class="err" id="chat-err" role="alert"></p>
                 </form>
                 <input type="file" id="chat-img-file" accept="image/*" multiple hidden />
+                <input type="file" id="chat-logo-file" accept="image/*" hidden />
               </aside>
               <div class="panel" style="padding:18px">
                 <p style="font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700">Your brief so far</p>
@@ -1655,7 +1729,7 @@
                                 </svg>
                                 <div style="position:absolute;top:31%;left:50%;transform:translateX(-50%);text-align:center;width:110px">
                                   <div id="ss-motif" style="color:#22d3ee;filter:drop-shadow(0 0 12px rgba(6,182,212,.8))"></div>
-                                  <div id="ss-motif-text" style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;font-weight:700;letter-spacing:.18em;margin-top:5px;color:#fff">NEO-DRAGON</div>
+                                  <div id="ss-motif-text" style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:700;letter-spacing:.18em;margin-top:5px;color:#fff">NEO-DRAGON</div>
                                 </div>
                                 <div class="ss-price"><small>PRICE</small><b id="ss-price-display">$39.99</b></div>
                               </div>
@@ -2261,8 +2335,8 @@
     ];
     var DEFAULTS = {purpose:"Portfolio", style:"Modern & Minimalist", stylePicked:false, audience:"Creative professionals", name:"",
       pages:["Hero","Project Showcase","About Me","Contact form"], features:["Gallery","Forms"],
-      colors:"Cyan & Purple", primaryPick:null, accentPick:null, kit:"", tone:"Professional", complex:true, pageCount:"1", custom:"", tagline:"", vision:"",
-      layout:"Centred hero", font:"Clean sans", btnShape:"Rounded", balanceMain:50, balanceSecond:50, mixMain:0, mixSecond:0, mixBg:0,
+      colors:"Cyan & Purple", primaryPick:null, accentPick:null, bgPick:null, kit:"", tone:"Professional", complex:true, pageCount:"1", custom:"", tagline:"", vision:"",
+      layout:"Centred hero", font:"Clean sans", btnShape:"Rounded", btnStyleName:"", btnRadius:"", btnRadiusShape:"", balanceMain:50, balanceSecond:50, mixMain:0, mixSecond:0, mixBg:0,
       displayPhone:"", displayEmail:""}; /* contact details the customer provides TO BE SHOWN on their website — website content, not the sign-in/login number */
     var S = JSON.parse(JSON.stringify(DEFAULTS));
     var addons = {email:false, phone:false, backend:false};
@@ -2295,7 +2369,7 @@
     function shadeHex(hex,amt){if(!amt||!/^#[0-9a-f]{6}$/i.test(hex))return hex;return hexBlend(hex,amt>0?"#ffffff":"#000000",Math.min(0.92,Math.abs(amt)/100*1.15))}
     function effPrimary(){var b=basePrimary();return{name:b.name,hex:shadeHex(b.hex,S.mixMain||0)}}
     function effAccent(){var b=baseAccent();return{name:b.name,hex:shadeHex(b.hex,S.mixSecond||0)}}
-    function effBg(){return shadeHex(palette().bg,S.mixBg||0)}
+    function effBg(){var base=(S.bgPick&&S.bgPick.hex)?S.bgPick.hex:palette().bg;return shadeHex(base,S.mixBg||0)}
     /* colour balance: how much of the colour presence the second colour carries (0 = all main, 1 = all second) */
     function balShare(){var t=(+S.balanceMain||0)+(+S.balanceSecond||0);return t>0?(+S.balanceSecond)/t:0.5}
     function hexBlend(a,b,t){function p(h){h=String(h).replace("#","");if(h.length===3)h=h.split("").map(function(c){return c+c}).join("");return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]}
@@ -2323,6 +2397,9 @@
       if(b.kit)p+=' The design starts from the '+b.kit+' brand kit — its primary colour, accent colour and font applied together.';
       if(b.vision)p+=' In their own words, the customer describes the website they imagine: "'+b.vision+'" — keep that description at the centre of the build: what the site is for, what it should offer, and the feeling it should give people.';
       if(userImages.length)p+=' The customer supplied '+userImages.length+' of their own image'+(userImages.length===1?"":"s")+' to include: '+userImages.map(function(im){return '"'+(im.name||"image")+'"'+(im.slot&&im.slot!=="Auto"?" as the "+im.slot.toLowerCase():"")+(im.note?' ('+im.note+")":"")}).join(", ")+'.';
+      if(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)p+=' Logo: uploaded by the customer ("'+(customerLogo.name||"logo")+'") — place this logo in the website header and wherever a logo belongs.';
+      else if(typeof logoChoice!=="undefined"&&logoChoice==="later")p+=' Logo: will upload / upgrade later (option 2) — launch with the business name in the header for now; the customer will supply or upgrade the logo later.';
+      if(typeof previewAdjust!=="undefined"&&previewAdjust.touched)p+=' '+previewAdjustLine();
       if(aiImageRequest)p+=' The customer also asked WebFlowAI to create images showing: "'+aiImageRequest+'" — created images must be completely people-free (products, objects, places, interiors and screens only; never any image of a female and no people at all).';
       if(b.tagline)p+=' The site tagline is: "'+b.tagline+'".';
       if(b.displayPhone||b.displayEmail){var dc=[];if(b.displayPhone)dc.push("phone "+b.displayPhone);if(b.displayEmail)dc.push("email "+b.displayEmail);
@@ -2342,6 +2419,8 @@
         sections:S.pages, features:S.features, colours:S.colors, brandKit:S.kit||null, primaryColour:{name:effPrimary().name, hex:effPrimary().hex}, accentColour:{name:effAccent().name, hex:effAccent().hex}, backgroundColour:{hex:effBg()}, colourBalance:{mainColour:effPrimary().name, mainPct:S.balanceMain, secondColour:effAccent().name, secondPct:S.balanceSecond}, colourMixer:{mainAdjust:S.mixMain, secondAdjust:S.mixSecond, backgroundAdjust:S.mixBg}, tone:S.tone, layout:S.layout, fontStyle:S.font,
         buttonShape:S.btnShape, complexity:S.complex?"Complex":"Simple", pageCount:S.pageCount, tagline:S.tagline||null,
         ownWords:S.vision||null, ownWordsLabel:"In their own words — the customer's own description of the website they imagine, kept word for word; if null, the customer did not provide one.",
+        logo:(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?{status:"uploaded",label:"Logo: uploaded by the customer",name:customerLogo.name,src:customerLogo.src,attachedInThisPage:true}:((typeof logoChoice!=="undefined"&&logoChoice==="later")?{status:"later",label:"Logo: will upload / upgrade later (option 2)",name:null,src:null}:null),
+        previewAdjustments:(typeof previewAdjust!=="undefined"&&previewAdjust.touched)?{label:previewAdjustLine(),mainColor:{name:effPrimary().name,hex:effPrimary().hex},background:{name:(S.bgPick?S.bgPick.name:"As created"),hex:effBg()},buttonStyle:mixerBtnLabel(),font:S.font}:{label:"Preview adjustments: none — the customer kept the small preview exactly as created.",touched:false},
         notes:S.custom||null, brief:buildPrompt(S),
         plan:{website:{label:"Front-end website", price:BASE_PRICE, billing:"one-time"},
           addOns:ADDONS.filter(function(a){return addons[a.key]}).map(function(a){return{label:a.name, price:a.price, billing:"per month"}}),
@@ -2375,6 +2454,8 @@
         +(customerEmail&&!customerFullName()?'<tr><th>Customer account</th><td>Signed in by email — the address itself is never shown here; it stays owner-only in the order package.</td></tr>':"")
         +(customerCode?'<tr><th>AI-side identity</th><td>'+esc(customerFullName()?customerFullName()+" · ":"Customer · ")+'Code '+esc(fmtCode(customerCode))+' — the builder AI sees the customer&rsquo;s name and this code, never the sign-in (login) email address.</td></tr>':"")
         +(aiImageRequest?'<tr><th>Images to create</th><td>“'+esc(aiImageRequest)+'” — created by WebFlowAI, always people-free (products, objects, places, interiors, screens only; never any image of a female, no people at all).</td></tr>':"")
+        +((typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?'<tr><th>Logo</th><td><img src="'+customerLogo.src+'" alt="" style="height:42px;max-width:150px;object-fit:contain;vertical-align:middle;margin-right:10px" />uploaded by the customer — “'+esc(customerLogo.name)+'”, supplied in the chat and shown back to them there.</td></tr>':((typeof logoChoice!=="undefined"&&logoChoice==="later")?'<tr><th>Logo</th><td>will upload / upgrade later (option 2) — the customer chose to add or upgrade their logo later; launch with the business name in the header.</td></tr>':""))
+        +'<tr><th>Preview adjustments</th><td>'+((typeof previewAdjust!=="undefined"&&previewAdjust.touched)?esc(previewAdjustSummary()):"None — the small preview was kept exactly as created.")+'</td></tr>'
         +'<tr><th>Purpose</th><td>'+esc(S.purpose)+'</td></tr>'
         +'<tr><th>Visual style</th><td>'+esc(S.style)+'</td></tr>'
         +'<tr><th>Target audience</th><td>'+esc(S.audience)+'</td></tr>'
@@ -2595,7 +2676,7 @@
           T.hshadow="0 0 20px "+PRIM+"88";
           T.cardBg="rgba(255,255,255,.03)"; T.cardBorder="1px solid "+PRIM; T.cardShadow="0 0 0 1px "+PRIM+"44,0 0 20px -4px "+PRIM+"77"; T.cardR="4px";
           T.btnBg="transparent"; T.btnColor=PRIM; T.btnBorder="1.5px solid "+PRIM; T.btnShadow="0 0 18px -2px "+PRIM+"99"; T.btnR="3px";
-          T.btnExtra="font-family:"+MONO+";text-transform:uppercase;letter-spacing:.08em;font-size:13px";
+          T.btnExtra="font-family:"+MONO+";text-transform:uppercase;letter-spacing:.08em;font-size:14px";
           T.btn2Bg="transparent"; T.btn2Color=ACC; T.btn2Border="1.5px solid "+ACC; T.btn2Shadow="0 0 18px -2px "+ACC+"99";
           T.chipColor=PRIM; T.chipBorder="1px solid "+PRIM; T.chipExtra="font-family:"+MONO;
           T.navLine=PRIM+"66"; T.navNameExtra="font-family:"+MONO+";text-transform:uppercase;letter-spacing:.1em";
@@ -2604,9 +2685,9 @@
           T.bg="#faf5ea"; T.ink="#221c12"; T.font=SERIF; T.hfont=SERIF; T.hw=600; T.hsize=34;
           T.cardBg="#fffdf6"; T.cardBorder="1px solid #ddd2ba"; T.cardR="3px";
           T.btnR="2px"; T.btnExtra="font-family:"+SERIF+";letter-spacing:.03em";
-          T.navLine="#221c12"; T.navLinkExtra="text-transform:uppercase;letter-spacing:.14em;font-size:11px";
+          T.navLine="#221c12"; T.navLinkExtra="text-transform:uppercase;letter-spacing:.14em;font-size:13px";
           T.navNameExtra="font-family:"+SERIF+";font-size:19px";
-          T.chipColor="#221c12"; T.chipBorder="1px solid #b8a888"; T.chipR="2px"; T.chipExtra="text-transform:uppercase;letter-spacing:.12em;font-size:11px";
+          T.chipColor="#221c12"; T.chipBorder="1px solid #b8a888"; T.chipR="2px"; T.chipExtra="text-transform:uppercase;letter-spacing:.12em;font-size:13px";
           T.inputBorder="1px solid #cfc2a4"; T.line="#ddd2ba";
           T.deco='<div style="display:flex;align-items:center;gap:10px;max-width:340px;margin:0 auto 18px"><span style="flex:1;border-top:3px double #221c12"></span><span style="width:8px;height:8px;background:'+PRIM+';transform:rotate(45deg);flex:none"></span><span style="flex:1;border-top:3px double #221c12"></span></div>'; break;
         case "Bento Grid":
@@ -2646,9 +2727,9 @@
         case "Minimalist Tech":
           T.bg="#f2f6f9"; T.ink="#0d2131"; T.hw=700; T.hsize=27; T.cardBg="#ffffff"; T.cardBorder="1px solid #d3dee7"; T.cardR="5px";
           T.blockBar="border-top:3px solid "+PRIM; T.gap="8px"; T.heroPad="28px 30px";
-          T.btnR="3px"; T.btnPad="9px 16px"; T.btnExtra="font-size:12.5px;letter-spacing:.07em;text-transform:uppercase";
+          T.btnR="3px"; T.btnPad="9px 16px"; T.btnExtra="font-size:13.5px;letter-spacing:.07em;text-transform:uppercase";
           T.navLine=PRIM; T.kicker=S.purpose;
-          T.chipColor="#0d2131"; T.chipBorder="1px solid #b9c9d6"; T.chipR="3px"; T.chipExtra="text-transform:uppercase;letter-spacing:.08em;font-size:11px";
+          T.chipColor="#0d2131"; T.chipBorder="1px solid #b9c9d6"; T.chipR="3px"; T.chipExtra="text-transform:uppercase;letter-spacing:.08em;font-size:13px";
           T.inputBorder="1px solid #c3d2de"; T.line="#d3dee7"; break;
         case "Organic & Natural":
           T.bg="#f3eee0"; T.ink="#2f3a24"; T.hfont=SERIF; T.hw=600; T.hsize=31;
@@ -2663,9 +2744,9 @@
           T.cardBg="rgba(255,255,255,.02)"; T.cardBorder="1px solid rgba(255,255,255,.08)"; T.cardR="2px";
           T.heroPad="58px 36px"; T.gap="22px";
           T.btnBg="transparent"; T.btnColor="#ededeb"; T.btnBorder="1px solid rgba(255,255,255,.42)"; T.btnR="999px"; T.btnPad="12px 27px";
-          T.btnExtra="text-transform:uppercase;letter-spacing:.18em;font-size:11.5px;font-weight:500";
+          T.btnExtra="text-transform:uppercase;letter-spacing:.18em;font-size:13px;font-weight:500";
           T.btn2Bg="transparent"; T.btn2Color="#ededeb"; T.btn2Border="1px solid rgba(255,255,255,.22)"; T.btn2Shadow="none";
-          T.chipColor="#ededeb"; T.chipBorder="1px solid rgba(255,255,255,.22)"; T.chipExtra="text-transform:uppercase;letter-spacing:.14em;font-size:11px";
+          T.chipColor="#ededeb"; T.chipBorder="1px solid rgba(255,255,255,.22)"; T.chipExtra="text-transform:uppercase;letter-spacing:.14em;font-size:13px";
           T.navLine="rgba(255,255,255,.08)"; T.navNameExtra="font-weight:400;letter-spacing:.22em;text-transform:uppercase;font-size:14px";
           T.inputBorder="1px solid rgba(255,255,255,.16)"; T.line="rgba(255,255,255,.08)"; break;
         case "SaaS & Enterprise":
@@ -2711,6 +2792,11 @@
       }
       T.hColor="";
       if(S.balanceMain>50&&/^#[0-9a-f]{6}$/i.test(T.ink))T.hColor=hexBlend(T.ink,PRIM,(S.balanceMain-50)/50*0.8);
+      /* Dark Executive background: flip the whole preview to a dark, readable
+         treatment — deep background, light text, dark cards — whatever the style */
+      if(S.bgPick&&S.bgPick.dark){T.bg="#121212";T.ink="#f4f4f4";T.cardBg="#1e1e1e";T.cardBorder="1px solid rgba(255,255,255,.16)";T.line="rgba(255,255,255,.14)";T.navLine="rgba(255,255,255,.14)";T.inputBorder="1px solid rgba(255,255,255,.28)";T.heroBg="transparent";T.heroInk="";T.hColor="";if(T.chipBg==="transparent"){T.chipColor="#f4f4f4";T.chipBorder="1px solid rgba(255,255,255,.45)"}}
+      /* a button radius the customer picked in the finishing mixers wins over the shape default */
+      if(S.btnRadius&&S.btnRadiusShape===S.btnShape)T.btnR=S.btnRadius;
       T.cardCSS="border:"+T.cardBorder+";border-radius:"+T.cardR+";background:"+T.cardBg+";box-shadow:"+T.cardShadow+";"+T.cardExtra+T.blockBar;
       return T;
     }
@@ -2727,12 +2813,12 @@
       var links=S.pages.filter(function(p){return p!=="Hero"}).slice(0,4);
       var hCSS=function(sz){return "font-family:"+T.hfont+";font-size:"+sz+"px;line-height:1.16;margin:0 0 10px;font-weight:"+T.hw+";letter-spacing:"+T.hls+";text-transform:"+T.htrans+";text-shadow:"+T.hshadow+(T.hColor?";color:"+T.hColor:"")};
       var heroInkCSS=T.heroInk?("color:"+T.heroInk+";"):"";
-      var kick=T.kicker?'<p style="font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:'+ACCHEX+';margin:0 0 10px">'+esc(T.kicker)+'</p>':"";
+      var kick=T.kicker?'<p style="font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:'+ACCHEX+';margin:0 0 10px">'+esc(T.kicker)+'</p>':"";
       var btn='<span style="display:inline-block;background:'+T.btnBg+';color:'+T.btnColor+';border:'+T.btnBorder+';box-shadow:'+T.btnShadow+';padding:'+T.btnPad+';border-radius:'+T.btnR+';font-weight:600;font-size:14.5px;'+T.btnExtra+'">Get started</span>';
       var btn2='<span style="display:inline-block;background:'+T.btn2Bg+';border:'+T.btn2Border+';box-shadow:'+T.btn2Shadow+';color:'+T.btn2Color+';padding:'+T.btnPad+';border-radius:'+T.btnR+';font-weight:600;font-size:14.5px;'+T.btnExtra+'">Learn more</span>';
       var heroImg=null;userImages.forEach(function(im){if(!heroImg&&im.slot==="Hero")heroImg=im});if(!heroImg&&userImages.length)heroImg=userImages[0];
       var visual=heroImg
-        ? '<div role="img" aria-label="'+esc(heroImg.name)+'" style="'+imgPhStyle(heroImg)+';border-radius:'+(T.visualR||cardR)+';min-height:190px;position:relative;overflow:hidden;'+T.visualExtra+'">'+(heroImg.src?'<img src="'+heroImg.src+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;'+imgTagStyle(heroImg)+'" />':"")+'<span style="position:absolute;left:10px;bottom:10px;background:rgba(10,14,22,.72);color:#fff;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px">Your image · '+esc(heroImg.name)+'</span></div>'
+        ? '<div role="img" aria-label="'+esc(heroImg.name)+'" style="'+imgPhStyle(heroImg)+';border-radius:'+(T.visualR||cardR)+';min-height:190px;position:relative;overflow:hidden;'+T.visualExtra+'">'+(heroImg.src?'<img src="'+heroImg.src+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;'+imgTagStyle(heroImg)+'" />':"")+'<span style="position:absolute;left:10px;bottom:10px;background:rgba(10,14,22,.72);color:#fff;font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px">Your image · '+esc(heroImg.name)+'</span></div>'
         : '<div style="background:'+grad135+';border-radius:'+(T.visualR||cardR)+';min-height:190px;display:grid;place-items:center;color:#fff;font-size:64px;font-weight:800;font-family:'+T.hfont+';'+T.visualExtra+'">'+initial+'</div>';
       var heroWrap='position:relative;overflow:hidden;background:'+T.heroBg+';'+heroInkCSS;
       var hero="";
@@ -2760,54 +2846,55 @@
         var bCSS=cardCSS+(tint?";"+tint:"")+((T.layout==="bento"&&bi===0&&blockList.length>1)?";grid-column:span 2":"");
         var h3CSS="font-family:"+T.hfont+";"+(T.hColor?("color:"+T.hColor+";"):"")+(T.htrans==="uppercase"?"text-transform:uppercase;letter-spacing:.03em;":"");
         if(p==="Contact form"){
-          return '<div style="'+bCSS+';padding:18px"><h3 style="margin:0 0 10px;font-size:17px;'+h3CSS+'">Contact form</h3><div style="display:grid;gap:8px"><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:13px;opacity:.65">Your name</span><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:13px;opacity:.65">Your email</span><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:13px;opacity:.65">How can we help?</span></div><div style="margin-top:12px">'+btn+'</div></div>';
+          return '<div style="'+bCSS+';padding:18px"><h3 style="margin:0 0 10px;font-size:17px;'+h3CSS+'">Contact form</h3><div style="display:grid;gap:8px"><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">Your name</span><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">Your email</span><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">How can we help?</span></div><div style="margin-top:12px">'+btn+'</div></div>';
         }
         if(arch==="list"){
           return '<div style="border-bottom:1px solid '+T.line+';padding:14px 4px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap"><h3 style="margin:0;font-size:17px;min-width:150px;'+h3CSS+'">'+esc(p)+'</h3><p style="margin:0;opacity:.72;font-size:14px;flex:1;min-width:200px">'+esc(sectionCopy[p]||"")+'</p></div>';
         }
         if(arch==="gallery"){
-          return '<div style="'+bCSS+';overflow:hidden"><div style="height:74px;background:'+grad135+'"></div><div style="padding:13px 15px"><h3 style="margin:0 0 4px;font-size:16px;'+h3CSS+'">'+esc(p)+'</h3><p style="margin:0;opacity:.72;font-size:13.5px">'+esc(sectionCopy[p]||"")+'</p></div></div>';
+          return '<div style="'+bCSS+';overflow:hidden"><div style="height:74px;background:'+grad135+'"></div><div style="padding:13px 15px"><h3 style="margin:0 0 4px;font-size:16px;'+h3CSS+'">'+esc(p)+'</h3><p style="margin:0;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p></div></div>';
         }
         return '<div style="'+bCSS+';padding:18px"><h3 style="margin:0 0 6px;font-size:17px;'+h3CSS+'">'+esc(p)+'</h3><p style="margin:0;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p></div>';
       }).join("");
       var gridCols=T.layout==="bento"?"repeat(2,1fr)":(arch==="list"?"1fr":(arch==="gallery"?"repeat(auto-fit,minmax(150px,1fr))":(S.layout==="Magazine grid"?"repeat(3,1fr)":"repeat(auto-fit,minmax(200px,1fr))")));
-      var featRow=S.features.length?'<div style="display:flex;flex-wrap:wrap;gap:8px;padding:'+(T.layout==="bento"?"14px 18px 0":"0 30px 6px")+'">'+S.features.map(function(f){return '<span style="border:'+T.chipBorder+';background:'+T.chipBg+';color:'+T.chipColor+';border-radius:'+T.chipR+';padding:4px 12px;font-size:12.5px;font-weight:600;'+T.chipExtra+'">'+esc(f)+'</span>'}).join("")+'</div>':"";
+      var featRow=S.features.length?'<div style="display:flex;flex-wrap:wrap;gap:8px;padding:'+(T.layout==="bento"?"14px 18px 0":"0 30px 6px")+'">'+S.features.map(function(f){return '<span style="border:'+T.chipBorder+';background:'+T.chipBg+';color:'+T.chipColor+';border-radius:'+T.chipR+';padding:4px 12px;font-size:13.5px;font-weight:600;'+T.chipExtra+'">'+esc(f)+'</span>'}).join("")+'</div>':"";
       var restImgs=userImages.filter(function(im){return im!==heroImg});
-      var imgStrip=restImgs.length?'<div style="padding:10px 30px 2px"><p style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:0 0 8px">Your images</p><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px">'+restImgs.map(function(im){return '<figure style="margin:0"><div style="'+imgPhStyle(im)+';border-radius:'+cardR+';aspect-ratio:4/3;position:relative;overflow:hidden">'+(im.src?'<img src="'+im.src+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;'+imgTagStyle(im)+'" />':"")+'</div><figcaption style="font-size:11.5px;opacity:.75;margin-top:4px">'+esc(im.name)+(im.slot&&im.slot!=="Auto"?" · "+esc(im.slot):"")+'</figcaption></figure>'}).join("")+'</div></div>':"";
+      var imgStrip=restImgs.length?'<div style="padding:10px 30px 2px"><p style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:0 0 8px">Your images</p><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px">'+restImgs.map(function(im){return '<figure style="margin:0"><div style="'+imgPhStyle(im)+';border-radius:'+cardR+';aspect-ratio:4/3;position:relative;overflow:hidden">'+(im.src?'<img src="'+im.src+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;'+imgTagStyle(im)+'" />':"")+'</div><figcaption style="font-size:13px;opacity:.75;margin-top:4px">'+esc(im.name)+(im.slot&&im.slot!=="Auto"?" · "+esc(im.slot):"")+'</figcaption></figure>'}).join("")+'</div></div>':"";
       var archRow="";
       if(arch==="store"){
-        archRow='<div style="padding:12px 30px 2px"><p style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:0 0 8px">Featured products</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'+[0,1,2].map(function(i){return '<div style="'+cardCSS+';overflow:hidden"><div style="height:56px;background:'+grad135+';opacity:'+(1-i*0.18)+'"></div><div style="padding:9px 11px"><p style="margin:0;font-size:13px;font-weight:600">Featured product</p><p style="margin:2px 0 0;font-size:12px;color:'+ACCHEX+';font-weight:600">Shop now</p></div></div>'}).join("")+'</div></div>';
+        archRow='<div style="padding:12px 30px 2px"><p style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:0 0 8px">Featured products</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'+[0,1,2].map(function(i){return '<div style="'+cardCSS+';overflow:hidden"><div style="height:56px;background:'+grad135+';opacity:'+(1-i*0.18)+'"></div><div style="padding:9px 11px"><p style="margin:0;font-size:14px;font-weight:600">Featured product</p><p style="margin:2px 0 0;font-size:13px;color:'+ACCHEX+';font-weight:600">Shop now</p></div></div>'}).join("")+'</div></div>';
       }else if(arch==="dashboard"){
-        archRow='<div style="padding:12px 30px 2px"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'+[["Overview",70],["Activity",45],["Progress",85]].map(function(t){return '<div style="'+cardCSS+';padding:12px"><p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.65">'+t[0]+'</p><div style="display:flex;align-items:flex-end;gap:4px;height:30px">'+[40,65,52,80,58,92,70].map(function(h,i){return '<span style="flex:1;height:'+Math.round(h*t[1]/100)+'%;background:'+(i%2?ACCHEX:PRIMHEX)+';border-radius:2px"></span>'}).join("")+'</div></div>'}).join("")+'</div></div>';
+        archRow='<div style="padding:12px 30px 2px"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'+[["Overview",70],["Activity",45],["Progress",85]].map(function(t){return '<div style="'+cardCSS+';padding:12px"><p style="margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.65">'+t[0]+'</p><div style="display:flex;align-items:flex-end;gap:4px;height:30px">'+[40,65,52,80,58,92,70].map(function(h,i){return '<span style="flex:1;height:'+Math.round(h*t[1]/100)+'%;background:'+(i%2?ACCHEX:PRIMHEX)+';border-radius:2px"></span>'}).join("")+'</div></div>'}).join("")+'</div></div>';
       }
       /* purpose reshapes the boxes & textures: each kind of website gets its own box
          arrangement (signature layout styles, when chosen, already encode a business
          type — so this applies when no signature is driving the preview) */
       var purposeRow="", saasBar="";
       if(!arch){
-        var pHead=function(t){return '<p style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:0 0 8px">'+t+'</p>'};
+        var pHead=function(t){return '<p style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:0 0 8px">'+t+'</p>'};
         if(S.purpose==="E-Commerce / Shop"){
           purposeRow='<div style="padding:12px 30px 2px">'+pHead("Shop the range")+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px">'
-            +[0,1,2,3].map(function(){return '<div style="'+cardCSS+';overflow:hidden"><div style="height:64px;background:'+grad135+'"></div><div style="padding:9px 11px"><p style="margin:0;font-size:13px;font-weight:600">Product name</p><p style="margin:2px 0 8px;font-size:12.5px;color:'+ACCHEX+';font-weight:700">Your price</p><span style="display:inline-block;background:'+T.btnBg+';color:'+T.btnColor+';border:'+T.btnBorder+';padding:5px 12px;border-radius:'+T.btnR+';font-size:12px;font-weight:600">Add to basket</span></div></div>'}).join("")+'</div></div>';
+            +[0,1,2,3].map(function(){return '<div style="'+cardCSS+';overflow:hidden"><div style="height:64px;background:'+grad135+'"></div><div style="padding:9px 11px"><p style="margin:0;font-size:14px;font-weight:600">Product name</p><p style="margin:2px 0 8px;font-size:13.5px;color:'+ACCHEX+';font-weight:700">Your price</p><span style="display:inline-block;background:'+T.btnBg+';color:'+T.btnColor+';border:'+T.btnBorder+';padding:5px 12px;border-radius:'+T.btnR+';font-size:13px;font-weight:600">Add to basket</span></div></div>'}).join("")+'</div></div>';
         }else if(S.purpose==="Portfolio"){
           purposeRow='<div style="padding:12px 30px 2px">'+pHead("Selected work")+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
-            +[0,1].map(function(){return '<div style="'+cardCSS+';overflow:hidden"><div style="height:110px;background:'+grad135+';position:relative"><span style="position:absolute;left:10px;bottom:10px;background:rgba(10,14,22,.72);color:#fff;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px">Project title</span></div><div style="padding:9px 12px"><p style="margin:0;font-size:13px;opacity:.72">A favourite piece — shown big, the way portfolios should be.</p></div></div>'}).join("")+'</div></div>';
+            +[0,1].map(function(){return '<div style="'+cardCSS+';overflow:hidden"><div style="height:110px;background:'+grad135+';position:relative"><span style="position:absolute;left:10px;bottom:10px;background:rgba(10,14,22,.72);color:#fff;font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px">Project title</span></div><div style="padding:9px 12px"><p style="margin:0;font-size:14px;opacity:.72">A favourite piece — shown big, the way portfolios should be.</p></div></div>'}).join("")+'</div></div>';
         }else if(S.purpose==="Landing Page"){
-          purposeRow='<div style="padding:12px 30px 2px"><div style="'+cardCSS+';padding:18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:180px"><p style="margin:0;font-size:16px;font-weight:700;font-family:'+T.hfont+'">Get the offer</p><p style="margin:3px 0 0;font-size:13.5px;opacity:.72">One clear offer, one simple step — join the list and it is yours.</p></div><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:10px 13px;font-size:13px;opacity:.65;min-width:170px;flex:1">Your email</span>'+btn+'</div></div>';
+          purposeRow='<div style="padding:12px 30px 2px"><div style="'+cardCSS+';padding:18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:180px"><p style="margin:0;font-size:16px;font-weight:700;font-family:'+T.hfont+'">Get the offer</p><p style="margin:3px 0 0;font-size:14px;opacity:.72">One clear offer, one simple step — join the list and it is yours.</p></div><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:10px 13px;font-size:14px;opacity:.65;min-width:170px;flex:1">Your email</span>'+btn+'</div></div>';
         }else if(S.purpose==="Blog / Personal"){
           purposeRow='<div style="padding:12px 30px 2px">'+pHead("Latest stories")
-            +["A first story, told properly","Notes from a busy week","Something I learned lately"].map(function(t){return '<div style="display:flex;gap:13px;padding:11px 2px;border-bottom:1px solid '+T.line+'"><div style="width:54px;height:54px;flex:none;border-radius:'+cardR+';background:'+grad135+'"></div><div style="min-width:0"><p style="margin:0;font-size:15px;font-weight:700;font-family:'+T.hfont+'">'+t+'</p><p style="margin:2px 0 0;font-size:13px;opacity:.72">A short opening to the story — a line or two to draw the reader in, then the whole piece inside.</p><p style="margin:3px 0 0;font-size:12.5px;font-weight:700;color:'+ACCHEX+'">Read more →</p></div></div>'}).join("")+'</div>';
+            +["A first story, told properly","Notes from a busy week","Something I learned lately"].map(function(t){return '<div style="display:flex;gap:13px;padding:11px 2px;border-bottom:1px solid '+T.line+'"><div style="width:54px;height:54px;flex:none;border-radius:'+cardR+';background:'+grad135+'"></div><div style="min-width:0"><p style="margin:0;font-size:15px;font-weight:700;font-family:'+T.hfont+'">'+t+'</p><p style="margin:2px 0 0;font-size:14px;opacity:.72">A short opening to the story — a line or two to draw the reader in, then the whole piece inside.</p><p style="margin:3px 0 0;font-size:13.5px;font-weight:700;color:'+ACCHEX+'">Read more →</p></div></div>'}).join("")+'</div>';
         }else if(S.purpose==="Business / SaaS"){
           saasBar='<div style="height:4px;background:'+PRIMHEX+'"></div>';
           purposeRow='<div style="padding:12px 30px 2px">'+pHead("At a glance")+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'
-            +[["Overview",70],["Activity",45],["Progress",85]].map(function(t){return '<div style="'+cardCSS+';padding:12px"><p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.65">'+t[0]+'</p><div style="display:flex;align-items:flex-end;gap:4px;height:30px">'+[40,65,52,80,58,92,70].map(function(h,i){return '<span style="flex:1;height:'+Math.round(h*t[1]/100)+'%;background:'+(i%2?ACCHEX:PRIMHEX)+';border-radius:2px"></span>'}).join("")+'</div><p style="margin:7px 0 0;font-size:12px;opacity:.65">Your headline metric</p></div>'}).join("")+'</div></div>';
+            +[["Overview",70],["Activity",45],["Progress",85]].map(function(t){return '<div style="'+cardCSS+';padding:12px"><p style="margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.65">'+t[0]+'</p><div style="display:flex;align-items:flex-end;gap:4px;height:30px">'+[40,65,52,80,58,92,70].map(function(h,i){return '<span style="flex:1;height:'+Math.round(h*t[1]/100)+'%;background:'+(i%2?ACCHEX:PRIMHEX)+';border-radius:2px"></span>'}).join("")+'</div><p style="margin:7px 0 0;font-size:13px;opacity:.65">Your headline metric</p></div>'}).join("")+'</div></div>';
         }
       }
-      var nav='<div style="display:flex;align-items:center;gap:14px;padding:14px 22px;background:'+T.navBg+';border-bottom:1px solid '+T.navLine+'"><span style="font-weight:800;font-size:17px;'+T.navNameExtra+'">'+esc(name)+'</span><span style="margin-left:auto;display:flex;gap:16px;font-size:13.5px;opacity:.9;flex-wrap:wrap;'+T.navLinkExtra+'">'+links.map(function(l){return '<span>'+esc(l)+'</span>'}).join("")+'</span><span style="background:'+T.navBtnBg+';color:'+T.navBtnColor+';padding:7px 15px;border-radius:'+T.btnR+';font-size:13px;font-weight:600">Contact</span></div>';
+      var logoMark=(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?'<img src="'+customerLogo.src+'" alt="" style="width:32px;height:32px;object-fit:contain;border-radius:8px;background:#fff;border:1px solid rgba(0,0,0,.08);flex:none" />':"";
+      var nav='<div style="display:flex;align-items:center;gap:14px;padding:14px 22px;background:'+T.navBg+';border-bottom:1px solid '+T.navLine+'">'+logoMark+'<span style="font-weight:800;font-size:17px;'+T.navNameExtra+'">'+esc(name)+'</span><span style="margin-left:auto;display:flex;gap:16px;font-size:14px;opacity:.9;flex-wrap:wrap;'+T.navLinkExtra+'">'+links.map(function(l){return '<span>'+esc(l)+'</span>'}).join("")+'</span><span style="background:'+T.navBtnBg+';color:'+T.navBtnColor+';padding:7px 15px;border-radius:'+T.btnR+';font-size:14px;font-weight:600">Contact</span></div>';
       var bodyInner=saasBar+nav+hero+featRow+archRow+purposeRow+imgStrip+'<div style="display:grid;grid-template-columns:'+gridCols+';gap:'+T.gap+';padding:'+(T.layout==="bento"?"14px 18px 10px":"16px 30px 8px")+'">'+blocks+'</div>'
-        +'<div style="padding:18px 30px 24px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid '+T.line+';margin-top:14px;font-size:12.5px;opacity:.7"><span>© '+esc(name)+'</span><span>'+esc(S.style)+' · '+esc(effPrimary().name)+' / '+esc(effAccent().name)+((S.balanceMain!==50||S.balanceSecond!==50)?' · Balance '+S.balanceMain+'% / '+S.balanceSecond+'%':'')+'</span></div>';
+        +'<div style="padding:18px 30px 24px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid '+T.line+';margin-top:14px;font-size:13.5px;opacity:.7"><span>© '+esc(name)+'</span><span>'+esc(S.style)+' · '+esc(effPrimary().name)+' / '+esc(effAccent().name)+((S.balanceMain!==50||S.balanceSecond!==50)?' · Balance '+S.balanceMain+'% / '+S.balanceSecond+'%':'')+'</span></div>';
       if(heroLayout==="Sidebar"){
-        bodyInner='<div style="display:grid;grid-template-columns:180px 1fr;min-height:420px"><div style="border-right:1px solid '+T.line+';padding:20px 16px"><div style="font-weight:800;font-size:16px;margin-bottom:16px;'+T.navNameExtra+'">'+esc(name)+'</div>'+["Home"].concat(links).map(function(l,i){return '<div style="padding:8px 10px;border-radius:8px;font-size:13.5px;margin-bottom:4px;'+(i===0?"background:"+PRIMHEX+";color:#fff;font-weight:600":"opacity:.85")+'">'+esc(l)+'</div>'}).join("")+'</div><div>'+hero+featRow+archRow+purposeRow+imgStrip+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:'+T.gap+';padding:6px 30px 20px">'+blocks+'</div></div></div>';
+        bodyInner='<div style="display:grid;grid-template-columns:180px 1fr;min-height:420px"><div style="border-right:1px solid '+T.line+';padding:20px 16px"><div style="font-weight:800;font-size:16px;margin-bottom:16px;'+T.navNameExtra+'">'+(logoMark?'<span style="display:block;margin-bottom:8px">'+logoMark+'</span>':"")+esc(name)+'</div>'+["Home"].concat(links).map(function(l,i){return '<div style="padding:8px 10px;border-radius:8px;font-size:14px;margin-bottom:4px;'+(i===0?"background:"+PRIMHEX+";color:#fff;font-weight:600":"opacity:.85")+'">'+esc(l)+'</div>'}).join("")+'</div><div>'+hero+featRow+archRow+purposeRow+imgStrip+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:'+T.gap+';padding:6px 30px 20px">'+blocks+'</div></div></div>';
       }
       /* surface texture per purpose (plain-colour backgrounds only): blog gets lined
          paper, SaaS a dotted grid, landing a soft tinted glow at the top */
@@ -2839,7 +2926,7 @@
       document.querySelectorAll(".pv-scale").forEach(function(sc){
         var w=sc.clientWidth;if(!w)return;
         var inn=sc.querySelector(".pv-scale-in");if(!inn)return;
-        var s=w/760;inn.style.transform="scale("+s+")";
+        var s=w/(inn.offsetWidth||760);inn.style.transform="scale("+s+")";
         if(!sc.classList.contains("crop"))sc.style.height=Math.max(120,Math.round(inn.offsetHeight*s))+"px";
       });
     }
@@ -2894,6 +2981,7 @@
     }
     var chatStageOpenedAt=0;
     function openChatStage(){
+      if(typeof tapSound==="function")tapSound();
       var now=Date.now(),again=now-chatStageOpenedAt<500;chatStageOpenedAt=now;
       if(!again){showView("start");document.body.classList.add("chat-stage")}
       setTimeout(function(){bringChatIntoView();fixPvHeights()},80);
@@ -3055,9 +3143,10 @@
       vision:{say:"Now in your own words: what do you imagine your website should be? A few sentences is perfect — what it's for, what it should offer, and the feeling you want people to get from it. For example: “A warm, elegant site for my bakery — people should see the menu, photos of the cakes, and be able to order for pickup.” Type it in the box below — your words are kept exactly as you write them. Rather come back to it? Just tap “Skip for now”.",field:"vision",next:"email"},
       email:{say:function(d){var base="Saved. Next: your email address — the one to show on your website, so your visitors can reach you. It's also where your sign-in code and updates are sent.";return d.suggestedEmail?(base+" Earlier you gave me "+d.suggestedEmail+" — if that's the one to use, it's already in the box below: just tap Continue. A different one? Simply type over it."):base},field:"email",next:"custFirst"},
       custFirst:{say:"Thank you. Now — what's your first name? Together with your email, it's how your account knows you, and I'll greet you by name from here on. Your email itself is never shown anywhere — only your name.",field:"custFirst",next:"custLast"},
-      custLast:{say:"And your last name? First and last name together are what we keep with your account, so the AI can respond to you by name.",field:"custLast",next:"images"},
+      custLast:{say:"And your last name? First and last name together are what we keep with your account, so the AI can respond to you by name.",field:"custLast",next:"logo"},
+      logo:{say:"Now — your logo. Every professional website carries one in the header, and you have two easy options. Option 1: upload your logo now, and I'll show it straight back to you here so you can see it's safely in. Option 2: upload or upgrade it later — that's completely fine; many people settle the logo after the first version, and it never holds your website up. Tap the option that suits you below.",logo:true,next:"images"},
       code:{say:"Last one — and no passwords here, ever. You sign in with a fresh 6-digit code sent to your email. For this demo, type the 6 digits 4-8-3-9-2-0; once email sending is connected, your own fresh code arrives in your inbox.",field:"code",next:"create"},
-      images:{say:"Now — pictures! Do you have images for your website? Your logo, your products, your place, your work — up to 10 of them. Add them right here with the button below, and pop a little note on each one if you like. No images? Just tap “I don't have images”.",images:true,next:"code"},
+      images:{say:"Now — your other pictures! Do you have images for your website — your products, your place, your work — up to 10 of them? (Your logo has its own question, just before this one.) Add them right here with the button below, and pop a little note on each one if you like. No images? Just tap “I don't have images”.",images:true,next:"code"},
       imgalt:{say:"No problem at all — that never stops a website. We can create the images for you instead: just tell me what they should show. Or carry on with no images at all.",options:[{label:"Create images for me",go:"imgreq"},{label:"No images, thanks",go:"code"}]},
       imgreq:{say:"Lovely. In a few words: what should the created images show? For example: “our shop counter, shelves of products, the storefront in daylight”.",field:"imgreq",next:"code"},
       loginEmail:{say:"Welcome back! What's your email? We'll send your sign-in code there.",field:"loginEmail",next:"loginFirst"},
@@ -3065,12 +3154,12 @@
       loginLast:{say:"And your last name? Then we're set.",field:"custLast",next:"loginCode"},
       loginCode:{say:"Now the 6-digit code sent to your email — for this demo, type 4-8-3-9-2-0. No passwords, ever.",field:"loginCode",next:"login"}
     };
-    var CHAT_ORDER=["phone","name","style","vision","email","images","code"];
+    var CHAT_ORDER=["phone","name","style","vision","email","logo","images","code"];
     /* the counter segment for every step: side questions (your name after the
-       email, the images follow-ups, the returning-customer branch) sit inside
-       the segment they belong to, so "Question X of 7" always matches the
+       email, the logo and images follow-ups, the returning-customer branch) sit inside
+       the segment they belong to, so "Question X of 8" always matches the
        question actually being asked and never falls back to 1 */
-    var CHAT_PROG={hello:1,phone:1,virtual:1,how:1,name:2,style:3,stylepick:3,vision:4,email:5,custFirst:5,custLast:5,images:6,imgalt:6,imgreq:6,code:7,loginEmail:5,loginFirst:5,loginLast:5,loginCode:7};
+    var CHAT_PROG={hello:1,phone:1,virtual:1,how:1,name:2,style:3,stylepick:3,vision:4,email:5,custFirst:5,custLast:5,logo:6,images:7,imgalt:7,imgreq:7,code:8,loginEmail:5,loginFirst:5,loginLast:5,loginCode:8};
     var CHAT_PLACEHOLDER={phone:"Enter your phone number…",name:"Enter your business name…",vision:"Describe the website you imagine…",email:"Enter your email address…",custFirst:"Enter your first name…",custLast:"Enter your last name…",code:"Enter the 6-digit code…",loginEmail:"Enter your email address…",loginCode:"Enter the 6-digit code…",imgreq:"Describe the images you'd like…"};
     var isEmail=function(v){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim())};
     var isPhone=function(v){return v.replace(/\D/g,"").length>=7&&/^[+\d\s().-]+$/.test(v.trim())};
@@ -3095,6 +3184,54 @@
     /* a rejected answer: nothing is saved, the counter does not move, and the
        assistant replies in the thread in its warm voice, asking once more */
     function chatRejectSay(msg){$("chat-text").value="";$("chat-err").textContent="";chatSay(msg,chat.step).then(function(){chatRender()})}
+    /* ---- the customer's logo (chat logo question) + finishing-preview adjustments ----
+       Kept in this page only, alongside the other answers. logoChoice is
+       "uploaded" (customerLogo holds the file) or "later" (option 2). */
+    var customerLogo=null, logoChoice="";
+    var BG_OPTIONS=[{name:"White",hex:"#ffffff"},{name:"Warm Ivory",hex:"#fbf8f1"},{name:"Rose Mist",hex:"#fff8fb"},{name:"Meadow Cream",hex:"#faf8f0"},{name:"Sky Mist",hex:"#f2f9fd"},{name:"Peach Glow",hex:"#fff9f3"},{name:"Pearl Grey",hex:"#f6f8fc"},{name:"Dark Executive",hex:"#121212",dark:true}];
+    /* the finishing mixers' button styles: a friendly name + a real radius,
+       mapped onto the Rounded / Pill / Sharp shapes the rest of the page uses */
+    var BTN_STYLES=[{name:"Subtle",radius:"4px",shape:"Rounded"},{name:"Standard",radius:"8px",shape:"Rounded"},{name:"Pill",radius:"30px",shape:"Pill"},{name:"Sharp",radius:"0px",shape:"Square"}];
+    var FONT_LABELS={"Clean sans":"Clean sans · modern","Elegant serif":"Elegant serif · classic luxury","Friendly rounded":"Friendly rounded · soft"};
+    var previewAdjust={touched:false,confirmed:false};
+    function curBtnStyle(){if(!S.btnStyleName||S.btnRadiusShape!==S.btnShape)return null;for(var i=0;i<BTN_STYLES.length;i++)if(BTN_STYLES[i].name===S.btnStyleName)return BTN_STYLES[i];return null}
+    function mixerBtnLabel(){var bs=curBtnStyle();if(bs)return bs.name+" ("+bs.radius+")";return S.btnShape==="Square"?"Sharp":S.btnShape}
+    function previewAdjustSummary(){
+      return "main color: "+effPrimary().name+" ("+effPrimary().hex+"), background: "+(S.bgPick?S.bgPick.name+" ("+effBg()+")":"as created ("+effBg()+")")+", button style: "+mixerBtnLabel()+", font: "+S.font;
+    }
+    function previewAdjustLine(){
+      if(!previewAdjust.touched)return "Preview adjustments: none — the customer kept the small preview exactly as created.";
+      return "Preview adjustments — "+previewAdjustSummary()+".";
+    }
+    /* the polished "Your choices" summary under the mixers — plain customer
+       words, rebuilt from the live state every time anything changes */
+    function choicesListHTML(){
+      var dot=function(hex){return '<span class="mix-dot" style="background:'+hex+'"></span>'};
+      return '<div class="mix-choice"><span>Main colour</span><b>'+dot(effPrimary().hex)+esc(effPrimary().name+" "+effPrimary().hex)+'</b></div>'
+        +'<div class="mix-choice"><span>Background</span><b>'+dot(effBg())+esc((S.bgPick?S.bgPick.name:"As created")+" "+effBg())+'</b></div>'
+        +'<div class="mix-choice"><span>Buttons</span><b>'+esc(mixerBtnLabel())+'</b></div>'
+        +'<div class="mix-choice"><span>Font</span><b>'+esc(S.font)+'</b></div>';
+    }
+    /* a colour typed or picked in the finishing mixers: same state, same
+       recording as a swatch tap — but refreshed in place, so dragging the
+       colour picker never rebuilds the card under the customer's finger */
+    function applyMixerColor(hex,srcEl){
+      hex=String(hex||"").toLowerCase();if(!/^#[0-9a-f]{6}$/.test(hex))return;
+      promptOverride=null;
+      S.primaryPick={name:"Custom colour",hex:hex};S.mixMain=0;
+      previewAdjust.touched=true;previewAdjust.confirmed=false;
+      renderAll();
+      var card=srcEl&&srcEl.closest?srcEl.closest(".site-card"):null;
+      if(!card)return;
+      var pv=card.querySelector(".finish-pv .pv-scale-in > div");if(pv)pv.innerHTML=pvHTML();
+      var rd=card.querySelector("[data-mixmain-read]");if(rd)rd.textContent=effPrimary().name+" · "+effPrimary().hex;
+      var ch=card.querySelector("[data-choices]");if(ch)ch.innerHTML=choicesListHTML();
+      card.querySelectorAll('[data-pmix="main"]').forEach(function(b){var on=b.getAttribute("data-val")===hex;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on?"true":"false")});
+      var pk=card.querySelector("[data-pmixcolor]");if(pk&&pk!==srcEl)pk.value=hex;
+      var hx=card.querySelector("[data-pmixhex]");if(hx&&hx!==srcEl){hx.value=hex;hx.classList.remove("bad")}
+      var cn=card.querySelector("[data-confirm-note]");if(cn)cn.style.display="none";
+      setTimeout(fixPvHeights,30);
+    }
     var chat={msgs:[],step:"hello",data:{},thinking:false,sound:true,done:false,building:false,idc:1,howSaid:false,creating:null};
     var buildTimer=null;
     /* ---- style tries & owner handoff (this page only, in memory — nothing is stored) ----
@@ -3147,6 +3284,9 @@
       if(S.displayEmail)lines.push("Email to show on the website: "+S.displayEmail);
       if(chat.data&&chat.data.phone)lines.push("Phone given in chat: "+chat.data.phone);
       if(userImages.length)lines.push("Customer images: "+userImages.length+" supplied ("+userImages.map(function(im){return im.name}).join(", ")+")");
+      if(customerLogo&&customerLogo.src)lines.push("Logo: uploaded by the customer ("+customerLogo.name+")");
+      else if(logoChoice==="later")lines.push("Logo: will upload / upgrade later (option 2)");
+      lines.push(previewAdjustLine());
       if(aiImageRequest)lines.push("Images to create (people-free, always): "+aiImageRequest);
       if(S.custom)lines.push("Extra notes: "+S.custom);
       lines.push("Style tries so far: "+f.changesUsed+" change(s) used · "+f.freeLeft+" free left · "+f.paidLeft+" paid left · demo credit added in page: $"+f.balance.toFixed(2));
@@ -3224,10 +3364,47 @@
       if(rm){i=steps.length;finish();return}
       creatingTimer=setInterval(stepDone,540);
     }
-    function ding(){if(!chat.sound)return;try{var Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;var ctx=ding._c||(ding._c=new Ctx());if(ctx.state==="suspended")ctx.resume();
-      [880,1320].forEach(function(f,i){var o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=f;var t=ctx.currentTime+i*0.09;
-      g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.1,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+0.35);
-      o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+0.4)})}catch(e){}}
+    /* ---- chat sounds: two soft, professional pops, synthesized live (no audio files) ----
+       tapSound() is the customer's own tap; ding() is a new chat message arriving,
+       a touch softer. Each is a single short sine "pop" that glides gently down in
+       pitch with a fast, smooth decay — quiet and premium, never a game beep.
+       The AudioContext is created/resumed only after the customer's first
+       interaction with the page (browser autoplay rules), plays are throttled
+       and single-voice so messages arriving in a burst never stack into noise,
+       and the header speaker button (chat.sound) mutes both. */
+    var soundCtx=null, soundUnlocked=false, lastSoundAt=0, lastTapAt=0, lastReplyAt=0;
+    function unlockSound(){
+      soundUnlocked=true;
+      try{var Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;
+        if(!soundCtx)soundCtx=new Ctx();
+        if(soundCtx.state==="suspended")soundCtx.resume();
+      }catch(e){}
+    }
+    ["pointerdown","touchstart","keydown"].forEach(function(ev){document.addEventListener(ev,unlockSound,{passive:true})});
+    function softPop(freqStart,freqEnd,peak,dur){
+      if(!chat.sound||!soundUnlocked)return;
+      var now=(window.performance&&performance.now)?performance.now():Date.now();
+      if(now-lastSoundAt<120)return; /* one voice at a time — bursts stay calm */
+      lastSoundAt=now;
+      try{var Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;
+        if(!soundCtx)soundCtx=new Ctx();
+        var ctx=soundCtx;
+        if(ctx.state==="suspended"){ctx.resume();return}
+        var t=ctx.currentTime;
+        var o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();
+        o.type="sine";
+        o.frequency.setValueAtTime(freqStart,t);
+        o.frequency.exponentialRampToValueAtTime(Math.max(40,freqEnd),t+dur);
+        f.type="lowpass";f.frequency.value=2300;f.Q.value=0.4;
+        g.gain.setValueAtTime(0.0001,t);
+        g.gain.exponentialRampToValueAtTime(peak,t+0.012);
+        g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+        o.connect(f);f.connect(g);g.connect(ctx.destination);
+        o.start(t);o.stop(t+dur+0.05);
+      }catch(e){}
+    }
+    function tapSound(){var now=(window.performance&&performance.now)?performance.now():Date.now();if(now-lastTapAt<90)return;lastTapAt=now;softPop(920,540,0.05,0.085)}
+    function ding(){var now=(window.performance&&performance.now)?performance.now():Date.now();if(now-lastReplyAt<170)return;lastReplyAt=now;softPop(660,470,0.032,0.11)}
     function chatRender(){
       var box=$("chat-msgs");
       var lastAi=-1;chat.msgs.forEach(function(m,i){if(m.from==="ai")lastAi=i});
@@ -3258,7 +3435,31 @@
           return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="build-card"><p class="build-now"><span>'+(b.finished?"All built — looking lovely!":("Building now: "+esc(b.current)+"…"))+'</span><span class="pct">'+b.pct+'%</span></p><div class="build-track"><div class="build-fill" style="width:'+b.pct+'%"></div></div><ul class="build-steps">'+bSteps+'</ul></div></div>';
         }
         if(m.kind==="site"){
-          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="site-card"><div class="pv-scale crop" style="height:150px;border:0;border-radius:0"><div class="pv-scale-in"><div>'+pvHTML()+'</div></div></div><div class="sc-body"><p class="sc-name">'+esc(S.name||"Your Business")+'</p><p class="sc-url">'+esc(pvUrlText().replace("https://",""))+'</p><button class="btn small block" data-preview style="margin-top:10px">Open my website</button><p class="sc-note">This is your instant front-end preview, made from your answers. Your finished website is built from these same details by a real AI run, and arrives on a temporary address within a few hours of your order.</p></div></div></div>';
+          var mainSw=SEVEN.map(function(c){var on=!!(S.primaryPick&&S.primaryPick.hex===c.hex);
+            return '<button type="button" class="mix-sw'+(on?" on":"")+'" data-pmix="main" data-val="'+c.hex+'" title="'+esc(c.name)+'" aria-label="Main colour '+esc(c.name)+'" aria-pressed="'+on+'" style="background:'+c.hex+'"></button>'}).join("");
+          var bgSw=BG_OPTIONS.map(function(c){var on=!!(S.bgPick&&S.bgPick.hex===c.hex);
+            return '<button type="button" class="mix-sw'+(on?" on":"")+'" data-pmix="bg" data-val="'+c.hex+'" title="'+esc(c.name)+'" aria-label="Background '+esc(c.name)+'" aria-pressed="'+on+'" style="background:'+c.hex+'"></button>'}).join("");
+          var curBtnName=S.btnStyleName||(S.btnShape==="Pill"?"Pill":S.btnShape==="Square"?"Sharp":"Standard");
+          var btnChips=BTN_STYLES.map(function(bs){var on=curBtnName===bs.name;
+            return '<button type="button" class="'+(on?"on":"")+'" data-pmix="btn" data-val="'+bs.name+'" aria-pressed="'+on+'">'+bs.name+' <span style="opacity:.65;font-weight:400">'+bs.radius+'</span></button>'}).join("");
+          var fontChips=FONTSTYLES.map(function(fn){var on=S.font===fn;
+            return '<button type="button" class="'+(on?"on":"")+'" data-pmix="font" data-val="'+esc(fn)+'" aria-pressed="'+on+'">'+esc(FONT_LABELS[fn]||fn)+'</button>'}).join("");
+          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="site-card">'
+          +'<div class="sc-body" style="padding-bottom:0"><p class="sc-name">Your first version is ready</p><p style="font-size:13.5px;line-height:1.55;margin-top:4px">This is a small preview with your style</p></div>'
+          +'<div class="finish-grid"><div class="finish-pv"><div class="pv-scale crop" style="height:200px;border:0;border-radius:0"><div class="pv-scale-in"><div>'+pvHTML()+'</div></div></div></div>'
+          +'<div class="mixer-panel"><h5>Try the finishing touches — live</h5>'
+          +'<div class="mix-group"><p class="mix-label">Main colour</p><div class="mix-swatches">'+mainSw+'</div>'
+          +'<div class="mix-color-row"><input type="color" class="mix-picker" data-pmixcolor value="'+esc(effPrimary().hex)+'" aria-label="Pick any main colour" /><input type="text" class="mix-hex" data-pmixhex value="'+esc(effPrimary().hex)+'" maxlength="7" spellcheck="false" autocomplete="off" aria-label="Main colour hex code" /></div>'
+          +'<p class="mix-read" data-mixmain-read>'+esc(effPrimary().name)+' · '+esc(effPrimary().hex)+'</p></div>'
+          +'<div class="mix-group"><p class="mix-label">Background</p><div class="mix-swatches">'+bgSw+'</div><p class="mix-read">'+esc(S.bgPick?S.bgPick.name+" · "+effBg():"As created · "+effBg())+'</p></div>'
+          +'<div class="mix-group"><p class="mix-label">Button style</p><div class="mix-chips">'+btnChips+'</div></div>'
+          +'<div class="mix-group"><p class="mix-label">Text font</p><div class="mix-chips">'+fontChips+'</div></div>'
+          +'<div class="mix-choices"><p class="mix-choices-title">Your choices</p><div data-choices>'+choicesListHTML()+'</div>'
+          +'<p class="mix-confirm-note" data-confirm-note'+(previewAdjust.confirmed?'':' style="display:none"')+'>Recorded — these choices are locked in with your details.</p></div>'
+          +'<button type="button" class="btn small block mix-confirm" data-pmixconfirm>Confirm &amp; Record</button>'
+          +'<p class="mix-note">This preview is the style version of your website — the quick way to feel the look. Deeper detail changes — exact colours, the background and layout details — are easy to adjust afterwards, once your website is built.</p>'
+          +'</div></div>'
+          +'<div class="sc-body"><p class="sc-name">'+esc(S.name||"Your Business")+'</p><p class="sc-url">'+esc(pvUrlText().replace("https://",""))+'</p><button class="btn small block" data-preview style="margin-top:10px">Open my website</button><p class="sc-note">This is your instant front-end preview, made from your answers. Your finished website is built from these same details by a real AI run, and arrives on a temporary address within a few hours of your order.</p></div></div></div>';
         }
         if(m.kind==="handoff"){
           var hf=ensureStyleFlow();
@@ -3278,6 +3479,9 @@
           if(S.displayPhone||S.displayEmail)hRows.push(["On the site",[S.displayPhone,S.displayEmail].filter(Boolean).join(" · ")]);
           if(userImages.length)hRows.push(["Images",userImages.length+" supplied by the customer"]);
           else if(aiImageRequest)hRows.push(["Images","To be created, people-free: "+aiImageRequest]);
+          if(customerLogo&&customerLogo.src)hRows.push(["Logo","uploaded by the customer — "+customerLogo.name]);
+          else if(logoChoice==="later")hRows.push(["Logo","will upload / upgrade later (option 2)"]);
+          hRows.push(["Preview adjustments",previewAdjust.touched?previewAdjustSummary():"None — the small preview was kept exactly as created."]);
           var hList=hRows.map(function(r){return '<li><b>'+esc(r[0])+'</b><span>'+esc(r[1])+'</span></li>'}).join("");
           return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="handoff-card">'
             +'<span class="handoff-tag">For the owner · Back-end handoff</span>'
@@ -3285,7 +3489,7 @@
             +'<p style="color:var(--muted);font-size:13.5px;line-height:1.55;margin-top:5px">Everything you just answered, packaged as one brief — business, style and details together. This is the exact brief the owner works from behind the scenes.</p>'
             +'<ul class="handoff-list">'+hList+'</ul>'
             +'<p class="handoff-note"><b style="color:var(--ink)">Owner&rsquo;s next step:</b> take this brief to Gemini on the best Gemini model available, ask Gemini to return the complete live HTML, then paste that HTML back so the first full preview appears here in this chat for you to confirm.</p>'
-            +'<div class="handoff-actions"><a class="btn small" href="'+esc(handoffMailtoHref())+'">Open email draft to owner</a><button class="btn ghost small" type="button" data-copyhandoff>Copy the brief</button>'+(S.vision?"":'<button class="btn ghost small" type="button" data-addvision>Add your own-words description</button>')+'</div>'
+            +'<div class="handoff-actions"><a class="btn small" href="'+esc(handoffMailtoHref())+'">Open email draft to owner</a><button class="btn ghost small" type="button" data-copyhandoff>Copy the brief</button>'+(S.vision?"":'<button class="btn ghost small" type="button" data-addvision>Add your own-words description</button>')+((customerLogo&&customerLogo.src)?"":'<button class="btn ghost small" type="button" data-addlogo>'+(logoChoice==="later"?"Add your logo now":"Add a logo")+'</button>')+'</div>'
             +'<p class="handoff-note">Not sent yet — nothing has been emailed and no Gemini build has run. The button above opens a pre-filled email draft to '+esc(OWNER_EMAIL)+' in your own mail app, ready for you to send. Automatic sending to the owner and the Gemini build switch on only when the real email + Gemini back end is connected.</p>'
             +'</div></div>';
         }
@@ -3336,9 +3540,21 @@
               +(userImages.length?'<button type="button" data-chatimg="done">Done — use these images</button>':'<button type="button" data-chatimg="skip">I don\'t have images</button>')
               +'</div></div>';
           }
-          return '<div class="msg"><img class="avatar'+spin+'" src="assets/logo-dark.png" alt="" /><div><div class="bubble">'+esc(m.text)+'</div>'+opts+imgUI+'</div></div>';
+          var logoUI="";
+          if(m.step==="logo"&&chat.step==="logo"&&i===chat.msgs.length-1&&!chat.done&&!chat.thinking){
+            if(customerLogo&&customerLogo.src){
+              logoUI='<div class="logo-ui"><div class="logo-preview"><span class="lp-img"><img src="'+customerLogo.src+'" alt="Your uploaded logo" /></span><span class="lp-meta"><b>'+esc(customerLogo.name)+'</b><span>Received — this is your logo, exactly as you sent it. It will sit in your website&rsquo;s header.</span></span></div>'
+                +'<div class="logo-actions"><button type="button" class="primary" data-logo="done">Use this logo — continue</button><button type="button" data-logo="replace">Replace logo</button><button type="button" data-logo="remove">Remove</button></div></div>';
+            }else{
+              logoUI='<div class="logo-ui">'
+                +'<button type="button" class="logo-opt" data-logo="upload"><span class="lo-num">1</span><span><b>Option 1 — Upload my logo now</b><small>Tap to choose your logo file (PNG, JPG or SVG). You&rsquo;ll see it back here the moment it&rsquo;s in.</small></span></button>'
+                +'<button type="button" class="logo-opt" data-logo="later"><span class="lo-num">2</span><span><b>Option 2 — Upload / upgrade it later</b><small>Completely fine — you can upload or upgrade your logo at any time later. We&rsquo;ll note it as &ldquo;will upload / upgrade later (option 2)&rdquo; and carry straight on.</small></span></button>'
+                +'</div>';
+            }
+          }
+          return '<div class="msg"><img class="avatar'+spin+'" src="assets/logo-dark.png" alt="" /><div><div class="bubble">'+esc(m.text)+'</div>'+opts+imgUI+logoUI+'</div></div>';
         }
-        var prev=chat.msgs[i-1],canEdit=prev&&prev.step&&CHAT_STEPS[prev.step]&&CHAT_STEPS[prev.step].field&&!chat.done;
+        var prev=chat.msgs[i-1],canEdit=prev&&prev.step&&CHAT_STEPS[prev.step]&&(CHAT_STEPS[prev.step].field||prev.step==="logo")&&!chat.done;
         return '<div class="msg me">'+(canEdit?'<button class="iconbtn" data-edit="'+esc(prev.step)+'" aria-label="Edit answer" style="padding:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>':"")
           +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand-2)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div class="bubble">'+esc(m.text)+'</div></div>';
       }).join("");
@@ -3388,7 +3604,7 @@
         /* the "two ways" prompt is said once per conversation — if the flow
            arrives here again (the other phone branch, an edited answer),
            go straight to the next unanswered question instead of repeating it */
-        if(chat.howSaid)return chatGoTo(!chat.data.name?"name":(!chat.data.styleConfirmed?"style":(!chat.data.email?"email":"images")));
+        if(chat.howSaid)return chatGoTo(!chat.data.name?"name":(!chat.data.styleConfirmed?"style":(!chat.data.email?"email":(!chat.data.logo?"logo":"images"))));
         chat.howSaid=true;
       }
       if(s==="style"&&!(S.stylePicked&&S.style)){
@@ -3411,6 +3627,44 @@
       return chatSay(say,s).then(function(){chat.step=s;chatRender()})}
     $("chat-msgs").addEventListener("click",function(e){
       if(chat.building)return;
+      var anyBtn=e.target.closest?e.target.closest("button"):null;
+      if(anyBtn&&!anyBtn.disabled)tapSound();
+      var pmx=e.target.closest("[data-pmix]");
+      if(pmx){
+        var mk=pmx.getAttribute("data-pmix"),mv=pmx.getAttribute("data-val");
+        promptOverride=null;
+        if(mk==="main"){var mc=null;SEVEN.forEach(function(c){if(c.hex===mv)mc=c});if(mc){S.primaryPick={name:mc.name,hex:mc.hex};S.mixMain=0}}
+        else if(mk==="bg"){var bc=null;BG_OPTIONS.forEach(function(c){if(c.hex===mv)bc=c});if(bc){S.bgPick={name:bc.name,hex:bc.hex,dark:!!bc.dark};S.mixBg=0}}
+        else if(mk==="btn"){var bst=null;BTN_STYLES.forEach(function(x){if(x.name===mv)bst=x});if(bst){S.btnShape=bst.shape;S.btnStyleName=bst.name;S.btnRadius=bst.radius;S.btnRadiusShape=bst.shape}}
+        else if(mk==="font"){S.font=mv}
+        previewAdjust.touched=true;previewAdjust.confirmed=false;
+        renderAll();chatRender();
+        return;
+      }
+      var cfb=e.target.closest("[data-pmixconfirm]");
+      if(cfb&&!chat.thinking){
+        /* lock the current mixer choices into the details summary and the
+           owner brief (the same "Preview adjustments — …" line as always),
+           and confirm in the chat — never a browser popup */
+        previewAdjust.touched=true;previewAdjust.confirmed=true;
+        renderAll();chatRender();
+        chatSay("Your style choices are recorded — "+previewAdjustSummary()+". They're in your details summary and the brief for your website, exactly as you've set them — and if you change your mind later, we can adjust the details any time.",chat.step).then(function(){chatRender()});
+        return;
+      }
+      var lgb=e.target.closest("[data-logo]");
+      if(lgb&&!chat.thinking){
+        var lact=lgb.getAttribute("data-logo");
+        if(lact==="upload"){$("chat-logo-file").click();return}
+        if(lact==="replace"){$("chat-logo-file").click();return}
+        if(lact==="remove"){customerLogo=null;logoChoice="";chat.data.logo="";renderAll();chatRender();toast("Logo removed — pick either option whenever you're ready.");return}
+        if(lact==="done"){chatAdd("me","Use this logo");chatRender();chatGoTo("images");return}
+        if(lact==="later"){
+          logoChoice="later";chat.data.logo="later";customerLogo=null;renderAll();
+          chatAdd("me","Option 2 — I'll upload / upgrade my logo later");chatRender();
+          chatSay("That's completely fine — honestly. I've noted it as: Logo: will upload / upgrade later (option 2). You can add or upgrade your logo at any time after your website is built, and it never holds anything up. Let's carry on.",chat.step).then(function(){chatGoTo("images")});
+          return;
+        }
+      }
       var stb=e.target.closest("[data-styletry]");
       if(stb&&!stb.disabled){
         var ns=stb.getAttribute("data-styletry");
@@ -3443,6 +3697,16 @@
         chatGoTo("vision");
         return;
       }
+      var alb=e.target.closest("[data-addlogo]");
+      if(alb&&!chat.thinking){
+        /* revisit the logo question from the summary, exactly like the own-words
+           question: wind back to just before the finishing cards and ask it again */
+        var cut2=chat.msgs.findIndex(function(m){return m.kind==="build"||m.kind==="site"||m.kind==="handoff"||m.kind==="styletry"});
+        if(cut2>=0)chat.msgs=chat.msgs.slice(0,cut2);
+        chat.done=false;chat.building=false;chatRender();
+        chatGoTo("logo");
+        return;
+      }
       var ci=e.target.closest("[data-chatimg]");
       if(ci&&!chat.thinking){
         var act=ci.getAttribute("data-chatimg");
@@ -3462,17 +3726,21 @@
         chatGoTo(opt.go);return}
       var ed=e.target.closest("[data-edit]");
       if(ed&&!chat.thinking){var s=ed.getAttribute("data-edit");var idx=chat.msgs.findIndex(function(m){return m.step===s});
-        if(idx>=0)chat.msgs=chat.msgs.slice(0,idx+1);chat.step=s;chat.done=false;chatRender()}
+        if(idx>=0)chat.msgs=chat.msgs.slice(0,idx+1);
+        if(s==="logo"){customerLogo=null;logoChoice="";chat.data.logo="";renderAll()}
+        chat.step=s;chat.done=false;chatRender()}
     });
     $("chat-msgs").addEventListener("input",function(e){
       var t=e.target.closest("[data-chatnote]");if(!t)return;var im=userImages[+t.getAttribute("data-chatnote")];if(im)im.note=t.value;
     });
     $("chat-msgs").addEventListener("change",function(e){
+      tapSound();
       var t=e.target.closest("[data-chatslot]");if(!t)return;var im=userImages[+t.getAttribute("data-chatslot")];if(im){im.slot=t.value;renderAll()}
     });
     $("chat-form").addEventListener("submit",function(e){
       e.preventDefault();if(chat.thinking||chat.building)return;
       var step=CHAT_STEPS[chat.step];if(!step||!step.field)return;
+      tapSound();
       var field=step.field,v=(field==="vision"?$("chat-vision").value:$("chat-text").value),err="";
       /* EVERY typed answer is type-checked before it is saved. A wrong-kind
          answer is stored nowhere, never advances the counter and never gets a
@@ -3561,20 +3829,38 @@
       }
       chatGoTo(next);
     });
+    /* the finishing mixers' colour picker + hex field: "input" updates the
+       preview live in place; "change" (picker closed / field committed)
+       settles everything with a full re-render, exactly like a swatch tap */
+    $("chat-msgs").addEventListener("input",function(e){
+      var t=e.target;if(!t||!t.hasAttribute)return;
+      if(t.hasAttribute("data-pmixcolor")){applyMixerColor(t.value,t);return}
+      if(t.hasAttribute("data-pmixhex")){
+        var v=t.value.trim();
+        if(/^#?[0-9a-f]{6}$/i.test(v)){t.classList.remove("bad");applyMixerColor(v.charAt(0)==="#"?v:"#"+v,t)}
+        else if(v.length>=7)t.classList.add("bad");else t.classList.remove("bad");
+      }
+    });
+    $("chat-msgs").addEventListener("change",function(e){
+      var t=e.target;if(!t||!t.hasAttribute)return;
+      if(t.hasAttribute("data-pmixcolor")||t.hasAttribute("data-pmixhex")){renderAll();chatRender()}
+    });
     $("chat-text").addEventListener("input",function(){$("chat-err").textContent=""});
     $("chat-vision").addEventListener("input",function(){$("chat-err").textContent=""});
     /* "Skip for now" on the own-words question: nobody gets stuck — the answer is
        recorded as not provided, and it can be added later from the summary */
     $("chat-skip").addEventListener("click",function(){
       if(chat.thinking||chat.building||chat.done||chat.step!=="vision")return;
+      tapSound();
       chat.data.visionSkipped=true;$("chat-err").textContent="";$("chat-vision").value="";
       chatAdd("me","Skip for now");chatRender();chatGoTo("email");
     });
     $("sound-btn").addEventListener("click",function(){
       chat.sound=!chat.sound;this.setAttribute("aria-label",chat.sound?"Turn sound off":"Turn sound on");
       $("sound-on-ic").style.display=chat.sound?"":"none";$("sound-off-ic").style.display=chat.sound?"none":"";
+      if(chat.sound){unlockSound();tapSound()}
     });
-    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}if(typeof creatingTimer!=="undefined"&&creatingTimer){clearInterval(creatingTimer);creatingTimer=null}if(typeof creatingClock!=="undefined"&&creatingClock){clearInterval(creatingClock);creatingClock=null}styleFlow=null;chatConfirmedStyle="";chat={msgs:[],step:"hello",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1,howSaid:false,creating:null};chatRender();chatGoTo("hello")}
+    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}if(typeof creatingTimer!=="undefined"&&creatingTimer){clearInterval(creatingTimer);creatingTimer=null}if(typeof creatingClock!=="undefined"&&creatingClock){clearInterval(creatingClock);creatingClock=null}styleFlow=null;chatConfirmedStyle="";customerLogo=null;logoChoice="";previewAdjust={touched:false,confirmed:false};chat={msgs:[],step:"hello",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1,howSaid:false,creating:null};chatRender();chatGoTo("hello")}
 
     /* ============ card form + order submission ============ */
     function luhn(num){var sum=0,alt=false;for(var i=num.length-1;i>=0;i--){var d=+num[i];if(alt){d*=2;if(d>9)d-=9}sum+=d;alt=!alt}return num.length>=15&&sum%10===0}
@@ -3720,6 +4006,19 @@
     }
     $("img-file").addEventListener("change",function(){var fl=this.files;this.value="";ingestImages(fl,null)});
     $("chat-img-file").addEventListener("change",function(){var fl=this.files;this.value="";ingestImages(fl,function(){chatRender()})});
+    /* the logo question's own upload: one file, kept apart from the 10 website
+       images, shown straight back to the customer in the chat as a preview */
+    $("chat-logo-file").addEventListener("change",function(){
+      var f=this.files&&this.files[0];this.value="";if(!f)return;
+      var rd=new FileReader();
+      rd.onload=function(){
+        customerLogo={name:(f.name||"My logo").replace(/\.[^.]+$/,"").replace(/[-_]+/g," ").trim()||"My logo",src:String(rd.result||"")};
+        logoChoice="uploaded";chat.data.logo="uploaded";renderAll();
+        chatSay("Beautiful — I've got it. Here's your logo, exactly as you sent it — it will sit in your website's header. Happy with it? Tap “Use this logo” to carry on, or replace it first.","logo");
+      };
+      rd.onerror=function(){toast("That file couldn't be read — please try another logo file.")};
+      rd.readAsDataURL(f);
+    });
     $("img-grid").addEventListener("change",function(e){
       var t=e.target.closest("[data-img]");if(!t)return;var im=userImages[+t.getAttribute("data-img")];if(!im)return;
       im[t.getAttribute("data-k")]=t.value;renderAll();
