@@ -295,6 +295,8 @@
       .msg .opts{display:flex;flex-direction:column;align-items:flex-start;gap:7px;margin-top:9px}
       .msg .opts button{border:1px solid var(--brand-2);color:var(--brand-2);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:13.5px}
       .msg .opts button:hover{background:var(--surface-2)}
+      .msg .opts button.on{border:2px solid var(--brand-2);background:var(--brand-2);color:#fff;font-weight:700;padding:5px 13px;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand-2) 22%,transparent)}
+      .msg .opts button.on::after{content:"✓";margin-left:7px;font-weight:800}
       .dots{display:inline-flex;gap:4px;padding:12px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:16px;border-top-left-radius:4px}
       .dots span{width:7px;height:7px;border-radius:50%;background:var(--brand-2);animation:bounce 1s infinite}
       .dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
@@ -2072,36 +2074,34 @@
 
     <footer class="site"><span>WEBFLOWAI · THE GUIDED AI WEBSITE CREATOR</span><p class="footer-contact">Contact us: <a href="mailto:webflowai301@gmail.com">webflowai301@gmail.com</a></p><br /><button id="owner-link" class="foot-link">Owner area</button><button id="ext-link" class="foot-link">Extension</button></footer>
 
-    <!-- ================= PREVIEW POP-UP ================= -->
-    <div id="preview-overlay" role="dialog" aria-modal="true" aria-labelledby="pv-title" style="display:none;position:fixed;inset:0;z-index:70;background:rgba(8,12,20,.7);padding:18px;overflow-y:auto">
-      <div class="panel" style="max-width:960px;margin:2vh auto;padding:0;overflow:hidden">
-        <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap">
-          <h3 id="pv-title" style="font-size:18px">Your website preview</h3>
-          <span style="color:var(--muted);font-size:13px">Front-end preview · generated instantly from your answers</span>
+    <!-- ================= FULL-SCREEN WEBSITE VIEW =================
+         "Open your website" opens the generated site in a true full-screen
+         view: the overlay covers 100% of the viewport, the site scrolls in
+         its own area under a slim WebFlowAI bar, and there is no fake
+         browser chrome and no fake address anywhere. -->
+    <div id="preview-overlay" role="dialog" aria-modal="true" aria-labelledby="pv-title" style="display:none;position:fixed;inset:0;z-index:70;background:var(--surface)">
+      <div style="height:100%;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;background:var(--surface);flex:none">
+          <h3 id="pv-title" style="font-size:18px">Your website</h3>
+          <span style="color:var(--muted);font-size:13px">Full-screen · generated from your answers</span>
           <button class="btn small" id="pv-back-chat" style="margin-left:auto">← Continue in the chat</button>
           <button class="btn ghost small" id="pv-close" style="margin-left:8px">Close ✕</button>
         </div>
-        <div style="padding:18px">
-          <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)">
-            <div style="display:flex;align-items:center;gap:8px;background:var(--surface-2);padding:9px 12px;border-bottom:1px solid var(--border)">
-              <span style="width:10px;height:10px;border-radius:50%;background:var(--border)"></span><span style="width:10px;height:10px;border-radius:50%;background:var(--border)"></span><span style="width:10px;height:10px;border-radius:50%;background:var(--border)"></span>
-              <span id="pv-url" style="margin-left:8px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:4px 12px;font-size:12.5px;color:var(--muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-            </div>
-            <div id="pv-frame" class="pv-fade"></div>
-          </div>
-          <div style="margin-top:16px">
-            <p style="font-weight:600;font-size:14.5px">Try a different colour mood — the preview recolours live:</p>
+        <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain">
+          <div id="pv-frame" class="pv-fade"></div>
+          <div style="max-width:960px;margin:0 auto;padding:22px 18px 30px">
+            <p style="font-weight:600;font-size:14.5px">Try a different colour mood — the website recolours live:</p>
             <div id="pv-swatches" style="margin-top:8px"></div>
             <div data-balpanel style="margin-top:16px"></div>
             <p style="font-weight:600;font-size:14.5px;margin-top:14px">Layout:</p>
             <div class="chips" id="pv-layouts" style="margin-top:8px"></div>
-          </div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;align-items:center">
-            <button class="btn" id="pv-continue">Continue — this looks right
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </button>
-            <button class="btn ghost" id="pv-keep">Keep editing my answers</button>
-            <span style="color:var(--muted);font-size:13px">Continuing packages this exact design as your order.</span>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;align-items:center">
+              <button class="btn" id="pv-continue">Continue — this looks right
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+              <button class="btn ghost" id="pv-keep">Keep editing my answers</button>
+              <span style="color:var(--muted);font-size:13px">Continuing packages this exact design as your order.</span>
+            </div>
           </div>
         </div>
       </div>
@@ -2388,7 +2388,7 @@
       var style=b.style.toLowerCase();
       var name=b.name?(' called "'+b.name+'"'):"";
       var p='Create a '+style+' '+b.purpose.toLowerCase()+' website'+name+' for '+b.audience.toLowerCase()+
-        '. Focus on clean lines, ample whitespace, and a '+b.tone.toLowerCase()+' tone throughout. Key sections should include: '+b.pages.join(", ")+
+        '. Focus on clean lines, ample whitespace, and a '+b.tone.toLowerCase()+' tone throughout. Key sections should include: '+((typeof sectionNames==="function")?sectionNames():b.pages).join(", ")+
         '. Include '+(b.features.join(", ")||"basic features")+'. Use a colour scheme of '+b.colors.toLowerCase()+
         ', with '+effPrimary().name+' ('+effPrimary().hex+') as the primary colour and '+effAccent().name+' ('+effAccent().hex+') as the accent colour. Lay the page out as a '+b.layout.toLowerCase()+' design, set type in a '+b.font.toLowerCase()+' style, and use '+b.btnShape.toLowerCase()+' buttons. Make it '+
         (b.complex?"rich and detailed":"simple and focused")+' with '+b.pageCount+' page'+(b.pageCount==="1"?"":"s")+'.';
@@ -2397,6 +2397,19 @@
         p+=' In the colour mixer, the customer fine-tuned the colours themselves: the main colour was '+mxw(b.mixMain)+', the second colour was '+mxw(b.mixSecond)+', and the background tone was '+mxw(b.mixBg)+' — so the final colours to use are primary '+effPrimary().hex+', accent '+effAccent().hex+' and background '+effBg()+'.';}
       if(b.kit)p+=' The design starts from the '+b.kit+' brand kit — its primary colour, accent colour and font applied together.';
       if(b.vision)p+=' In their own words, the customer describes the website they imagine: "'+b.vision+'" — keep that description at the centre of the build: what the site is for, what it should offer, and the feeling it should give people.';
+      /* every typed answer from the 10-question chat is consumed by the
+         brief too, word for word, each as its own statement — a typed answer
+         is never dropped or replaced by the option tapped alongside it */
+      var ca=(typeof chatAns!=="undefined")?chatAns:null;
+      if(ca){
+        if(ca.q2&&ca.q2.text)p+=' The customer gives the website\u2019s purpose in their own words: "'+ca.q2.text+'" — build to exactly that purpose.';
+        if(ca.q6&&ca.q6.text)p+=' The customer describes their audience in their own words: "'+ca.q6.text+'".';
+        if(ca.q3&&ca.q3.text)p+=' The look and feel, in the customer\u2019s own words: "'+ca.q3.text+'".';
+        if(ca.q4&&ca.q4.text)p+=' Colours, in the customer\u2019s own words: "'+ca.q4.text+'".';
+        if(ca.q5&&ca.q5.text)p+=' Logo notes from the customer: "'+ca.q5.text+'".';
+        if(ca.q8&&ca.q8.text)p+=' Specific pages the customer asked for, in their own words: "'+ca.q8.text+'".';
+        if(ca.q10&&ca.q10.text)p+=' Plan notes from the customer: "'+ca.q10.text+'".';
+      }
       if(userImages.length)p+=' The customer supplied '+userImages.length+' of their own image'+(userImages.length===1?"":"s")+' to include: '+userImages.map(function(im){return '"'+(im.name||"image")+'"'+(im.slot&&im.slot!=="Auto"?" as the "+im.slot.toLowerCase():"")+(im.note?' ('+im.note+")":"")}).join(", ")+'.';
       if(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)p+=' Logo: uploaded by the customer ("'+(customerLogo.name||"logo")+'") — place this logo in the website header and wherever a logo belongs.';
       else if(typeof logoChoice!=="undefined"&&logoChoice==="later")p+=' Logo: will upload / upgrade later (option 2) — launch with the business name in the header for now; the customer will supply or upgrade the logo later.';
@@ -2419,13 +2432,14 @@
     function orderPackage(){
       return {reference:refCode(), account:customerEmail?{email:customerEmail,keyedBy:"email address",ownerOnly:true}:null, customerName:customerFullName()?{firstName:customerFirstName,lastName:customerLastName,fullName:customerFullName(),greetingName:customerGreetingName(),note:"Collected at sign-in/sign-up so the AI can address the customer by name. The name is shown to the customer and the AI; the sign-in email stays owner-only and is never part of the AI-side identity."}:null, signinCode:customerCode||null, aiSideIdentity:customerCode?((customerFullName()?customerFullName()+" · ":"Customer · ")+"Code "+fmtCode(customerCode)):"Guest (not signed in)",
         displayContacts:{phone:S.displayPhone||null, email:S.displayEmail||null, label:"For the website — provided by the customer", note:"Contact details the customer provided to be shown on their website. Website content: the builder AI sees these and places them on the site exactly as given. This is NOT the sign-in/login email address, which is never included for the AI."},
-        createdImagesRequest:aiImageRequest||null, createdImagesRule:"WebFlowAI-created images are always people-free — products, objects, places, interiors and screens only; never any image of a female and no people at all.", business:S.name||"My Website", purpose:S.purpose, style:S.style, confirmedStyle:(typeof chatConfirmedStyle!=="undefined"&&chatConfirmedStyle)||S.style, audience:S.audience,
-        sections:S.pages, features:S.features, colours:S.colors, brandKit:S.kit||null, primaryColour:{name:effPrimary().name, hex:effPrimary().hex}, accentColour:{name:effAccent().name, hex:effAccent().hex}, backgroundColour:{hex:effBg()}, colourBalance:{mainColour:effPrimary().name, mainPct:S.balanceMain, secondColour:effAccent().name, secondPct:S.balanceSecond}, colourMixer:{mainAdjust:S.mixMain, secondAdjust:S.mixSecond, backgroundAdjust:S.mixBg}, tone:S.tone, layout:S.layout, fontStyle:S.font,
+        createdImagesRequest:aiImageRequest||null, createdImagesRule:"WebFlowAI-created images are always people-free — products, objects, places, interiors and screens only; never any image of a female and no people at all.", business:S.name||"My Website", purpose:S.purpose, purposeCategory:(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.tap)||null, purposeTyped:(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.text)||null, style:S.style, confirmedStyle:(typeof chatConfirmedStyle!=="undefined"&&chatConfirmedStyle)||S.style, audience:S.audience, audienceTyped:(typeof chatAns!=="undefined"&&chatAns.q6&&chatAns.q6.text)||null, audienceOption:(typeof chatAns!=="undefined"&&chatAns.q6&&chatAns.q6.tap)||null,
+        typedAnswers:{label:"Everything the customer typed in the 10-question chat, verbatim, each answer as its own field — never merged into another field and never overwritten by a tapped option",businessName:(typeof chatAns!=="undefined"&&chatAns.q1&&chatAns.q1.text)||null,purpose:(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.text)||null,style:(typeof chatAns!=="undefined"&&chatAns.q3&&chatAns.q3.text)||null,colours:(typeof chatAns!=="undefined"&&chatAns.q4&&chatAns.q4.text)||null,logoNotes:(typeof chatAns!=="undefined"&&chatAns.q5&&chatAns.q5.text)||null,audience:(typeof chatAns!=="undefined"&&chatAns.q6&&chatAns.q6.text)||null,serviceArea:(typeof chatAns!=="undefined"&&chatAns.q7&&chatAns.q7.text)||null,sectionsNote:(typeof chatAns!=="undefined"&&chatAns.q8&&chatAns.q8.text)||null,callToAction:(typeof chatAns!=="undefined"&&chatAns.q9&&chatAns.q9.text)||null,planNotes:(typeof chatAns!=="undefined"&&chatAns.q10&&chatAns.q10.text)||null},
+        sections:(typeof sectionNames==="function")?sectionNames():S.pages, pagesInternal:S.pages, features:S.features, colours:S.colors, brandKit:S.kit||null, primaryColour:{name:effPrimary().name, hex:effPrimary().hex}, accentColour:{name:effAccent().name, hex:effAccent().hex}, backgroundColour:{hex:effBg()}, colourBalance:{mainColour:effPrimary().name, mainPct:S.balanceMain, secondColour:effAccent().name, secondPct:S.balanceSecond}, colourMixer:{mainAdjust:S.mixMain, secondAdjust:S.mixSecond, backgroundAdjust:S.mixBg}, tone:S.tone, layout:S.layout, fontStyle:S.font,
         buttonShape:S.btnShape, complexity:S.complex?"Complex":"Simple", pageCount:S.pageCount, tagline:S.tagline||null,
         ownWords:S.vision||null, ownWordsLabel:"In their own words — the customer's own description of the website they imagine, kept word for word; if null, the customer did not provide one.",
         logo:(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?{status:"uploaded",label:"Logo: uploaded by the customer",name:customerLogo.name,src:customerLogo.src,attachedInThisPage:true}:((typeof logoChoice!=="undefined"&&logoChoice==="later")?{status:"later",label:"Logo: will upload / upgrade later (option 2)",name:null,src:null}:((typeof logoChoice!=="undefined"&&logoChoice==="text")?{status:"text",label:"Logo: clean text logo for now (business name as a wordmark)",name:null,src:null}:null)),
         serviceArea:S.serviceArea||null, callToAction:S.cta||null,
-        chatFlow:{label:"Tap-and-continue chat — the customer's answers to the 10 questions, exactly as given (a skip is recorded as skipped; nothing is invented)",category:(typeof chat!=="undefined"&&chat.data&&chat.data.category)||null,planSelected:(typeof chat!=="undefined"&&chat.data&&chat.data.plan)||null,answers:(typeof chatAnswers!=="undefined"?chatAnswers:{})},
+        chatFlow:{label:"Tap-and-continue chat — the customer's answers to the 10 questions, exactly as given (a skip is recorded as skipped; nothing is invented)",category:(typeof chat!=="undefined"&&chat.data&&chat.data.category)||null,planSelected:(typeof chat!=="undefined"&&chat.data&&chat.data.plan)||null,planNotes:(typeof chat!=="undefined"&&chat.data&&chat.data.planNote)||null,answers:(typeof chatAnswers!=="undefined"?chatAnswers:{}),detailed:(typeof chatAns!=="undefined"?chatAns:{})},
         previewAdjustments:(typeof previewAdjust!=="undefined"&&previewAdjust.touched)?{label:previewAdjustLine(),mainColor:{name:effPrimary().name,hex:effPrimary().hex},background:{name:(S.bgPick?S.bgPick.name:"As created"),hex:effBg()},buttonStyle:mixerBtnLabel(),font:S.font}:{label:"Preview adjustments: none — the customer kept the small preview exactly as created.",touched:false},
         notes:S.custom||null, brief:buildPrompt(S),
         plan:{website:{label:"Front-end website", price:BASE_PRICE, billing:"one-time"},
@@ -2462,14 +2476,19 @@
         +(aiImageRequest?'<tr><th>Images to create</th><td>“'+esc(aiImageRequest)+'” — created by WebFlowAI, always people-free (products, objects, places, interiors, screens only; never any image of a female, no people at all).</td></tr>':"")
         +((typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?'<tr><th>Logo</th><td><img src="'+customerLogo.src+'" alt="" style="height:42px;max-width:150px;object-fit:contain;vertical-align:middle;margin-right:10px" />uploaded by the customer — “'+esc(customerLogo.name)+'”, supplied in the chat and shown back to them there.</td></tr>':((typeof logoChoice!=="undefined"&&logoChoice==="later")?'<tr><th>Logo</th><td>will upload / upgrade later (option 2) — the customer chose to add or upgrade their logo later; launch with the business name in the header.</td></tr>':((typeof logoChoice!=="undefined"&&logoChoice==="text")?'<tr><th>Logo</th><td>a clean text logo for now — the business name set as a tidy wordmark in the header; the customer may upload a logo file later.</td></tr>':"")))
         +'<tr><th>Preview adjustments</th><td>'+((typeof previewAdjust!=="undefined"&&previewAdjust.touched)?esc(previewAdjustSummary()):"None — the small preview was kept exactly as created.")+'</td></tr>'
-        +'<tr><th>Purpose</th><td>'+esc(S.purpose)+'</td></tr>'
+        +'<tr><th>Purpose</th><td>'+esc((typeof purposeFieldText==="function")?purposeFieldText():S.purpose)+'</td></tr>'
         +'<tr><th>Visual style</th><td>'+esc(S.style)+'</td></tr>'
-        +'<tr><th>Target audience</th><td>'+esc(S.audience)+'</td></tr>'
+        +((typeof chatAns!=="undefined"&&chatAns.q3&&chatAns.q3.text)?'<tr><th>Style — in their own words</th><td>“'+esc(chatAns.q3.text)+'” — typed by the customer at the style question, kept word for word.</td></tr>':"")
+        +((typeof chatAns!=="undefined"&&chatAns.q4&&chatAns.q4.text)?'<tr><th>Colours — in their own words</th><td>“'+esc(chatAns.q4.text)+'” — typed by the customer at the colour question, kept word for word.</td></tr>':"")
+        +((typeof chatAns!=="undefined"&&chatAns.q5&&chatAns.q5.text)?'<tr><th>Logo notes</th><td>“'+esc(chatAns.q5.text)+'” — typed by the customer at the logo question, kept word for word.</td></tr>':"")
+        +'<tr><th>Target audience</th><td>'+esc((typeof audienceFieldText==="function")?audienceFieldText():S.audience)+'</td></tr>'
         +(S.serviceArea?'<tr><th>Service area</th><td>'+esc(S.serviceArea)+'</td></tr>':"")
         +(S.cta?'<tr><th>Primary call-to-action</th><td>'+esc(S.cta)+'</td></tr>':"")
         +((typeof chat!=="undefined"&&chat.data&&chat.data.category)?'<tr><th>Business category</th><td>'+esc(chat.data.category)+'</td></tr>':"")
         +((typeof chat!=="undefined"&&chat.data&&chat.data.plan)?'<tr><th>Plan selected in chat</th><td>'+esc(chat.data.plan)+' — chosen for the building stages; no card was taken at that step.</td></tr>':"")
-        +'<tr><th>Sections</th><td>'+esc(S.pages.join(", ")||"—")+'</td></tr>'
+        +((typeof chatAns!=="undefined"&&chatAns.q10&&chatAns.q10.text)?'<tr><th>Plan notes</th><td>“'+esc(chatAns.q10.text)+'” — typed by the customer at the plan question, kept word for word.</td></tr>':"")
+        +'<tr><th>Sections</th><td>'+esc(((typeof sectionNames==="function")?sectionNames():S.pages).join(", ")||"—")+'</td></tr>'
+        +((typeof chatAns!=="undefined"&&chatAns.q8&&chatAns.q8.text)?'<tr><th>Specific pages — in their own words</th><td>“'+esc(chatAns.q8.text)+'” — typed by the customer at the sections question, kept word for word.</td></tr>':"")
         +'<tr><th>Features</th><td>'+esc(S.features.join(", ")||"—")+'</td></tr>'
         +'<tr><th>Colour mood</th><td>'+swatchDots(pal)+' '+esc(S.colors)+'</td></tr>'
         +(S.kit?'<tr><th>Brand kit</th><td>'+esc(S.kit)+'</td></tr>':"")
@@ -2494,7 +2513,7 @@
         +'<tr><th>Primary colour</th><td>'+swatchDots({sw:[effPrimary().hex]})+' '+esc(effPrimary().name)+' · '+effPrimary().hex+'</td></tr>'
         +'<tr><th>Accent colour</th><td>'+swatchDots({sw:[effAccent().hex]})+' '+esc(effAccent().name)+' · '+effAccent().hex+'</td></tr>'
         +'<tr><th>Colour balance</th><td>Main '+S.balanceMain+'% · Second '+S.balanceSecond+'%</td></tr>'
-        +'<tr><th>Sections included</th><td>'+esc(S.pages.join(", ")||"—")+'</td></tr>'
+        +'<tr><th>Sections included</th><td>'+esc(((typeof sectionNames==="function")?sectionNames():S.pages).join(", ")||"—")+'</td></tr>'
         +'<tr><th>Add-ons chosen</th><td>'+esc(ADDONS.filter(function(a){return addons[a.key]}).map(function(a){return a.name}).join(", ")||"None")+'</td></tr>'
         +'</tbody></table></div>'
         +'<h3>4 · Plan &amp; pricing</h3><table class="spec"><tbody>'
@@ -2556,7 +2575,10 @@
     function renderSwatches(container){
       if(!container)return;
       container.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">'
-        +PALETTES.map(function(p){var on=S.colors===p.name;
+        +PALETTES.map(function(p){/* a preset palette shows as applied only when it truly is: once the
+             customer has applied their own main/accent colour (e.g. in the finishing mixers),
+             no preset may present itself as the active one */
+          var on=S.colors===p.name&&!S.primaryPick&&!S.accentPick;
           return '<button data-palette="'+esc(p.name)+'" aria-pressed="'+on+'" style="text-align:left;border:'+(on?"2px solid var(--brand-2)":"1px solid var(--border)")+';background:var(--surface);border-radius:12px;padding:'+(on?"11px":"12px")+'">'
           +'<span style="display:flex;gap:6px">'+p.sw.map(function(c){return '<span style="width:26px;height:26px;border-radius:50%;background:'+c+';border:1px solid rgba(0,0,0,.15)"></span>'}).join("")+'</span>'
           +'<span style="display:block;margin-top:9px;font-size:14px;font-weight:'+(on?"700":"500")+'">'+esc(p.name)+'</span>'
@@ -2819,12 +2841,19 @@
       var cardR=T.cardR, cardCSS=T.cardCSS;
       var grad135="linear-gradient(135deg,"+PRIMHEX+" 0%,"+PRIMHEX+" "+T.gradW+"%,"+ACCHEX+" 100%)";
       var tagline=S.tagline||({Professional:"Quality you can rely on, from first click to final delivery.",Friendly:"Made with care, right around the corner.",Playful:"Something fun is always happening here.",Luxury:"An experience in quiet, considered detail."}[S.tone]);
-      var headline={ "E-Commerce / Shop":"Shop the collection everyone is talking about","Portfolio":"Work that speaks for itself","Landing Page":name+" — "+tagline,"Blog / Personal":"Stories, notes and ideas from "+name,"Business / SaaS":name+" helps you get more done"}[S.purpose]||tagline;
+      /* the site is assembled from the customer's real answers — never from
+         generic filler: the business name is the heading, and the intro
+         wording is the customer's own typed purpose (their own-words
+         description, then their tagline, as fallbacks) */
+      var purposeText=(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.text)||"";
+      var headline=S.tagline?(name+" — "+S.tagline):name;
+      var introText=purposeText||S.vision||tagline;
+      var disp=function(p){return (typeof SECTION_DISPLAY!=="undefined"&&SECTION_DISPLAY[p])||p};
       var links=S.pages.filter(function(p){return p!=="Hero"}).slice(0,4);
       var hCSS=function(sz){return "font-family:"+T.hfont+";font-size:"+sz+"px;line-height:1.16;margin:0 0 10px;font-weight:"+T.hw+";letter-spacing:"+T.hls+";text-transform:"+T.htrans+";text-shadow:"+T.hshadow+(T.hColor?";color:"+T.hColor:"")};
       var heroInkCSS=T.heroInk?("color:"+T.heroInk+";"):"";
       var kick=T.kicker?'<p style="font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:'+ACCHEX+';margin:0 0 10px">'+esc(T.kicker)+'</p>':"";
-      var btn='<span style="display:inline-block;background:'+T.btnBg+';color:'+T.btnColor+';border:'+T.btnBorder+';box-shadow:'+T.btnShadow+';padding:'+T.btnPad+';border-radius:'+T.btnR+';font-weight:600;font-size:14.5px;'+T.btnExtra+'">Get started</span>';
+      var btn='<span style="display:inline-block;background:'+T.btnBg+';color:'+T.btnColor+';border:'+T.btnBorder+';box-shadow:'+T.btnShadow+';padding:'+T.btnPad+';border-radius:'+T.btnR+';font-weight:600;font-size:14.5px;'+T.btnExtra+'">'+esc(S.cta||"Get started")+'</span>';
       var btn2='<span style="display:inline-block;background:'+T.btn2Bg+';border:'+T.btn2Border+';box-shadow:'+T.btn2Shadow+';color:'+T.btn2Color+';padding:'+T.btnPad+';border-radius:'+T.btnR+';font-weight:600;font-size:14.5px;'+T.btnExtra+'">Learn more</span>';
       var heroImg=null;userImages.forEach(function(im){if(!heroImg&&im.slot==="Hero")heroImg=im});if(!heroImg&&userImages.length)heroImg=userImages[0];
       var visual=heroImg
@@ -2833,38 +2862,68 @@
       var heroWrap='position:relative;overflow:hidden;background:'+T.heroBg+';'+heroInkCSS;
       var hero="";
       if(heroLayout==="Split hero"){
-        hero='<div style="'+heroWrap+'display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center;padding:34px 30px">@T@</div>'.replace("@T@",'<div>'+T.deco+kick+'<h2 style="'+hCSS(Math.max(20,T.hsize-2))+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 0 18px">'+esc(tagline)+'</p>'+btn+' '+btn2+'</div><div>'+visual+'</div>');
+        hero='<div style="'+heroWrap+'display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center;padding:34px 30px">@T@</div>'.replace("@T@",'<div>'+T.deco+kick+'<h2 style="'+hCSS(Math.max(20,T.hsize-2))+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 0 18px">'+esc(introText)+'</p>'+btn+' '+btn2+'</div><div>'+visual+'</div>');
       }else if(heroLayout==="Sidebar"){
-        hero='<div style="'+heroWrap+'padding:30px">'+T.deco+kick+'<h2 style="'+hCSS(Math.max(20,T.hsize-3))+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 0 18px;max-width:520px">'+esc(tagline)+'</p>'+btn+' '+btn2+'<div style="margin-top:20px">'+visual+'</div></div>';
+        hero='<div style="'+heroWrap+'padding:30px">'+T.deco+kick+'<h2 style="'+hCSS(Math.max(20,T.hsize-3))+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 0 18px;max-width:520px">'+esc(introText)+'</p>'+btn+' '+btn2+'<div style="margin-top:20px">'+visual+'</div></div>';
       }else if(heroLayout==="Magazine grid"){
-        hero='<div style="'+heroWrap+'padding:30px 30px 6px;text-align:left">'+T.deco+kick+'<h2 style="'+hCSS(Math.max(20,T.hsize-2))+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0">'+esc(tagline)+'</p><div style="margin-top:16px">'+btn+'</div></div>';
+        hero='<div style="'+heroWrap+'padding:30px 30px 6px;text-align:left">'+T.deco+kick+'<h2 style="'+hCSS(Math.max(20,T.hsize-2))+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0">'+esc(introText)+'</p><div style="margin-top:16px">'+btn+'</div></div>';
       }else{
-        hero='<div style="'+heroWrap+'padding:'+T.heroPad+';text-align:center">'+T.deco+'<div style="width:56px;height:56px;border-radius:'+T.avatarR+';background:'+grad135+';color:#fff;display:grid;place-items:center;font-size:24px;font-weight:800;margin:0 auto 14px;font-family:'+T.hfont+'">'+initial+'</div>'+kick+'<h2 style="'+hCSS(T.hsize)+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 auto 20px;max-width:480px">'+esc(tagline)+'</p>'+btn+' '+btn2+'</div>';
+        hero='<div style="'+heroWrap+'padding:'+T.heroPad+';text-align:center">'+T.deco+'<div style="width:56px;height:56px;border-radius:'+T.avatarR+';background:'+grad135+';color:#fff;display:grid;place-items:center;font-size:24px;font-weight:800;margin:0 auto 14px;font-family:'+T.hfont+'">'+initial+'</div>'+kick+'<h2 style="'+hCSS(T.hsize)+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 auto 20px;max-width:480px">'+esc(introText)+'</p>'+btn+' '+btn2+'</div>';
       }
       if(T.layout==="bento")hero='<div style="margin:16px 16px 0;'+cardCSS+'border-radius:20px;overflow:hidden">'+hero+'</div>';
+      /* exactly the sections the customer picked, each rendered as a real
+         section — copy comes from their answers (the About section carries
+         their own typed purpose), and starter content is labelled as
+         starter content, never dressed up as the business's real facts */
       var sectionCopy={
-        "About Me":"A short introduction to "+name+" — who we are, what we do, and why people choose us.",
+        "About Me":purposeText||("A short introduction to "+name+" — who we are, what we do, and why people choose us."),
         "Project Showcase":"A selection of recent work and favourite projects, presented in a clean gallery.",
         "Services":"Everything "+name+" offers, explained simply with clear next steps.",
-        "Pricing":"Straightforward pricing, with no surprises — pick the option that fits.",
-        "Testimonials":"Kind words from the people and businesses we have worked with.",
+        "Pricing":"Clear pricing for everything "+name+" offers — your real prices will be listed here, with no surprises.",
+        "Testimonials":"Reviews from happy customers will appear here as they come in.",
         "Blog":"News, ideas and updates from "+name+", published regularly.",
+        "Product Details":"The details of each product — sizes, options and what\u2019s included — written from your real product list.",
+        "Cart":"Items your customers add will collect here, with quantities and a running total — ready for checkout.",
+        "Checkout":"A short, secure checkout: contact details, payment, and an order confirmation — nothing more.",
+        "Booking Calendar":"Pick a date and time that suits you — the times available show here, and a confirmation follows straight away.",
         "Contact form":"Send a message and we will get back to you shortly."};
       var blockList=S.pages.filter(function(p){return p!=="Hero"});
       var blocks=blockList.map(function(p,bi){
         var tint=T.tileTint?["background:"+T.cardBg, "background:"+PRIMHEX+"17", "background:"+ACCHEX+"17", "background:#ffffff"][bi%4]:"";
         var bCSS=cardCSS+(tint?";"+tint:"")+((T.layout==="bento"&&bi===0&&blockList.length>1)?";grid-column:span 2":"");
         var h3CSS="font-family:"+T.hfont+";"+(T.hColor?("color:"+T.hColor+";"):"")+(T.htrans==="uppercase"?"text-transform:uppercase;letter-spacing:.03em;":"");
+        if(p==="Menu"){
+          /* example items, plainly labelled as starter content the customer
+             can swap — never presented as the business's real menu */
+          var menuItems=[["Fresh bagel with cream cheese","$3.50"],["Toasted breakfast sandwich","$6.95"],["Fresh-brewed coffee","$2.50"],["Fresh orange juice","$3.25"]];
+          return '<div style="'+bCSS+';padding:18px"><h3 style="margin:0 0 4px;font-size:17px;'+h3CSS+'">Menu</h3>'
+            +'<p style="margin:0 0 10px;opacity:.72;font-size:13.5px">Example items to get you started — swap in your real menu whenever you like.</p>'
+            +menuItems.map(function(mi){return '<div style="display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed '+T.line+'"><span style="font-size:14.5px">'+esc(mi[0])+'</span><span style="font-size:14.5px;font-weight:700;color:'+ACCHEX+'">'+esc(mi[1])+'</span></div>'}).join("")
+            +'</div>';
+        }
+        if(p==="FAQ"){
+          var faqs=[];
+          if(S.serviceArea)faqs.push(["Which area do you serve?","We look after "+S.serviceArea+"."]);
+          if(S.cta)faqs.push(["How do I get started?","Just tap \u201C"+S.cta+"\u201D above — or send us a message and we\u2019ll take it from there."]);
+          if(!faqs.length)faqs.push(["Your most-asked questions","The questions your customers ask most will be answered right here."]);
+          return '<div style="'+bCSS+';padding:18px"><h3 style="margin:0 0 8px;font-size:17px;'+h3CSS+'">FAQ</h3>'
+            +faqs.map(function(f){return '<p style="margin:0 0 3px;font-size:14.5px;font-weight:700">'+esc(f[0])+'</p><p style="margin:0 0 10px;opacity:.72;font-size:14px">'+esc(f[1])+'</p>'}).join("")
+            +'</div>';
+        }
         if(p==="Contact form"){
-          return '<div style="'+bCSS+';padding:18px"><h3 style="margin:0 0 10px;font-size:17px;'+h3CSS+'">Contact form</h3><div style="display:grid;gap:8px"><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">Your name</span><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">Your email</span><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">How can we help?</span></div><div style="margin-top:12px">'+btn+'</div></div>';
+          var contactBits=[];
+          if(S.displayPhone)contactBits.push(esc(S.displayPhone));
+          if(S.displayEmail)contactBits.push(esc(S.displayEmail));
+          if(S.serviceArea)contactBits.push("Serving "+esc(S.serviceArea));
+          return '<div style="'+bCSS+';padding:18px"><h3 style="margin:0 0 10px;font-size:17px;'+h3CSS+'">'+esc(disp(p))+'</h3><div style="display:grid;gap:8px"><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">Your name</span><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">Your email</span><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">How can we help?</span></div>'+(contactBits.length?'<p style="margin:12px 0 0;font-size:14px;opacity:.85">'+contactBits.join(" · ")+'</p>':"")+'<div style="margin-top:12px">'+btn+'</div></div>';
         }
         if(arch==="list"){
-          return '<div style="border-bottom:1px solid '+T.line+';padding:14px 4px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap"><h3 style="margin:0;font-size:17px;min-width:150px;'+h3CSS+'">'+esc(p)+'</h3><p style="margin:0;opacity:.72;font-size:14px;flex:1;min-width:200px">'+esc(sectionCopy[p]||"")+'</p></div>';
+          return '<div style="border-bottom:1px solid '+T.line+';padding:14px 4px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap"><h3 style="margin:0;font-size:17px;min-width:150px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0;opacity:.72;font-size:14px;flex:1;min-width:200px">'+esc(sectionCopy[p]||"")+'</p></div>';
         }
         if(arch==="gallery"){
-          return '<div style="'+bCSS+';overflow:hidden"><div style="height:74px;background:'+grad135+'"></div><div style="padding:13px 15px"><h3 style="margin:0 0 4px;font-size:16px;'+h3CSS+'">'+esc(p)+'</h3><p style="margin:0;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p></div></div>';
+          return '<div style="'+bCSS+';overflow:hidden"><div style="height:74px;background:'+grad135+'"></div><div style="padding:13px 15px"><h3 style="margin:0 0 4px;font-size:16px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p></div></div>';
         }
-        return '<div style="'+bCSS+';padding:18px"><h3 style="margin:0 0 6px;font-size:17px;'+h3CSS+'">'+esc(p)+'</h3><p style="margin:0;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p></div>';
+        return '<div style="'+bCSS+';padding:18px"><h3 style="margin:0 0 6px;font-size:17px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p></div>';
       }).join("");
       var gridCols=T.layout==="bento"?"repeat(2,1fr)":(arch==="list"?"1fr":(arch==="gallery"?"repeat(auto-fit,minmax(150px,1fr))":(S.layout==="Magazine grid"?"repeat(3,1fr)":"repeat(auto-fit,minmax(200px,1fr))")));
       var featRow=S.features.length?'<div style="display:flex;flex-wrap:wrap;gap:8px;padding:'+(T.layout==="bento"?"14px 18px 0":"0 30px 6px")+'">'+S.features.map(function(f){return '<span style="border:'+T.chipBorder+';background:'+T.chipBg+';color:'+T.chipColor+';border-radius:'+T.chipR+';padding:4px 12px;font-size:13.5px;font-weight:600;'+T.chipExtra+'">'+esc(f)+'</span>'}).join("")+'</div>':"";
@@ -2872,39 +2931,21 @@
       var imgStrip=restImgs.length?'<div style="padding:10px 30px 2px"><p style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:0 0 8px">Your images</p><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px">'+restImgs.map(function(im){return '<figure style="margin:0"><div style="'+imgPhStyle(im)+';border-radius:'+cardR+';aspect-ratio:4/3;position:relative;overflow:hidden">'+(im.src?'<img src="'+im.src+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;'+imgTagStyle(im)+'" />':"")+'</div><figcaption style="font-size:13px;opacity:.75;margin-top:4px">'+esc(im.name)+(im.slot&&im.slot!=="Auto"?" · "+esc(im.slot):"")+'</figcaption></figure>'}).join("")+'</div></div>':"";
       var archRow="";
       if(arch==="store"){
-        archRow='<div style="padding:12px 30px 2px"><p style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:0 0 8px">Featured products</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'+[0,1,2].map(function(i){return '<div style="'+cardCSS+';overflow:hidden"><div style="height:56px;background:'+grad135+';opacity:'+(1-i*0.18)+'"></div><div style="padding:9px 11px"><p style="margin:0;font-size:14px;font-weight:600">Featured product</p><p style="margin:2px 0 0;font-size:13px;color:'+ACCHEX+';font-weight:600">Shop now</p></div></div>'}).join("")+'</div></div>';
+        archRow='<div style="padding:12px 30px 2px"><p style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:0 0 8px">Featured products</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'+[0,1,2].map(function(i){return '<div style="'+cardCSS+';overflow:hidden"><div style="height:56px;background:'+grad135+';opacity:'+(1-i*0.18)+'"></div><div style="padding:9px 11px"><p style="margin:0;font-size:14px;font-weight:600">Example product</p><p style="margin:2px 0 0;font-size:13px;color:'+ACCHEX+';font-weight:600">An example — your products go here</p></div></div>'}).join("")+'</div></div>';
       }else if(arch==="dashboard"){
         archRow='<div style="padding:12px 30px 2px"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'+[["Overview",70],["Activity",45],["Progress",85]].map(function(t){return '<div style="'+cardCSS+';padding:12px"><p style="margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.65">'+t[0]+'</p><div style="display:flex;align-items:flex-end;gap:4px;height:30px">'+[40,65,52,80,58,92,70].map(function(h,i){return '<span style="flex:1;height:'+Math.round(h*t[1]/100)+'%;background:'+(i%2?ACCHEX:PRIMHEX)+';border-radius:2px"></span>'}).join("")+'</div></div>'}).join("")+'</div></div>';
       }
-      /* purpose reshapes the boxes & textures: each kind of website gets its own box
-         arrangement (signature layout styles, when chosen, already encode a business
-         type — so this applies when no signature is driving the preview) */
+      /* no purpose filler rows: the site is built from the sections the
+         customer actually picked (rendered above) — a purpose only tints
+         the surface texture below, it never invents content */
       var purposeRow="", saasBar="";
-      if(!arch){
-        var pHead=function(t){return '<p style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:0 0 8px">'+t+'</p>'};
-        if(S.purpose==="E-Commerce / Shop"){
-          purposeRow='<div style="padding:12px 30px 2px">'+pHead("Shop the range")+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px">'
-            +[0,1,2,3].map(function(){return '<div style="'+cardCSS+';overflow:hidden"><div style="height:64px;background:'+grad135+'"></div><div style="padding:9px 11px"><p style="margin:0;font-size:14px;font-weight:600">Product name</p><p style="margin:2px 0 8px;font-size:13.5px;color:'+ACCHEX+';font-weight:700">Your price</p><span style="display:inline-block;background:'+T.btnBg+';color:'+T.btnColor+';border:'+T.btnBorder+';padding:5px 12px;border-radius:'+T.btnR+';font-size:13px;font-weight:600">Add to basket</span></div></div>'}).join("")+'</div></div>';
-        }else if(S.purpose==="Portfolio"){
-          purposeRow='<div style="padding:12px 30px 2px">'+pHead("Selected work")+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
-            +[0,1].map(function(){return '<div style="'+cardCSS+';overflow:hidden"><div style="height:110px;background:'+grad135+';position:relative"><span style="position:absolute;left:10px;bottom:10px;background:rgba(10,14,22,.72);color:#fff;font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px">Project title</span></div><div style="padding:9px 12px"><p style="margin:0;font-size:14px;opacity:.72">A favourite piece — shown big, the way portfolios should be.</p></div></div>'}).join("")+'</div></div>';
-        }else if(S.purpose==="Landing Page"){
-          purposeRow='<div style="padding:12px 30px 2px"><div style="'+cardCSS+';padding:18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:180px"><p style="margin:0;font-size:16px;font-weight:700;font-family:'+T.hfont+'">Get the offer</p><p style="margin:3px 0 0;font-size:14px;opacity:.72">One clear offer, one simple step — join the list and it is yours.</p></div><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:10px 13px;font-size:14px;opacity:.65;min-width:170px;flex:1">Your email</span>'+btn+'</div></div>';
-        }else if(S.purpose==="Blog / Personal"){
-          purposeRow='<div style="padding:12px 30px 2px">'+pHead("Latest stories")
-            +["A first story, told properly","Notes from a busy week","Something I learned lately"].map(function(t){return '<div style="display:flex;gap:13px;padding:11px 2px;border-bottom:1px solid '+T.line+'"><div style="width:54px;height:54px;flex:none;border-radius:'+cardR+';background:'+grad135+'"></div><div style="min-width:0"><p style="margin:0;font-size:15px;font-weight:700;font-family:'+T.hfont+'">'+t+'</p><p style="margin:2px 0 0;font-size:14px;opacity:.72">A short opening to the story — a line or two to draw the reader in, then the whole piece inside.</p><p style="margin:3px 0 0;font-size:13.5px;font-weight:700;color:'+ACCHEX+'">Read more →</p></div></div>'}).join("")+'</div>';
-        }else if(S.purpose==="Business / SaaS"){
-          saasBar='<div style="height:4px;background:'+PRIMHEX+'"></div>';
-          purposeRow='<div style="padding:12px 30px 2px">'+pHead("At a glance")+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'
-            +[["Overview",70],["Activity",45],["Progress",85]].map(function(t){return '<div style="'+cardCSS+';padding:12px"><p style="margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.65">'+t[0]+'</p><div style="display:flex;align-items:flex-end;gap:4px;height:30px">'+[40,65,52,80,58,92,70].map(function(h,i){return '<span style="flex:1;height:'+Math.round(h*t[1]/100)+'%;background:'+(i%2?ACCHEX:PRIMHEX)+';border-radius:2px"></span>'}).join("")+'</div><p style="margin:7px 0 0;font-size:13px;opacity:.65">Your headline metric</p></div>'}).join("")+'</div></div>';
-        }
-      }
+      if(!arch&&S.purpose==="Business / SaaS"){saasBar='<div style="height:4px;background:'+PRIMHEX+'"></div>'}
       var logoMark=(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?'<img src="'+customerLogo.src+'" alt="" style="width:32px;height:32px;object-fit:contain;border-radius:8px;background:#fff;border:1px solid rgba(0,0,0,.08);flex:none" />':"";
-      var nav='<div style="display:flex;align-items:center;gap:14px;padding:14px 22px;background:'+T.navBg+';border-bottom:1px solid '+T.navLine+'">'+logoMark+'<span style="font-weight:800;font-size:17px;'+T.navNameExtra+'">'+esc(name)+'</span><span style="margin-left:auto;display:flex;gap:16px;font-size:14px;opacity:.9;flex-wrap:wrap;'+T.navLinkExtra+'">'+links.map(function(l){return '<span>'+esc(l)+'</span>'}).join("")+'</span><span style="background:'+T.navBtnBg+';color:'+T.navBtnColor+';padding:7px 15px;border-radius:'+T.btnR+';font-size:14px;font-weight:600">Contact</span></div>';
+      var nav='<div style="display:flex;align-items:center;gap:14px;padding:14px 22px;background:'+T.navBg+';border-bottom:1px solid '+T.navLine+'">'+logoMark+'<span style="font-weight:800;font-size:17px;'+T.navNameExtra+'">'+esc(name)+'</span><span style="margin-left:auto;display:flex;gap:16px;font-size:14px;opacity:.9;flex-wrap:wrap;'+T.navLinkExtra+'">'+links.map(function(l){return '<span>'+esc(disp(l))+'</span>'}).join("")+'</span><span style="background:'+T.navBtnBg+';color:'+T.navBtnColor+';padding:7px 15px;border-radius:'+T.btnR+';font-size:14px;font-weight:600">Contact</span></div>';
       var bodyInner=saasBar+nav+hero+featRow+archRow+purposeRow+imgStrip+'<div style="display:grid;grid-template-columns:'+gridCols+';gap:'+T.gap+';padding:'+(T.layout==="bento"?"14px 18px 10px":"16px 30px 8px")+'">'+blocks+'</div>'
-        +'<div style="padding:18px 30px 24px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid '+T.line+';margin-top:14px;font-size:13.5px;opacity:.7"><span>© '+esc(name)+'</span><span>'+esc(S.style)+' · '+esc(effPrimary().name)+' / '+esc(effAccent().name)+((S.balanceMain!==50||S.balanceSecond!==50)?' · Balance '+S.balanceMain+'% / '+S.balanceSecond+'%':'')+'</span></div>';
+        +'<div style="padding:18px 30px 24px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid '+T.line+';margin-top:14px;font-size:13.5px;opacity:.7"><span>© '+esc(name)+(S.serviceArea?' · Serving '+esc(S.serviceArea):"")+'</span><span>'+esc(S.style)+' · '+esc(effPrimary().name)+' / '+esc(effAccent().name)+((S.balanceMain!==50||S.balanceSecond!==50)?' · Balance '+S.balanceMain+'% / '+S.balanceSecond+'%':'')+'</span></div>';
       if(heroLayout==="Sidebar"){
-        bodyInner='<div style="display:grid;grid-template-columns:180px 1fr;min-height:420px"><div style="border-right:1px solid '+T.line+';padding:20px 16px"><div style="font-weight:800;font-size:16px;margin-bottom:16px;'+T.navNameExtra+'">'+(logoMark?'<span style="display:block;margin-bottom:8px">'+logoMark+'</span>':"")+esc(name)+'</div>'+["Home"].concat(links).map(function(l,i){return '<div style="padding:8px 10px;border-radius:8px;font-size:14px;margin-bottom:4px;'+(i===0?"background:"+PRIMHEX+";color:#fff;font-weight:600":"opacity:.85")+'">'+esc(l)+'</div>'}).join("")+'</div><div>'+hero+featRow+archRow+purposeRow+imgStrip+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:'+T.gap+';padding:6px 30px 20px">'+blocks+'</div></div></div>';
+        bodyInner='<div style="display:grid;grid-template-columns:180px 1fr;min-height:420px"><div style="border-right:1px solid '+T.line+';padding:20px 16px"><div style="font-weight:800;font-size:16px;margin-bottom:16px;'+T.navNameExtra+'">'+(logoMark?'<span style="display:block;margin-bottom:8px">'+logoMark+'</span>':"")+esc(name)+'</div>'+["Home"].concat(links).map(function(l,i){return '<div style="padding:8px 10px;border-radius:8px;font-size:14px;margin-bottom:4px;'+(i===0?"background:"+PRIMHEX+";color:#fff;font-weight:600":"opacity:.85")+'">'+esc(i===0?l:disp(l))+'</div>'}).join("")+'</div><div>'+hero+featRow+archRow+purposeRow+imgStrip+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:'+T.gap+';padding:6px 30px 20px">'+blocks+'</div></div></div>';
       }
       /* surface texture per purpose (plain-colour backgrounds only): blog gets lined
          paper, SaaS a dotted grid, landing a soft tinted glow at the top */
@@ -2931,7 +2972,7 @@
       }
       fixPvHeights();
     }
-    function renderPreview(){fadeSwap($("pv-frame"),pvHTML());$("pv-url").textContent=pvUrlText()}
+    function renderPreview(){fadeSwap($("pv-frame"),pvHTML())}
     function fixPvHeights(){
       document.querySelectorAll(".pv-scale").forEach(function(sc){
         var w=sc.clientWidth;if(!w)return;
@@ -3190,11 +3231,20 @@
         {label:"🌎 Nationwide / Online",go:"q8",q:"area",v:"Nationwide / Online"},
         {label:"🔄 Location already provided / Skip",go:"q8",skip:true}]},
       q8:{say:"Which key sections or pages do you want included on your website?",field:"sectionsT",next:"q9",options:[
-        {label:"🏠 Home, About Us, Services, Contact",go:"q9",q:"sections",v:{pages:["Hero","About Me","Services","Contact form"]}},
-        {label:"🛍️ Shop Gallery, Product Details, Cart, Checkout",go:"q9",q:"sections",v:{pages:["Hero","Project Showcase","Services","Pricing","Contact form"],features:["Online shop"]}},
-        {label:"📅 Booking / Reservation Calendar & Pricing",go:"q9",q:"sections",v:{pages:["Hero","Services","Pricing","Contact form"],features:["Booking"]}},
-        {label:"⭐ Customer Testimonials & FAQ Section",go:"q9",q:"sections",v:{pages:["Hero","About Me","Testimonials","Contact form"]}},
-        {label:"🔄 Custom pages already outlined / Skip",go:"q9",skip:true}]},
+        {label:"🏠 Home",section:"Home"},
+        {label:"👋 About Us",section:"About Us"},
+        {label:"🛠️ Services",section:"Services"},
+        {label:"✉️ Contact",section:"Contact"},
+        {label:"🖼️ Shop Gallery",section:"Shop Gallery"},
+        {label:"🔎 Product Details",section:"Product Details"},
+        {label:"🛒 Cart",section:"Cart"},
+        {label:"💳 Checkout",section:"Checkout"},
+        {label:"📅 Booking / Reservation Calendar",section:"Booking / Reservation Calendar"},
+        {label:"💲 Pricing",section:"Pricing"},
+        {label:"⭐ Customer Testimonials",section:"Customer Testimonials"},
+        {label:"❓ FAQ",section:"FAQ"},
+        {label:"🍽️ Menu",section:"Menu"},
+        {label:"🔄 Custom pages already outlined / Skip",skip:true}]},
       q9:{say:"Almost done! What main action do you want visitors to take?",field:"ctaT",next:"q10",options:[
         {label:"🛒 Shop Collection",go:"q10",q:"cta",v:"Shop Collection"},
         {label:"📅 Book an Event / Service",go:"q10",q:"cta",v:"Book an Event / Service"},
@@ -3216,26 +3266,105 @@
        typed text and honest skips alike. This is what the details summary
        and the owner brief carry for the chat (see handoff + order package). */
     var chatAnswers={};
+    /* the structured record behind chatAnswers: for EVERY question the tap
+       and the typed text are kept SEPARATELY, each verbatim, so neither can
+       ever overwrite, replace or swallow the other. chatAnswers[k] is only
+       the composed display string built from this record. */
+    var chatAns={};
+    var SKIP_ANSWER="Already provided / skipped — the customer chose the skip option; no value was recorded for this question.";
+    function ansRec(k){return chatAns[k]||(chatAns[k]={tap:null,tapLabel:null,text:null,skip:false,sections:null})}
+    function syncChatAnswer(k){
+      var a=chatAns[k];if(!a){delete chatAnswers[k];return}
+      if(a.skip&&!a.text){chatAnswers[k]=SKIP_ANSWER;return}
+      var parts=[];
+      if(a.sections&&a.sections.length)parts.push(a.sections.join(", "));
+      if(a.tapLabel&&!a.skip)parts.push(a.tapLabel);
+      if(a.text)parts.push("Typed: \u201C"+a.text+"\u201D");
+      if(parts.length)chatAnswers[k]=parts.join(" · ");else delete chatAnswers[k];
+    }
+    function recordTyped(k,tv){var r=ansRec(k);r.text=tv;if(r.skip)r.skip=false;syncChatAnswer(k)}
+    /* the Purpose field, everywhere it is shown: the customer's typed
+       purpose verbatim FIRST, with the tapped category shown alongside it —
+       the typed words are never replaced by the category */
+    function purposeFieldText(){
+      var a=(typeof chatAns!=="undefined"&&chatAns.q2)||null;
+      if(a&&a.skip&&!a.text)return SKIP_ANSWER;
+      var parts=[];
+      if(a&&a.text)parts.push(a.text);
+      if(a&&a.tapLabel)parts.push("Category tapped: "+(a.tap!=null?a.tap:a.tapLabel));
+      return parts.length?parts.join(" · "):S.purpose;
+    }
+    /* the Audience field — its own field, with its own typed text and/or
+       tapped option, never glued onto another answer */
+    function audienceFieldText(){
+      var a=(typeof chatAns!=="undefined"&&chatAns.q6)||null;
+      if(a&&a.skip&&!a.text)return SKIP_ANSWER;
+      var parts=[];
+      if(a&&a.text)parts.push(a.text);
+      if(a&&a.tapLabel)parts.push("Option tapped: "+(a.tap!=null?a.tap:a.tapLabel));
+      return parts.length?parts.join(" · "):S.audience;
+    }
+    /* Question 8's sections: the customer picks individual sections by their
+       own names; each name maps onto the page the preview builds */
+    var SECTION_MAP={"Home":"Hero","About Us":"About Me","Services":"Services","Contact":"Contact form","Shop Gallery":"Project Showcase","Product Details":"Product Details","Cart":"Cart","Checkout":"Checkout","Booking / Reservation Calendar":"Booking Calendar","Pricing":"Pricing","Customer Testimonials":"Testimonials","FAQ":"FAQ","Menu":"Menu"};
+    var SECTION_DISPLAY={"Hero":"Home","About Me":"About Us","Contact form":"Contact","Project Showcase":"Shop Gallery","Testimonials":"Customer Testimonials","Booking Calendar":"Booking / Reservation Calendar"};
+    var q8Features=[];
+    function applySections(){
+      var r=(typeof chatAns!=="undefined"&&chatAns.q8)||null;
+      var secs=(r&&r.sections)||[];
+      S.pages=secs.length?secs.map(function(n){return SECTION_MAP[n]||n}):JSON.parse(JSON.stringify(DEFAULTS)).pages;
+      q8Features.forEach(function(f){var i=S.features.indexOf(f);if(i>=0)S.features.splice(i,1)});
+      q8Features=[];
+      if(secs.some(function(n){return n==="Shop Gallery"||n==="Product Details"||n==="Cart"||n==="Checkout"}))q8Features.push("Online shop");
+      if(secs.indexOf("Booking / Reservation Calendar")>=0)q8Features.push("Booking");
+      q8Features.forEach(function(f){if(S.features.indexOf(f)<0)S.features.push(f)});
+      renderAll();
+    }
+    function toggleChatSection(name){
+      var r=ansRec("q8");r.skip=false;
+      var list=r.sections||(r.sections=[]);
+      var ix=list.indexOf(name);
+      if(ix>=0)list.splice(ix,1);else list.push(name);
+      applySections();syncChatAnswer("q8");
+    }
+    /* the section names the summary, brief and order package record: the
+       customer's own picked names when Question 8 drove them, the page
+       names (shown by their customer-facing names) otherwise */
+    function sectionNames(){
+      var a=(typeof chatAns!=="undefined"&&chatAns.q8)||null;
+      if(a&&a.sections&&a.sections.length)return a.sections.slice();
+      return S.pages.map(function(p){return SECTION_DISPLAY[p]||p});
+    }
+    /* is this option the one currently selected for its question? Drives the
+       visible selected state: a tap SELECTS, Continue advances */
+    function optSelected(step,o){
+      var a=(typeof chatAns!=="undefined"&&chatAns[step])||null;
+      if(o.section)return !!(a&&a.sections&&a.sections.indexOf(o.section)>=0);
+      if(o.skip)return !!(a&&a.skip);
+      return !!(a&&!a.skip&&a.tapLabel===o.label);
+    }
     /* apply a tapped option's real effect: the pick lands in the very same
        project state the side questions use, so the preview, the brief, the
-       summary and the checkout totals all follow the chat */
+       summary and the checkout totals all follow the chat. Tapping SELECTS
+       (and records) — it never advances the chat by itself. */
     function applyChatOption(opt){
       var step=chat.step;
-      if(opt.q==="category"){chat.data.category=opt.v;chatAnswers[step]=opt.label}
-      else if(opt.q==="purpose"){S.purpose=opt.v;chatAnswers[step]=opt.label;renderAll()}
-      else if(opt.q==="style"){S.style=opt.v;S.stylePicked=true;chat.data.styleConfirmed=opt.v;chatConfirmedStyle=opt.v;chatAnswers[step]=opt.label;renderAll()}
-      else if(opt.q==="palette"){S.colors=opt.v;S.primaryPick=null;S.accentPick=null;S.kit="";S.mixMain=0;S.mixSecond=0;S.mixBg=0;chatAnswers[step]=opt.label;renderAll()}
-      else if(opt.q==="logoText"){logoChoice="text";chat.data.logo="text";chatAnswers[step]=opt.label;renderAll()}
-      else if(opt.q==="audience"){S.audience=opt.v;chatAnswers[step]=opt.label;renderAll()}
-      else if(opt.q==="area"){S.serviceArea=opt.v;chatAnswers[step]=opt.label;renderAll()}
-      else if(opt.q==="sections"){S.pages=opt.v.pages.slice();if(opt.v.features)opt.v.features.forEach(function(f){if(S.features.indexOf(f)<0)S.features.push(f)});chatAnswers[step]=opt.label;renderAll()}
-      else if(opt.q==="cta"){S.cta=opt.v;chatAnswers[step]=opt.label;renderAll()}
+      var rec=ansRec(step);rec.skip=false;rec.tap=(opt.v!==undefined?opt.v:null);rec.tapLabel=opt.label;
+      if(opt.q==="category"){chat.data.category=opt.v}
+      else if(opt.q==="purpose"){S.purpose=opt.v;renderAll()}
+      else if(opt.q==="style"){S.style=opt.v;S.stylePicked=true;chat.data.styleConfirmed=opt.v;chatConfirmedStyle=opt.v;renderAll()}
+      else if(opt.q==="palette"){S.colors=opt.v;S.primaryPick=null;S.accentPick=null;S.kit="";S.mixMain=0;S.mixSecond=0;S.mixBg=0;renderAll()}
+      else if(opt.q==="logoText"){logoChoice="text";chat.data.logo="text";renderAll()}
+      else if(opt.q==="audience"){S.audience=opt.v;renderAll()}
+      else if(opt.q==="area"){S.serviceArea=opt.v;renderAll()}
+      else if(opt.q==="cta"){S.cta=opt.v;renderAll()}
       else if(opt.q==="plan"){
         /* the plan pick IS the checkout's add-on state — front-end only
            clears the add-ons; each other tier switches its own one on */
         addons={email:opt.v==="email",phone:opt.v==="phone",backend:opt.v==="backend"};
-        chat.data.plan=opt.label;chatAnswers[step]=opt.label;renderAll();
+        chat.data.plan=opt.label;renderAll();
       }
+      syncChatAnswer(step);
     }
     var isEmail=function(v){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim())};
     var isPhone=function(v){return v.replace(/\D/g,"").length>=7&&/^[+\d\s().-]+$/.test(v.trim())};
@@ -3352,14 +3481,14 @@
       lines.push("");
       lines.push("TAP-AND-CONTINUE CHAT ANSWERS (all 10 questions, exactly as answered — a skip is recorded as skipped)");
       CHAT_ORDER.forEach(function(k,i){lines.push("Q"+(i+1)+" · "+CHAT_Q_LABELS[k]+": "+(chatAnswers[k]||"— not answered —"))});
-      lines.push("Purpose: "+S.purpose);
-      lines.push("Target audience: "+S.audience);
+      lines.push("Purpose: "+purposeFieldText());
+      lines.push("Target audience: "+audienceFieldText());
       lines.push("Chosen style (current): "+S.style+"  (started as: "+(f.initialStyle||S.style)+")");
       lines.push("Style CONFIRMED by the customer in the chat: "+(chatConfirmedStyle||S.style)+" — build in this style.");
       lines.push("Colour mood: "+S.colors+" — primary "+effPrimary().name+" ("+effPrimary().hex+"), accent "+effAccent().name+" ("+effAccent().hex+"), background "+effBg());
       if(S.kit)lines.push("Brand kit: "+S.kit);
       lines.push("Colour balance: main "+S.balanceMain+"% / second "+S.balanceSecond+"%");
-      lines.push("Sections: "+(S.pages.join(", ")||"—"));
+      lines.push("Sections: "+(sectionNames().join(", ")||"—"));
       lines.push("Features: "+(S.features.join(", ")||"—"));
       lines.push("Tone: "+S.tone+" · Layout: "+S.layout+" · Font: "+S.font+" · Buttons: "+S.btnShape);
       if(S.tagline)lines.push("Tagline: "+S.tagline);
@@ -3394,7 +3523,7 @@
         {label:"Writing your text — in a "+S.tone.toLowerCase()+" tone",done:false}];
       if(userImages.length)steps.push({label:"Placing your "+userImages.length+" image"+(userImages.length===1?"":"s"),done:false});
       else if(aiImageRequest)steps.push({label:"Creating your images — people-free, as always",done:false});
-      steps.push({label:"Preparing your pages — "+S.pages.join(", "),done:false});
+      steps.push({label:"Preparing your pages — "+sectionNames().join(", "),done:false});
       return steps;
     }
     function runBuildSequence(done){
@@ -3543,7 +3672,7 @@
           +'<button type="button" class="btn small block mix-confirm" data-pmixconfirm>Confirm &amp; Record</button>'
           +'<p class="mix-note">This preview is the style version of your website — the quick way to feel the look. Deeper detail changes — exact colours, the background and layout details — are easy to adjust afterwards, once your website is built.</p>'
           +'</div></div>'
-          +'<div class="sc-body"><p class="sc-name">'+esc(S.name||"Your Business")+'</p><p class="sc-url">'+esc(pvUrlText().replace("https://",""))+'</p><button class="btn small block" data-preview style="margin-top:10px">Open my website</button><p class="sc-note">This is your instant front-end preview, made from your answers. Your finished website is built from these same details by a real AI run, and arrives on a temporary address within a few hours of your order.</p></div></div></div>';
+          +'<div class="sc-body"><p class="sc-name">'+esc(S.name||"Your Business")+'</p><button class="btn small block" data-preview style="margin-top:10px">Open my website</button><p class="sc-note">This is your instant front-end preview, made from your answers. Your finished website is built from these same details by a real AI run, and arrives on a temporary address within a few hours of your order.</p></div></div></div>';
         }
         if(m.kind==="handoff"){
           var hf=ensureStyleFlow();
@@ -3552,10 +3681,11 @@
           if(chat.data&&chat.data.category)hRows.push(["Category",chat.data.category]);
           hRows.push(
             ["Business",S.name||"— to be confirmed —"],
-            ["Purpose",S.purpose+" · for "+S.audience],
+            ["Purpose",purposeFieldText()],
+            ["Audience",audienceFieldText()],
             ["Style","Confirmed in chat: "+(chatConfirmedStyle||S.style)+" · started as "+(hf.initialStyle||S.style)],
             ["Colours",S.colors+" — "+effPrimary().name+" "+effPrimary().hex+" / "+effAccent().name+" "+effAccent().hex],
-            ["Sections",S.pages.join(", ")||"—"],
+            ["Sections",sectionNames().join(", ")||"—"],
             ["Features",S.features.join(", ")||"—"],
             ["Look & feel",S.tone+" tone · "+S.layout+" · "+S.font+" · "+S.btnShape+" buttons"]
           );
@@ -3617,7 +3747,7 @@
           var spin=(i===lastAi)?" spin":"";
           var opts="";
           if(i===chat.msgs.length-1&&!chat.thinking&&!chat.done&&CHAT_STEPS[chat.step]&&CHAT_STEPS[chat.step].options&&m.step===chat.step&&!(chat.step==="q5"&&customerLogo&&customerLogo.src)){
-            opts='<div class="opts">'+CHAT_STEPS[chat.step].options.map(function(o,j){return '<button data-opt="'+j+'">'+esc(o.label)+'</button>'}).join("")+'</div>';
+            opts='<div class="opts">'+CHAT_STEPS[chat.step].options.map(function(o,j){var on=optSelected(chat.step,o);return '<button data-opt="'+j+'"'+(on?' class="on" aria-pressed="true"':' aria-pressed="false"')+'>'+esc(o.label)+'</button>'}).join("")+'</div>';
           }
           var imgUI="";
           if(m.step==="images"&&chat.step==="images"&&i===chat.msgs.length-1&&!chat.done&&!chat.thinking){
@@ -3751,7 +3881,7 @@
         if(lact==="upload"){$("chat-logo-file").click();return}
         if(lact==="replace"){$("chat-logo-file").click();return}
         if(lact==="remove"){customerLogo=null;logoChoice="";chat.data.logo="";renderAll();chatRender();toast("Logo removed — pick either option whenever you're ready.");return}
-        if(lact==="done"){chatAdd("me","Use this logo");chat.data.logo="uploaded";chatAnswers.q5="📁 Upload Logo File (PNG, JPG, SVG)";chatRender();chatGoTo("q6");return}
+        if(lact==="done"){chatAdd("me","Use this logo");chat.data.logo="uploaded";var lr=ansRec("q5");lr.skip=false;lr.tap="uploaded";lr.tapLabel="📁 Upload Logo File (PNG, JPG, SVG)";syncChatAnswer("q5");chatRender();chatGoTo("q6");return}
         if(lact==="later"){
           logoChoice="later";chat.data.logo="later";customerLogo=null;renderAll();
           chatAdd("me","Option 2 — I'll upload / upgrade my logo later");chatRender();
@@ -3799,20 +3929,25 @@
         if(act==="skip"){chatAdd("me","I don't have images");chatRender();chatGoTo("imgalt");return}
       }
       var o=e.target.closest("[data-opt]");
-      if(o&&!chat.thinking){var opt=CHAT_STEPS[chat.step].options[+o.getAttribute("data-opt")];chatAdd("me",opt.label);chatRender();
-        /* Question 5's upload option opens the real file picker and stays on
-           the question — the tap bubble is taken back so the options stay in
-           place if the picker is cancelled; the uploaded logo is shown back
-           in the chat, and "Use this logo" (the data-logo actions above)
-           moves on to Q6 */
-        if(opt.q==="logoUpload"){chat.msgs.pop();chatRender();$("chat-logo-file").click();return}
+      if(o&&!chat.thinking){var opt=CHAT_STEPS[chat.step].options[+o.getAttribute("data-opt")];
+        /* Question 5's upload option keeps its real behaviour: it opens the
+           file picker and stays on the question; the uploaded logo is shown
+           back in the chat, and "Use this logo" (the data-logo actions
+           above) moves on to Q6 */
+        if(opt.q==="logoUpload"){$("chat-logo-file").click();return}
+        /* Question 8's sections are individual toggles: tapping switches a
+           section on or off (multi-select) and records it by its own name */
+        if(opt.section){toggleChatSection(opt.section);chatRender();return}
         /* a skip records exactly that — already provided / skipped — and
            never a value the customer did not give */
-        if(opt.skip)chatAnswers[chat.step]="Already provided / skipped — the customer chose the skip option; no value was recorded for this question.";
-        else if(opt.q)applyChatOption(opt);
-        /* Question 10 ends the flow either way: plan tap or skip alike */
-        if(opt.finish){chatFinishFlow("create","");return}
-        chatGoTo(opt.go);return}
+        if(opt.skip){var sr=ansRec(chat.step);sr.skip=true;sr.tap=null;sr.tapLabel=opt.label;if(chat.step==="q8"){sr.sections=[];applySections()}syncChatAnswer(chat.step);chatRender();return}
+        /* every other tap — Question 10's plans included — SELECTS the
+           option: highlighted, recorded, its real effect applied (a plan
+           still sets the checkout add-ons) — but the chat does NOT advance.
+           The Continue button (at Question 10, "Finish & Generate Preview")
+           is what moves on, so a tap and typed text can both be given. */
+        if(opt.q)applyChatOption(opt);
+        chatRender();return}
       var ed=e.target.closest("[data-edit]");
       if(ed&&!chat.thinking){var s=ed.getAttribute("data-edit");var idx=chat.msgs.findIndex(function(m){return m.step===s});
         if(idx>=0)chat.msgs=chat.msgs.slice(0,idx+1);
@@ -3866,11 +4001,29 @@
           :"That number looks too short — I need at least 7 digits, like (555) 019-2834.");
         return;
       }
+      /* a tapped selection counts as an answer on its own: Continue with a
+         selection (and no typed text) advances on the selection — a tap and
+         typed text together are BOTH recorded */
+      var selRec=chatAns[chat.step];
+      var hasSel=!!(selRec&&(selRec.skip||selRec.tapLabel||(selRec.sections&&selRec.sections.length)))||(chat.step==="q5"&&typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src);
       if((field==="code"||field==="loginCode")&&v.replace(/\D/g,"").length!==6)err="The code is 6 digits — for this demo, type 483920.";
       else if(field==="vision"&&!v.trim())err="A few words is plenty — or tap “Skip for now” just below the box.";
-      else if(!v.trim())err="Type your answer first, then tap Continue.";
+      else if(!v.trim()&&!hasSel)err="Type your answer first, then tap Continue.";
       if(err){$("chat-err").textContent=err;return}
       $("chat-err").textContent="";
+      if(!v.trim()&&hasSel){
+        /* advance on the tapped selection alone — the tap was recorded when
+           it was made; the transcript bubble is added now, as the answer is
+           confirmed by Continue (at Question 10 this IS the Finish button,
+           and it is the only thing that starts creation) */
+        $("chat-text").value="";$("chat-vision").value="";
+        if(chat.step==="q5"&&customerLogo&&customerLogo.src&&!(selRec&&selRec.tapLabel)){var lr2=ansRec("q5");lr2.skip=false;lr2.tap="uploaded";lr2.tapLabel="📁 Upload Logo File (PNG, JPG, SVG)";syncChatAnswer("q5");chat.data.logo="uploaded";selRec=lr2}
+        chatAdd("me",selRec&&selRec.sections&&selRec.sections.length?selRec.sections.join(", "):((selRec&&selRec.tapLabel)||""));
+        chatRender();
+        var snx=step.next;
+        if(snx==="create"||snx==="login"){chatFinishFlow(snx,v);return}
+        chatGoTo(snx);return;
+      }
       chat.data[field]=v;$("chat-text").value="";$("chat-vision").value="";
       chatAdd("me",field.indexOf("assword")>=0?"••••••••":v.trim());chatRender();
       if(field==="name"){S.name=v.trim();renderAll()}
@@ -3893,16 +4046,16 @@
          name, audience, service area, call-to-action) land there too, so the
          preview, brief, summary and checkout all carry them */
       var tv=v.trim();
-      if(chat.step==="q1"){S.name=tv;chat.data.name=tv;chatAnswers.q1=tv;renderAll()}
-      else if(chat.step==="q2"){chatAnswers.q2=tv;chat.data.purposeNote=tv}
-      else if(chat.step==="q3"){chatAnswers.q3=tv;chat.data.styleNote=tv}
-      else if(chat.step==="q4"){chatAnswers.q4=tv;chat.data.colorNote=tv}
-      else if(chat.step==="q5"){chatAnswers.q5=tv;chat.data.logoNote=tv}
-      else if(chat.step==="q6"){S.audience=tv;chatAnswers.q6=tv;renderAll()}
-      else if(chat.step==="q7"){S.serviceArea=tv;chatAnswers.q7=tv;renderAll()}
-      else if(chat.step==="q8"){chatAnswers.q8=tv;chat.data.sectionsNote=tv}
-      else if(chat.step==="q9"){S.cta=tv;chatAnswers.q9=tv;renderAll()}
-      else if(chat.step==="q10"){chatAnswers.q10=tv;chat.data.plan="Custom plan preference (typed by the customer): "+tv}
+      if(chat.step==="q1"){S.name=tv;chat.data.name=tv;recordTyped("q1",tv);renderAll()}
+      else if(chat.step==="q2"){recordTyped("q2",tv);chat.data.purposeNote=tv}
+      else if(chat.step==="q3"){recordTyped("q3",tv);chat.data.styleNote=tv}
+      else if(chat.step==="q4"){recordTyped("q4",tv);chat.data.colorNote=tv}
+      else if(chat.step==="q5"){recordTyped("q5",tv);chat.data.logoNote=tv}
+      else if(chat.step==="q6"){S.audience=tv;recordTyped("q6",tv);renderAll()}
+      else if(chat.step==="q7"){S.serviceArea=tv;recordTyped("q7",tv);renderAll()}
+      else if(chat.step==="q8"){recordTyped("q8",tv);chat.data.sectionsNote=tv}
+      else if(chat.step==="q9"){S.cta=tv;recordTyped("q9",tv);renderAll()}
+      else if(chat.step==="q10"){recordTyped("q10",tv);chat.data.planNote=tv;if(!(chatAns.q10&&chatAns.q10.tapLabel))chat.data.plan="Custom plan preference (typed by the customer): "+tv}
       var next=step.next;
       if(next==="create"||next==="login"){chatFinishFlow(next,v);return}
       chatGoTo(next);
@@ -3938,7 +4091,7 @@
       $("sound-on-ic").style.display=chat.sound?"":"none";$("sound-off-ic").style.display=chat.sound?"none":"";
       if(chat.sound){unlockSound();tapSound()}
     });
-    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}if(typeof creatingTimer!=="undefined"&&creatingTimer){clearInterval(creatingTimer);creatingTimer=null}if(typeof creatingClock!=="undefined"&&creatingClock){clearInterval(creatingClock);creatingClock=null}styleFlow=null;chatConfirmedStyle="";customerLogo=null;logoChoice="";chatAnswers={};previewAdjust={touched:false,confirmed:false};chat={msgs:[],step:"q1",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1,howSaid:false,creating:null};chatRender();chatGoTo("q1")}
+    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}if(typeof creatingTimer!=="undefined"&&creatingTimer){clearInterval(creatingTimer);creatingTimer=null}if(typeof creatingClock!=="undefined"&&creatingClock){clearInterval(creatingClock);creatingClock=null}styleFlow=null;chatConfirmedStyle="";customerLogo=null;logoChoice="";chatAnswers={};chatAns={};q8Features=[];previewAdjust={touched:false,confirmed:false};chat={msgs:[],step:"q1",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1,howSaid:false,creating:null};chatRender();chatGoTo("q1")}
 
     /* ============ card form + order submission ============ */
     function luhn(num){var sum=0,alt=false;for(var i=num.length-1;i>=0;i--){var d=+num[i];if(alt){d*=2;if(d>9)d-=9}sum+=d;alt=!alt}return num.length>=15&&sum%10===0}
@@ -4889,7 +5042,7 @@
         return "This is the <b>sample store</b> for now, so here is what it has:<br>• Shirt colour: <b>"+ssState.color+"</b> · Print: <b>"+SS_MOTIFS[ssState.motif].label+"</b> · Price: <b>$"+ssState.price+"</b><br>• Theme: <b>"+dashThemeLabel(ssState.theme)+"</b><br><br>When your own website exists, I'll read back your real settings here, the same way. Want to change anything on the sample?";
       }
       var P=effPrimary(),A=effAccent();
-      var h="Here's what your website has right now:<br>• Style: <b>"+esc(S.style)+"</b><br>• Main colour: <b>"+esc(P.name)+" ("+P.hex+")</b> · Second colour: <b>"+esc(A.name)+" ("+A.hex+")</b><br>• Colour balance: main <b>"+S.balanceMain+"%</b> / second <b>"+S.balanceSecond+"%</b><br>• Sections on: <b>"+esc(S.pages.join(", "))+"</b><br>• Font: <b>"+esc(S.font)+"</b> · Buttons: <b>"+esc(S.btnShape)+"</b> · Layout: <b>"+esc(layoutTypeLabel())+"</b>";
+      var h="Here's what your website has right now:<br>• Style: <b>"+esc(S.style)+"</b><br>• Main colour: <b>"+esc(P.name)+" ("+P.hex+")</b> · Second colour: <b>"+esc(A.name)+" ("+A.hex+")</b><br>• Colour balance: main <b>"+S.balanceMain+"%</b> / second <b>"+S.balanceSecond+"%</b><br>• Sections on: <b>"+esc(sectionNames().join(", "))+"</b><br>• Font: <b>"+esc(S.font)+"</b> · Buttons: <b>"+esc(S.btnShape)+"</b> · Layout: <b>"+esc(layoutTypeLabel())+"</b>";
       if(S.name)h+="<br>• Made for: <b>"+esc(S.name)+"</b> — "+esc(S.purpose.toLowerCase())+", for "+esc(S.audience.toLowerCase());
       if(S.tagline)h+="<br>• Tagline: <i>“"+esc(S.tagline)+"”</i>";
       h+="<br><br>Want to change anything? Tell me in plain words — I'll tell you exactly where it is, or do it for you.";
