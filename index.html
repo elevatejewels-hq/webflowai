@@ -1085,7 +1085,7 @@
                     <svg id="sound-off-ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M11 5 6 9H2v6h4l5 4V5z"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>
                   </button>
                 </div>
-                <div class="chat-prog" id="chat-prog"><p id="chat-prog-label">Question 1 of 8</p><div class="track"><div class="fill" id="chat-prog-fill" style="width:12.5%"></div></div></div>
+                <div class="chat-prog" id="chat-prog"><p id="chat-prog-label">Question 1 of 10</p><div class="track"><div class="fill" id="chat-prog-fill" style="width:10%"></div></div></div>
                 <div class="chat-msgs" id="chat-msgs" aria-live="polite"></div>
                 <form class="chat-form" id="chat-form" style="display:none">
                   <div class="chat-input">
@@ -1099,7 +1099,7 @@
                   <p class="err" id="chat-err" role="alert"></p>
                 </form>
                 <input type="file" id="chat-img-file" accept="image/*" multiple hidden />
-                <input type="file" id="chat-logo-file" accept="image/*" hidden />
+                <input type="file" id="chat-logo-file" accept=".png,.jpg,.jpeg,.svg,image/png,image/jpeg,image/svg+xml" hidden />
               </aside>
               <div class="panel" style="padding:18px">
                 <p style="font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700">Your brief so far</p>
@@ -2337,6 +2337,7 @@
       pages:["Hero","Project Showcase","About Me","Contact form"], features:["Gallery","Forms"],
       colors:"Cyan & Purple", primaryPick:null, accentPick:null, bgPick:null, kit:"", tone:"Professional", complex:true, pageCount:"1", custom:"", tagline:"", vision:"",
       layout:"Centred hero", font:"Clean sans", btnShape:"Rounded", btnStyleName:"", btnRadius:"", btnRadiusShape:"", balanceMain:50, balanceSecond:50, mixMain:0, mixSecond:0, mixBg:0,
+      serviceArea:"", cta:"", /* service area + primary call-to-action, collected by the tap-and-continue chat (Questions 7 & 9) */
       displayPhone:"", displayEmail:""}; /* contact details the customer provides TO BE SHOWN on their website — website content, not the sign-in/login number */
     var S = JSON.parse(JSON.stringify(DEFAULTS));
     var addons = {email:false, phone:false, backend:false};
@@ -2399,6 +2400,9 @@
       if(userImages.length)p+=' The customer supplied '+userImages.length+' of their own image'+(userImages.length===1?"":"s")+' to include: '+userImages.map(function(im){return '"'+(im.name||"image")+'"'+(im.slot&&im.slot!=="Auto"?" as the "+im.slot.toLowerCase():"")+(im.note?' ('+im.note+")":"")}).join(", ")+'.';
       if(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)p+=' Logo: uploaded by the customer ("'+(customerLogo.name||"logo")+'") — place this logo in the website header and wherever a logo belongs.';
       else if(typeof logoChoice!=="undefined"&&logoChoice==="later")p+=' Logo: will upload / upgrade later (option 2) — launch with the business name in the header for now; the customer will supply or upgrade the logo later.';
+      else if(typeof logoChoice!=="undefined"&&logoChoice==="text")p+=' Logo: a clean text logo for now — set the business name as a tidy wordmark in the header; the customer may upload a logo file later.';
+      if(b.serviceArea)p+=' The website targets this service area: '+b.serviceArea+'.';
+      if(b.cta)p+=' The main action visitors should take is: '+b.cta+'.';
       if(typeof previewAdjust!=="undefined"&&previewAdjust.touched)p+=' '+previewAdjustLine();
       if(aiImageRequest)p+=' The customer also asked WebFlowAI to create images showing: "'+aiImageRequest+'" — created images must be completely people-free (products, objects, places, interiors and screens only; never any image of a female and no people at all).';
       if(b.tagline)p+=' The site tagline is: "'+b.tagline+'".';
@@ -2419,7 +2423,9 @@
         sections:S.pages, features:S.features, colours:S.colors, brandKit:S.kit||null, primaryColour:{name:effPrimary().name, hex:effPrimary().hex}, accentColour:{name:effAccent().name, hex:effAccent().hex}, backgroundColour:{hex:effBg()}, colourBalance:{mainColour:effPrimary().name, mainPct:S.balanceMain, secondColour:effAccent().name, secondPct:S.balanceSecond}, colourMixer:{mainAdjust:S.mixMain, secondAdjust:S.mixSecond, backgroundAdjust:S.mixBg}, tone:S.tone, layout:S.layout, fontStyle:S.font,
         buttonShape:S.btnShape, complexity:S.complex?"Complex":"Simple", pageCount:S.pageCount, tagline:S.tagline||null,
         ownWords:S.vision||null, ownWordsLabel:"In their own words — the customer's own description of the website they imagine, kept word for word; if null, the customer did not provide one.",
-        logo:(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?{status:"uploaded",label:"Logo: uploaded by the customer",name:customerLogo.name,src:customerLogo.src,attachedInThisPage:true}:((typeof logoChoice!=="undefined"&&logoChoice==="later")?{status:"later",label:"Logo: will upload / upgrade later (option 2)",name:null,src:null}:null),
+        logo:(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?{status:"uploaded",label:"Logo: uploaded by the customer",name:customerLogo.name,src:customerLogo.src,attachedInThisPage:true}:((typeof logoChoice!=="undefined"&&logoChoice==="later")?{status:"later",label:"Logo: will upload / upgrade later (option 2)",name:null,src:null}:((typeof logoChoice!=="undefined"&&logoChoice==="text")?{status:"text",label:"Logo: clean text logo for now (business name as a wordmark)",name:null,src:null}:null)),
+        serviceArea:S.serviceArea||null, callToAction:S.cta||null,
+        chatFlow:{label:"Tap-and-continue chat — the customer's answers to the 10 questions, exactly as given (a skip is recorded as skipped; nothing is invented)",category:(typeof chat!=="undefined"&&chat.data&&chat.data.category)||null,planSelected:(typeof chat!=="undefined"&&chat.data&&chat.data.plan)||null,answers:(typeof chatAnswers!=="undefined"?chatAnswers:{})},
         previewAdjustments:(typeof previewAdjust!=="undefined"&&previewAdjust.touched)?{label:previewAdjustLine(),mainColor:{name:effPrimary().name,hex:effPrimary().hex},background:{name:(S.bgPick?S.bgPick.name:"As created"),hex:effBg()},buttonStyle:mixerBtnLabel(),font:S.font}:{label:"Preview adjustments: none — the customer kept the small preview exactly as created.",touched:false},
         notes:S.custom||null, brief:buildPrompt(S),
         plan:{website:{label:"Front-end website", price:BASE_PRICE, billing:"one-time"},
@@ -2454,11 +2460,15 @@
         +(customerEmail&&!customerFullName()?'<tr><th>Customer account</th><td>Signed in by email — the address itself is never shown here; it stays owner-only in the order package.</td></tr>':"")
         +(customerCode?'<tr><th>AI-side identity</th><td>'+esc(customerFullName()?customerFullName()+" · ":"Customer · ")+'Code '+esc(fmtCode(customerCode))+' — the builder AI sees the customer&rsquo;s name and this code, never the sign-in (login) email address.</td></tr>':"")
         +(aiImageRequest?'<tr><th>Images to create</th><td>“'+esc(aiImageRequest)+'” — created by WebFlowAI, always people-free (products, objects, places, interiors, screens only; never any image of a female, no people at all).</td></tr>':"")
-        +((typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?'<tr><th>Logo</th><td><img src="'+customerLogo.src+'" alt="" style="height:42px;max-width:150px;object-fit:contain;vertical-align:middle;margin-right:10px" />uploaded by the customer — “'+esc(customerLogo.name)+'”, supplied in the chat and shown back to them there.</td></tr>':((typeof logoChoice!=="undefined"&&logoChoice==="later")?'<tr><th>Logo</th><td>will upload / upgrade later (option 2) — the customer chose to add or upgrade their logo later; launch with the business name in the header.</td></tr>':""))
+        +((typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?'<tr><th>Logo</th><td><img src="'+customerLogo.src+'" alt="" style="height:42px;max-width:150px;object-fit:contain;vertical-align:middle;margin-right:10px" />uploaded by the customer — “'+esc(customerLogo.name)+'”, supplied in the chat and shown back to them there.</td></tr>':((typeof logoChoice!=="undefined"&&logoChoice==="later")?'<tr><th>Logo</th><td>will upload / upgrade later (option 2) — the customer chose to add or upgrade their logo later; launch with the business name in the header.</td></tr>':((typeof logoChoice!=="undefined"&&logoChoice==="text")?'<tr><th>Logo</th><td>a clean text logo for now — the business name set as a tidy wordmark in the header; the customer may upload a logo file later.</td></tr>':"")))
         +'<tr><th>Preview adjustments</th><td>'+((typeof previewAdjust!=="undefined"&&previewAdjust.touched)?esc(previewAdjustSummary()):"None — the small preview was kept exactly as created.")+'</td></tr>'
         +'<tr><th>Purpose</th><td>'+esc(S.purpose)+'</td></tr>'
         +'<tr><th>Visual style</th><td>'+esc(S.style)+'</td></tr>'
         +'<tr><th>Target audience</th><td>'+esc(S.audience)+'</td></tr>'
+        +(S.serviceArea?'<tr><th>Service area</th><td>'+esc(S.serviceArea)+'</td></tr>':"")
+        +(S.cta?'<tr><th>Primary call-to-action</th><td>'+esc(S.cta)+'</td></tr>':"")
+        +((typeof chat!=="undefined"&&chat.data&&chat.data.category)?'<tr><th>Business category</th><td>'+esc(chat.data.category)+'</td></tr>':"")
+        +((typeof chat!=="undefined"&&chat.data&&chat.data.plan)?'<tr><th>Plan selected in chat</th><td>'+esc(chat.data.plan)+' — chosen for the building stages; no card was taken at that step.</td></tr>':"")
         +'<tr><th>Sections</th><td>'+esc(S.pages.join(", ")||"—")+'</td></tr>'
         +'<tr><th>Features</th><td>'+esc(S.features.join(", ")||"—")+'</td></tr>'
         +'<tr><th>Colour mood</th><td>'+swatchDots(pal)+' '+esc(S.colors)+'</td></tr>'
@@ -2955,7 +2965,7 @@
       document.querySelectorAll(".view").forEach(function(v){v.classList.toggle("active",v.id==="view-"+name)});
       window.scrollTo({top:0});
       setTimeout(fixPvHeights,60);
-      if(name==="start"&&!chatStarted){chatStarted=true;chatGoTo("hello")}
+      if(name==="start"&&!chatStarted){chatStarted=true;chatGoTo("q1")}
       else if(name==="start"&&chatStarted)setTimeout(scrollChatLatest,90);
       if(name==="owner")renderOwnerGate();
       if(name==="pro")renderPro();
@@ -3129,38 +3139,104 @@
     });
 
     /* ============ chat (only the newest AI message's logo spins) ============ */
+    /* ============ the tap-and-continue chat flow (owner's exact 10 questions) ============
+       Every question carries the owner's verbatim AI prompt, the verbatim tap
+       options (emoji included) AND a free-text box with the verbatim
+       placeholder — tap an option OR type, then Continue. Each question's
+       last option is the honest skip: it records "already provided / skipped"
+       and never invents a value. Question 10 selects the plan for the
+       building stages — no credit card is taken there; the pick simply sets
+       the same add-ons the checkout uses, so totals stay truthful. */
     var CHAT_STEPS={
-      hello:{say:"Hi! Let's get your website started. It's easy — I'll ask one small thing at a time. First: do you have a phone number we can use for your website?",options:[
-        {label:"Yes, I have one",go:"phone"},{label:"No — please make one for me",go:"virtual"},{label:"I already have an account",go:"loginEmail"}]},
-      phone:{say:"Great. Just type your phone number below.",field:"phone",next:"how"},
-      virtual:{say:"No problem at all. We can set up a new number for you. It can answer texts for you too — that's part of the phone add-on at the end (+$12 a month). Nothing to decide now.",options:[{label:"Sounds good",go:"how"}]},
-      how:{say:"Perfect. Two easy ways to go from here. We can fill in your details together, one small step at a time. Or we jump straight to your email.",options:[
-        {label:"Step by step, please",go:"name"},{label:"Jump to email",go:"email"}]},
-      name:{say:"Easy one: what's the name of your business or website?",field:"name",next:"style"},
-      style:{say:function(d){return "Quick style check before we go on. On the side you picked "+S.style+". Is that the style you want for your website?"},options:[
-        {label:"Yes, that's my style",go:"vision",act:"styleYes"},{label:"Show me other styles",go:"stylepick"}]},
-      stylepick:{say:"Here are the styles to choose from — tap the one that feels right for your website. Don't worry about getting it perfect: you still get free style changes later, after your first version.",options:STYLES.map(function(s){return {label:s,style:s}})},
-      vision:{say:"Now in your own words: what do you imagine your website should be? A few sentences is perfect — what it's for, what it should offer, and the feeling you want people to get from it. For example: “A warm, elegant site for my bakery — people should see the menu, photos of the cakes, and be able to order for pickup.” Type it in the box below — your words are kept exactly as you write them. Rather come back to it? Just tap “Skip for now”.",field:"vision",next:"email"},
-      email:{say:function(d){var base="Saved. Next: your email address — the one to show on your website, so your visitors can reach you. It's also where your sign-in code and updates are sent.";return d.suggestedEmail?(base+" Earlier you gave me "+d.suggestedEmail+" — if that's the one to use, it's already in the box below: just tap Continue. A different one? Simply type over it."):base},field:"email",next:"custFirst"},
-      custFirst:{say:"Thank you. Now — what's your first name? Together with your email, it's how your account knows you, and I'll greet you by name from here on. Your email itself is never shown anywhere — only your name.",field:"custFirst",next:"custLast"},
-      custLast:{say:"And your last name? First and last name together are what we keep with your account, so the AI can respond to you by name.",field:"custLast",next:"logo"},
-      logo:{say:"Now — your logo. Every professional website carries one in the header, and you have two easy options. Option 1: upload your logo now, and I'll show it straight back to you here so you can see it's safely in. Option 2: upload or upgrade it later — that's completely fine; many people settle the logo after the first version, and it never holds your website up. Tap the option that suits you below.",logo:true,next:"images"},
-      code:{say:"Last one — and no passwords here, ever. You sign in with a fresh 6-digit code sent to your email. For this demo, type the 6 digits 4-8-3-9-2-0; once email sending is connected, your own fresh code arrives in your inbox.",field:"code",next:"create"},
-      images:{say:"Now — your other pictures! Do you have images for your website — your products, your place, your work — up to 10 of them? (Your logo has its own question, just before this one.) Add them right here with the button below, and pop a little note on each one if you like. No images? Just tap “I don't have images”.",images:true,next:"code"},
-      imgalt:{say:"No problem at all — that never stops a website. We can create the images for you instead: just tell me what they should show. Or carry on with no images at all.",options:[{label:"Create images for me",go:"imgreq"},{label:"No images, thanks",go:"code"}]},
-      imgreq:{say:"Lovely. In a few words: what should the created images show? For example: “our shop counter, shelves of products, the storefront in daylight”.",field:"imgreq",next:"code"},
-      loginEmail:{say:"Welcome back! What's your email? We'll send your sign-in code there.",field:"loginEmail",next:"loginFirst"},
-      loginFirst:{say:"And so I can greet you properly — what's your first name? Only your name is ever shown, never your email.",field:"custFirst",next:"loginLast"},
-      loginLast:{say:"And your last name? Then we're set.",field:"custLast",next:"loginCode"},
-      loginCode:{say:"Now the 6-digit code sent to your email — for this demo, type 4-8-3-9-2-0. No passwords, ever.",field:"loginCode",next:"login"}
+      q1:{say:"Hi there! Welcome to WebFlowAI. We’re going to get your professional website built together in just a few taps. To help our build steps know exactly how to structure, layout, and build your site from scratch, please select your business category below or type your details. If you've already filled this out previously, feel free to skip ahead. What type of business are we building today?",field:"biz",next:"q2",options:[
+        {label:"💎 Luxury Jewelry & Silver",go:"q2",q:"category",v:"Luxury Jewelry & Silver"},
+        {label:"💡 Event Lighting & Sound",go:"q2",q:"category",v:"Event Lighting & Sound"},
+        {label:"🥤 Smoothie & Açai Bar",go:"q2",q:"category",v:"Smoothie & Açai Bar"},
+        {label:"📊 Bookkeeping & Finance",go:"q2",q:"category",v:"Bookkeeping & Finance"},
+        {label:"🔄 I already filled this out / Skip",go:"q2",skip:true}]},
+      q2:{say:"Got it! What is the primary purpose of your website?",field:"purposeT",next:"q3",options:[
+        {label:"🛍️ E-Commerce / Shop",go:"q3",q:"purpose",v:"E-Commerce / Shop"},
+        {label:"🖼️ Portfolio / Showcase",go:"q3",q:"purpose",v:"Portfolio"},
+        {label:"🚀 Landing Page",go:"q3",q:"purpose",v:"Landing Page"},
+        {label:"📖 Blog / Personal",go:"q3",q:"purpose",v:"Blog / Personal"},
+        {label:"💼 Business / SaaS",go:"q3",q:"purpose",v:"Business / SaaS"},
+        {label:"🔄 I already stated this / Skip",go:"q3",skip:true}]},
+      q3:{say:"How would you like your website to look and feel?",field:"styleT",next:"q4",options:[
+        {label:"✨ Modern & Minimalist",go:"q4",q:"style",v:"Modern & Minimalist"},
+        {label:"💎 Sleek, Clean & Sophisticated",go:"q4",q:"style",v:"Sleek, Clean & Sophisticated"},
+        {label:"🎨 Bold & Colorful",go:"q4",q:"style",v:"Bold & Colorful"},
+        {label:"📰 Classic & Editorial",go:"q4",q:"style",v:"Classic & Editorial"},
+        {label:"🚀 Up-to-Date Tech",go:"q4",q:"style",v:"Up-to-Date Tech"},
+        {label:"🔄 I already set my style / Skip",go:"q4",skip:true}]},
+      q4:{say:"What color palette or mood fits your brand best?",field:"colorT",next:"q5",options:[
+        {label:"🖤 Monochromatic & Luxury (Black, White, Gold/Silver)",go:"q5",q:"palette",v:"Black & Gold"},
+        {label:"🌊 Fresh & Clean (Blues, Whites, Soft Grays)",go:"q5",q:"palette",v:"Ocean Blues"},
+        {label:"🌿 Earthy & Organic (Warm Neutrals, Sage, Forest Green)",go:"q5",q:"palette",v:"Earthy Greens"},
+        {label:"🔥 Vibrant & Energetic (Bright Accents, High Contrast)",go:"q5",q:"palette",v:"Sunset Coral"},
+        {label:"🔄 Color preferences already provided / Skip",go:"q5",skip:true}]},
+      q5:{say:"Do you have a company logo ready to upload for your header?",field:"logoT",next:"q6",options:[
+        {label:"📁 Upload Logo File (PNG, JPG, SVG)",q:"logoUpload"},
+        {label:"🔤 Generate a Clean Text Logo for Now",go:"q6",q:"logoText"},
+        {label:"🔄 Logo already provided / Skip",go:"q6",skip:true}]},
+      q6:{say:"Who is your primary target audience?",field:"audienceT",next:"q7",options:[
+        {label:"📍 Local Customers",go:"q7",q:"audience",v:"Local customers"},
+        {label:"🎨 Creative Professionals",go:"q7",q:"audience",v:"Creative professionals"},
+        {label:"👥 General Public",go:"q7",q:"audience",v:"General public"},
+        {label:"💼 B2B / Corporate Clients",go:"q7",q:"audience",v:"B2B / Corporate Clients"},
+        {label:"🔄 Already defined / Skip",go:"q7",skip:true}]},
+      q7:{say:"What region or service area are you targeting?",field:"areaT",next:"q8",options:[
+        {label:"🗽 Williamsburg, Brooklyn & NYC",go:"q8",q:"area",v:"Williamsburg, Brooklyn & NYC"},
+        {label:"🌆 New York Tri-State Area",go:"q8",q:"area",v:"New York Tri-State Area"},
+        {label:"🌎 Nationwide / Online",go:"q8",q:"area",v:"Nationwide / Online"},
+        {label:"🔄 Location already provided / Skip",go:"q8",skip:true}]},
+      q8:{say:"Which key sections or pages do you want included on your website?",field:"sectionsT",next:"q9",options:[
+        {label:"🏠 Home, About Us, Services, Contact",go:"q9",q:"sections",v:{pages:["Hero","About Me","Services","Contact form"]}},
+        {label:"🛍️ Shop Gallery, Product Details, Cart, Checkout",go:"q9",q:"sections",v:{pages:["Hero","Project Showcase","Services","Pricing","Contact form"],features:["Online shop"]}},
+        {label:"📅 Booking / Reservation Calendar & Pricing",go:"q9",q:"sections",v:{pages:["Hero","Services","Pricing","Contact form"],features:["Booking"]}},
+        {label:"⭐ Customer Testimonials & FAQ Section",go:"q9",q:"sections",v:{pages:["Hero","About Me","Testimonials","Contact form"]}},
+        {label:"🔄 Custom pages already outlined / Skip",go:"q9",skip:true}]},
+      q9:{say:"Almost done! What main action do you want visitors to take?",field:"ctaT",next:"q10",options:[
+        {label:"🛒 Shop Collection",go:"q10",q:"cta",v:"Shop Collection"},
+        {label:"📅 Book an Event / Service",go:"q10",q:"cta",v:"Book an Event / Service"},
+        {label:"📞 Call / Contact Us",go:"q10",q:"cta",v:"Call / Contact Us"},
+        {label:"💬 Get a Quote",go:"q10",q:"cta",v:"Get a Quote"},
+        {label:"🔄 Already specified / Skip",go:"q10",skip:true}]},
+      q10:{say:"Finally, which plan would you like to operate with for your build? No credit card is required right now—this is just to help us tailor the features during your building stages!",field:"planT",next:"create",options:[
+        {label:"🌐 Front-end Website ($9.48 one-time)",q:"plan",v:"frontend",finish:true},
+        {label:"📧 Front-end + Email Linked (+$5.00/mo)",q:"plan",v:"email",finish:true},
+        {label:"📞 Front-end + Phone & AI Customer Service (+$12.00/mo)",q:"plan",v:"phone",finish:true},
+        {label:"⚙️ Full System with Back-end (+$12.00/mo)",q:"plan",v:"backend",finish:true},
+        {label:"🔄 Plan already selected / Skip",skip:true,finish:true}]}
     };
-    var CHAT_ORDER=["phone","name","style","vision","email","logo","images","code"];
-    /* the counter segment for every step: side questions (your name after the
-       email, the logo and images follow-ups, the returning-customer branch) sit inside
-       the segment they belong to, so "Question X of 8" always matches the
-       question actually being asked and never falls back to 1 */
-    var CHAT_PROG={hello:1,phone:1,virtual:1,how:1,name:2,style:3,stylepick:3,vision:4,email:5,custFirst:5,custLast:5,logo:6,images:7,imgalt:7,imgreq:7,code:8,loginEmail:5,loginFirst:5,loginLast:5,loginCode:8};
-    var CHAT_PLACEHOLDER={phone:"Enter your phone number…",name:"Enter your business name…",vision:"Describe the website you imagine…",email:"Enter your email address…",custFirst:"Enter your first name…",custLast:"Enter your last name…",code:"Enter the 6-digit code…",loginEmail:"Enter your email address…",loginCode:"Enter the 6-digit code…",imgreq:"Describe the images you'd like…"};
+    var CHAT_ORDER=["q1","q2","q3","q4","q5","q6","q7","q8","q9","q10"];
+    var CHAT_PROG={q1:1,q2:2,q3:3,q4:4,q5:5,q6:6,q7:7,q8:8,q9:9,q10:10};
+    var CHAT_Q_LABELS={q1:"Business name & category",q2:"Website purpose",q3:"Visual style & vibe",q4:"Color palette & branding",q5:"Logo",q6:"Target audience",q7:"Service area",q8:"Key sections & pages",q9:"Primary call-to-action",q10:"Website plan"};
+    var CHAT_PLACEHOLDER={biz:"Type your business name or custom details here...",purposeT:"Describe your website purpose or type custom details...",styleT:"Describe your custom visual style or aesthetic...",colorT:"Type custom color codes or specific brand colors...",logoT:"Provide logo notes or alternative brand text...",audienceT:"Type or describe your target audience...",areaT:"Type custom location or service area...",sectionsT:"Type any specific pages or sections you need...",ctaT:"Type custom call-to-action details...",planT:"Type custom plan preferences or notes here..."};
+    /* every answer the 10-question flow collects, keyed by question — taps,
+       typed text and honest skips alike. This is what the details summary
+       and the owner brief carry for the chat (see handoff + order package). */
+    var chatAnswers={};
+    /* apply a tapped option's real effect: the pick lands in the very same
+       project state the side questions use, so the preview, the brief, the
+       summary and the checkout totals all follow the chat */
+    function applyChatOption(opt){
+      var step=chat.step;
+      if(opt.q==="category"){chat.data.category=opt.v;chatAnswers[step]=opt.label}
+      else if(opt.q==="purpose"){S.purpose=opt.v;chatAnswers[step]=opt.label;renderAll()}
+      else if(opt.q==="style"){S.style=opt.v;S.stylePicked=true;chat.data.styleConfirmed=opt.v;chatConfirmedStyle=opt.v;chatAnswers[step]=opt.label;renderAll()}
+      else if(opt.q==="palette"){S.colors=opt.v;S.primaryPick=null;S.accentPick=null;S.kit="";S.mixMain=0;S.mixSecond=0;S.mixBg=0;chatAnswers[step]=opt.label;renderAll()}
+      else if(opt.q==="logoText"){logoChoice="text";chat.data.logo="text";chatAnswers[step]=opt.label;renderAll()}
+      else if(opt.q==="audience"){S.audience=opt.v;chatAnswers[step]=opt.label;renderAll()}
+      else if(opt.q==="area"){S.serviceArea=opt.v;chatAnswers[step]=opt.label;renderAll()}
+      else if(opt.q==="sections"){S.pages=opt.v.pages.slice();if(opt.v.features)opt.v.features.forEach(function(f){if(S.features.indexOf(f)<0)S.features.push(f)});chatAnswers[step]=opt.label;renderAll()}
+      else if(opt.q==="cta"){S.cta=opt.v;chatAnswers[step]=opt.label;renderAll()}
+      else if(opt.q==="plan"){
+        /* the plan pick IS the checkout's add-on state — front-end only
+           clears the add-ons; each other tier switches its own one on */
+        addons={email:opt.v==="email",phone:opt.v==="phone",backend:opt.v==="backend"};
+        chat.data.plan=opt.label;chatAnswers[step]=opt.label;renderAll();
+      }
+    }
     var isEmail=function(v){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim())};
     var isPhone=function(v){return v.replace(/\D/g,"").length>=7&&/^[+\d\s().-]+$/.test(v.trim())};
     /* what a typed "name" actually looks like: an email address, a website
@@ -3232,7 +3308,7 @@
       var cn=card.querySelector("[data-confirm-note]");if(cn)cn.style.display="none";
       setTimeout(fixPvHeights,30);
     }
-    var chat={msgs:[],step:"hello",data:{},thinking:false,sound:true,done:false,building:false,idc:1,howSaid:false,creating:null};
+    var chat={msgs:[],step:"q1",data:{},thinking:false,sound:true,done:false,building:false,idc:1,howSaid:false,creating:null};
     var buildTimer=null;
     /* ---- style tries & owner handoff (this page only, in memory — nothing is stored) ----
        The first style is free to keep. The customer then gets up to 3 free style
@@ -3268,7 +3344,14 @@
       lines.push("");
       lines.push("BUSINESS & STYLE DETAILS (collected in the chat)");
       lines.push("Business / site name: "+(S.name||"— to be confirmed —"));
-      lines.push("In their own words: "+(S.vision?('"'+S.vision+'" (the customer\u2019s own description of the website they imagine — kept word for word; build to it)'):"— not provided —"));
+      if(chat.data&&chat.data.category)lines.push("Business category: "+chat.data.category);
+      if(S.vision)lines.push("In their own words: "+('"'+S.vision+'" (the customer\u2019s own description of the website they imagine — kept word for word; build to it)'));
+      if(S.serviceArea)lines.push("Service area: "+S.serviceArea);
+      if(S.cta)lines.push("Primary call-to-action: "+S.cta);
+      if(chat.data&&chat.data.plan)lines.push("Plan selected in the chat (for the building stages — no credit card was taken at that step): "+chat.data.plan);
+      lines.push("");
+      lines.push("TAP-AND-CONTINUE CHAT ANSWERS (all 10 questions, exactly as answered — a skip is recorded as skipped)");
+      CHAT_ORDER.forEach(function(k,i){lines.push("Q"+(i+1)+" · "+CHAT_Q_LABELS[k]+": "+(chatAnswers[k]||"— not answered —"))});
       lines.push("Purpose: "+S.purpose);
       lines.push("Target audience: "+S.audience);
       lines.push("Chosen style (current): "+S.style+"  (started as: "+(f.initialStyle||S.style)+")");
@@ -3286,6 +3369,7 @@
       if(userImages.length)lines.push("Customer images: "+userImages.length+" supplied ("+userImages.map(function(im){return im.name}).join(", ")+")");
       if(customerLogo&&customerLogo.src)lines.push("Logo: uploaded by the customer ("+customerLogo.name+")");
       else if(logoChoice==="later")lines.push("Logo: will upload / upgrade later (option 2)");
+      else if(logoChoice==="text")lines.push("Logo: clean text logo for now — business name as a wordmark; the customer may upload a logo file later");
       lines.push(previewAdjustLine());
       if(aiImageRequest)lines.push("Images to create (people-free, always): "+aiImageRequest);
       if(S.custom)lines.push("Extra notes: "+S.custom);
@@ -3465,9 +3549,9 @@
           var hf=ensureStyleFlow();
           var hRows=[];
           if(customerFullName())hRows.push(["Customer",customerFullName()+" — replies greet them as "+(customerGreetingName()||"")]);
+          if(chat.data&&chat.data.category)hRows.push(["Category",chat.data.category]);
           hRows.push(
             ["Business",S.name||"— to be confirmed —"],
-            ["In their own words",S.vision||"Not provided yet"],
             ["Purpose",S.purpose+" · for "+S.audience],
             ["Style","Confirmed in chat: "+(chatConfirmedStyle||S.style)+" · started as "+(hf.initialStyle||S.style)],
             ["Colours",S.colors+" — "+effPrimary().name+" "+effPrimary().hex+" / "+effAccent().name+" "+effAccent().hex],
@@ -3475,12 +3559,17 @@
             ["Features",S.features.join(", ")||"—"],
             ["Look & feel",S.tone+" tone · "+S.layout+" · "+S.font+" · "+S.btnShape+" buttons"]
           );
+          if(S.vision)hRows.push(["In their own words",S.vision]);
+          if(S.serviceArea)hRows.push(["Service area",S.serviceArea]);
+          if(S.cta)hRows.push(["Call-to-action",S.cta]);
+          if(chat.data&&chat.data.plan)hRows.push(["Plan",chat.data.plan+" — for the building stages; no card was taken at that step"]);
           if(S.tagline)hRows.push(["Tagline","“"+S.tagline+"”"]);
           if(S.displayPhone||S.displayEmail)hRows.push(["On the site",[S.displayPhone,S.displayEmail].filter(Boolean).join(" · ")]);
           if(userImages.length)hRows.push(["Images",userImages.length+" supplied by the customer"]);
           else if(aiImageRequest)hRows.push(["Images","To be created, people-free: "+aiImageRequest]);
           if(customerLogo&&customerLogo.src)hRows.push(["Logo","uploaded by the customer — "+customerLogo.name]);
           else if(logoChoice==="later")hRows.push(["Logo","will upload / upgrade later (option 2)"]);
+          else if(logoChoice==="text")hRows.push(["Logo","clean text logo for now — business name as a wordmark"]);
           hRows.push(["Preview adjustments",previewAdjust.touched?previewAdjustSummary():"None — the small preview was kept exactly as created."]);
           var hList=hRows.map(function(r){return '<li><b>'+esc(r[0])+'</b><span>'+esc(r[1])+'</span></li>'}).join("");
           return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="handoff-card">'
@@ -3489,7 +3578,7 @@
             +'<p style="color:var(--muted);font-size:13.5px;line-height:1.55;margin-top:5px">Everything you just answered, packaged as one brief — business, style and details together. This is the exact brief the owner works from behind the scenes.</p>'
             +'<ul class="handoff-list">'+hList+'</ul>'
             +'<p class="handoff-note"><b style="color:var(--ink)">Owner&rsquo;s next step:</b> take this brief to Gemini on the best Gemini model available, ask Gemini to return the complete live HTML, then paste that HTML back so the first full preview appears here in this chat for you to confirm.</p>'
-            +'<div class="handoff-actions"><a class="btn small" href="'+esc(handoffMailtoHref())+'">Open email draft to owner</a><button class="btn ghost small" type="button" data-copyhandoff>Copy the brief</button>'+(S.vision?"":'<button class="btn ghost small" type="button" data-addvision>Add your own-words description</button>')+((customerLogo&&customerLogo.src)?"":'<button class="btn ghost small" type="button" data-addlogo>'+(logoChoice==="later"?"Add your logo now":"Add a logo")+'</button>')+'</div>'
+            +'<div class="handoff-actions"><a class="btn small" href="'+esc(handoffMailtoHref())+'">Open email draft to owner</a><button class="btn ghost small" type="button" data-copyhandoff>Copy the brief</button>'+((customerLogo&&customerLogo.src)?"":'<button class="btn ghost small" type="button" data-addlogo>'+(logoChoice==="later"?"Add your logo now":"Add a logo")+'</button>')+'</div>'
             +'<p class="handoff-note">Not sent yet — nothing has been emailed and no Gemini build has run. The button above opens a pre-filled email draft to '+esc(OWNER_EMAIL)+' in your own mail app, ready for you to send. Automatic sending to the owner and the Gemini build switch on only when the real email + Gemini back end is connected.</p>'
             +'</div></div>';
         }
@@ -3527,7 +3616,7 @@
           /* spin class goes ONLY to the newest AI message's logo */
           var spin=(i===lastAi)?" spin":"";
           var opts="";
-          if(i===chat.msgs.length-1&&!chat.thinking&&!chat.done&&CHAT_STEPS[chat.step]&&CHAT_STEPS[chat.step].options&&m.step===chat.step){
+          if(i===chat.msgs.length-1&&!chat.thinking&&!chat.done&&CHAT_STEPS[chat.step]&&CHAT_STEPS[chat.step].options&&m.step===chat.step&&!(chat.step==="q5"&&customerLogo&&customerLogo.src)){
             opts='<div class="opts">'+CHAT_STEPS[chat.step].options.map(function(o,j){return '<button data-opt="'+j+'">'+esc(o.label)+'</button>'}).join("")+'</div>';
           }
           var imgUI="";
@@ -3541,20 +3630,19 @@
               +'</div></div>';
           }
           var logoUI="";
-          if(m.step==="logo"&&chat.step==="logo"&&i===chat.msgs.length-1&&!chat.done&&!chat.thinking){
+          if(m.step==="q5"&&chat.step==="q5"&&i===chat.msgs.length-1&&!chat.done&&!chat.thinking){
             if(customerLogo&&customerLogo.src){
               logoUI='<div class="logo-ui"><div class="logo-preview"><span class="lp-img"><img src="'+customerLogo.src+'" alt="Your uploaded logo" /></span><span class="lp-meta"><b>'+esc(customerLogo.name)+'</b><span>Received — this is your logo, exactly as you sent it. It will sit in your website&rsquo;s header.</span></span></div>'
                 +'<div class="logo-actions"><button type="button" class="primary" data-logo="done">Use this logo — continue</button><button type="button" data-logo="replace">Replace logo</button><button type="button" data-logo="remove">Remove</button></div></div>';
             }else{
-              logoUI='<div class="logo-ui">'
-                +'<button type="button" class="logo-opt" data-logo="upload"><span class="lo-num">1</span><span><b>Option 1 — Upload my logo now</b><small>Tap to choose your logo file (PNG, JPG or SVG). You&rsquo;ll see it back here the moment it&rsquo;s in.</small></span></button>'
-                +'<button type="button" class="logo-opt" data-logo="later"><span class="lo-num">2</span><span><b>Option 2 — Upload / upgrade it later</b><small>Completely fine — you can upload or upgrade your logo at any time later. We&rsquo;ll note it as &ldquo;will upload / upgrade later (option 2)&rdquo; and carry straight on.</small></span></button>'
-                +'</div>';
+              /* no logo yet: Question 5's own tap options above (upload /
+                 text logo / skip) are the controls — nothing extra here */
+              logoUI="";
             }
           }
           return '<div class="msg"><img class="avatar'+spin+'" src="assets/logo-dark.png" alt="" /><div><div class="bubble">'+esc(m.text)+'</div>'+opts+imgUI+logoUI+'</div></div>';
         }
-        var prev=chat.msgs[i-1],canEdit=prev&&prev.step&&CHAT_STEPS[prev.step]&&(CHAT_STEPS[prev.step].field||prev.step==="logo")&&!chat.done;
+        var prev=chat.msgs[i-1],canEdit=prev&&prev.step&&CHAT_STEPS[prev.step]&&(CHAT_STEPS[prev.step].field||prev.step==="q5")&&!chat.done;
         return '<div class="msg me">'+(canEdit?'<button class="iconbtn" data-edit="'+esc(prev.step)+'" aria-label="Edit answer" style="padding:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>':"")
           +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand-2)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div class="bubble">'+esc(m.text)+'</div></div>';
       }).join("");
@@ -3574,6 +3662,8 @@
       var form=$("chat-form");
       if(step&&step.field&&!chat.done&&!chat.building){form.style.display="block";var inp=$("chat-text");
         inp.placeholder=CHAT_PLACEHOLDER[step.field];
+        /* the last question's button carries the owner's exact finish label */
+        var sb=$("chat-send");if(sb&&sb.childNodes[0])sb.childNodes[0].textContent=(chat.step==="q10"?"Finish & Generate Preview ":"Continue ");
         /* never type="email": the browser would block the submit with its own
            bubble before the chat's warm, naming re-ask can run — the keyboard
            still gets the email layout via inputmode */
@@ -3600,31 +3690,35 @@
     function chatSay(text,step){return new Promise(function(res){chat.thinking=true;chatRender();
       setTimeout(function(){chat.thinking=false;chatAdd("ai",text,step);ding();chatRender();res()},900)})}
     function chatGoTo(s){
-      if(s==="how"){
-        /* the "two ways" prompt is said once per conversation — if the flow
-           arrives here again (the other phone branch, an edited answer),
-           go straight to the next unanswered question instead of repeating it */
-        if(chat.howSaid)return chatGoTo(!chat.data.name?"name":(!chat.data.styleConfirmed?"style":(!chat.data.email?"email":(!chat.data.logo?"logo":"images"))));
-        chat.howSaid=true;
-      }
-      if(s==="style"&&!(S.stylePicked&&S.style)){
-        /* no style was picked on the side — don't ask them to confirm a pick
-           they never made; offer the styles to choose from instead */
-        return chatGoTo("stylepick");
-      }
       var say=CHAT_STEPS[s].say;
       if(typeof say==="function")say=say(chat.data);
-      if(s==="hello"){var gn=customerGreetingName();if(gn)say="Hi "+gn+"! Let's get your website started. It's easy — I'll ask one small thing at a time. First: do you have a phone number we can use for your website?"}
-      if(s==="custLast"&&customerFirstName)say="Lovely to meet you, "+customerFirstName+". And your last name? First and last name together are what we keep with your account, so the AI can respond to you by name.";
-      if(s==="vision"&&(S.vision||"").trim()){
-        /* the customer already described it in their own words in the step forms —
-           carry it in word for word and do not ask twice */
-        return chatSay("You've already described it in your own words in the details — I've kept it word for word, so I won't ask twice. Here it is, exactly as you wrote it:",s).then(function(){
-          chat.data.vision=S.vision;chat.data.visionSkipped=false;chatAdd("me",S.vision);chatRender();
-          return chatGoTo("email");
-        });
-      }
       return chatSay(say,s).then(function(){chat.step=s;chatRender()})}
+    /* the finish, shared by Question 10 however it is answered (a plan tap
+       or typed notes + the Finish button): the creating screen shows while
+       the first version is produced from ALL the details together; the
+       moment it is ready, the small preview with its style mixers, the
+       details summary / owner brief and the style-tries card arrive */
+    function chatFinishFlow(kind,codeVal){
+      var siMail=(chat.data.loginEmail||chat.data.contactEmail||chat.data.email||"").trim().toLowerCase();
+      if(isEmail(siMail)&&!customerEmail){customerEmail=siMail;customerCode=(codeVal||"").replace(/\D/g,"").slice(0,6)||"483920";renderSigninState()}
+      /* the chat request is delivered into the owner side place, marked as received "by email" */
+      textNotices.push({when:"2 Nov 2026", kind:kind==="login"?"Chat — returning customer signed in":"New chat — 10-question flow completed", code:customerCode||genCode(),
+        detail:["Customer: "+(customerFullName()||chat.data.customerName||"—"),"Business: "+(chat.data.name||S.name||"—"),"Category: "+(chat.data.category||"—"),"Plan: "+(chat.data.plan||"—"),"Email: "+(chat.data.contactEmail||"—"),"Phone: "+(chat.data.phone||"—")].join(" · ")});
+      if(kind==="login"){
+        chat.done=true;
+        chatSay((customerGreetingName()?("Welcome back, "+customerGreetingName()+" — you're in! "):"Welcome back — you're in! ")+"Your website preview is below. Take a look, change anything you like, and tap Continue when you're happy.").then(function(){chatRender()});
+        return;
+      }
+      chat.building=true;chatRender();
+      startCreating(function(){
+        chat.building=false;chat.done=true;
+        initStyleFlow();
+        chat.msgs.push({id:chat.idc++,from:"ai",kind:"site"});
+        chat.msgs.push({id:chat.idc++,from:"ai",kind:"handoff"});
+        chat.msgs.push({id:chat.idc++,from:"ai",kind:"styletry"});
+        chatSay((customerGreetingName()?("All done, "+customerGreetingName()+" — that was easy! "):"All done — that was easy! ")+"Your first style is in the preview card above, and everything you answered is packaged in the “Ready to send to the owner” block under it. Like this style? Continue to checkout to confirm it. Want a different look? You have 3 free style changes in the Style tries card — after those, $5 credit adds 10 more tries.").then(function(){chatRender()});
+      });
+    }
     $("chat-msgs").addEventListener("click",function(e){
       if(chat.building)return;
       var anyBtn=e.target.closest?e.target.closest("button"):null;
@@ -3657,11 +3751,11 @@
         if(lact==="upload"){$("chat-logo-file").click();return}
         if(lact==="replace"){$("chat-logo-file").click();return}
         if(lact==="remove"){customerLogo=null;logoChoice="";chat.data.logo="";renderAll();chatRender();toast("Logo removed — pick either option whenever you're ready.");return}
-        if(lact==="done"){chatAdd("me","Use this logo");chatRender();chatGoTo("images");return}
+        if(lact==="done"){chatAdd("me","Use this logo");chat.data.logo="uploaded";chatAnswers.q5="📁 Upload Logo File (PNG, JPG, SVG)";chatRender();chatGoTo("q6");return}
         if(lact==="later"){
           logoChoice="later";chat.data.logo="later";customerLogo=null;renderAll();
           chatAdd("me","Option 2 — I'll upload / upgrade my logo later");chatRender();
-          chatSay("That's completely fine — honestly. I've noted it as: Logo: will upload / upgrade later (option 2). You can add or upgrade your logo at any time after your website is built, and it never holds anything up. Let's carry on.",chat.step).then(function(){chatGoTo("images")});
+          chatSay("That's completely fine — honestly. I've noted it as: Logo: will upload / upgrade later (option 2). You can add or upgrade your logo at any time after your website is built, and it never holds anything up. Let's carry on.",chat.step).then(function(){chatGoTo("q6")});
           return;
         }
       }
@@ -3687,24 +3781,14 @@
       }
       var chb=e.target.closest("[data-copyhandoff]");
       if(chb){copyText(handoffPlainText(),"Owner handoff copied — the full brief, ready to paste or send.");return}
-      var avb=e.target.closest("[data-addvision]");
-      if(avb&&!chat.thinking){
-        /* revisit the own-words question from the details summary: wind the chat
-           back to just before the finishing cards and ask it again */
-        var cut=chat.msgs.findIndex(function(m){return m.kind==="build"||m.kind==="site"||m.kind==="handoff"||m.kind==="styletry"});
-        if(cut>=0)chat.msgs=chat.msgs.slice(0,cut);
-        chat.done=false;chat.building=false;chatRender();
-        chatGoTo("vision");
-        return;
-      }
       var alb=e.target.closest("[data-addlogo]");
       if(alb&&!chat.thinking){
-        /* revisit the logo question from the summary, exactly like the own-words
-           question: wind back to just before the finishing cards and ask it again */
+        /* revisit the logo question (Question 5) from the summary: wind back
+           to just before the finishing cards and ask it again */
         var cut2=chat.msgs.findIndex(function(m){return m.kind==="build"||m.kind==="site"||m.kind==="handoff"||m.kind==="styletry"});
         if(cut2>=0)chat.msgs=chat.msgs.slice(0,cut2);
         chat.done=false;chat.building=false;chatRender();
-        chatGoTo("logo");
+        chatGoTo("q5");
         return;
       }
       var ci=e.target.closest("[data-chatimg]");
@@ -3716,18 +3800,23 @@
       }
       var o=e.target.closest("[data-opt]");
       if(o&&!chat.thinking){var opt=CHAT_STEPS[chat.step].options[+o.getAttribute("data-opt")];chatAdd("me",opt.label);chatRender();
-        if(opt.style){ /* a style chosen from the chat's own style list: it becomes
-             the project style, confirmed in words, and overrides any earlier pick */
-          S.style=opt.style;S.stylePicked=true;chat.data.styleConfirmed=opt.style;chatConfirmedStyle=opt.style;renderAll();
-          chatSay("Lovely — "+opt.style+" it is. That's the style we'll build in — confirmed.",chat.step).then(function(){chatGoTo("vision")});return}
-        if(opt.act==="styleYes"){ /* the side pick, confirmed in the chat */
-          chat.data.styleConfirmed=S.style;chatConfirmedStyle=S.style;
-          chatSay("Perfect — "+S.style+" is confirmed as your style.",chat.step).then(function(){chatGoTo("vision")});return}
+        /* Question 5's upload option opens the real file picker and stays on
+           the question — the tap bubble is taken back so the options stay in
+           place if the picker is cancelled; the uploaded logo is shown back
+           in the chat, and "Use this logo" (the data-logo actions above)
+           moves on to Q6 */
+        if(opt.q==="logoUpload"){chat.msgs.pop();chatRender();$("chat-logo-file").click();return}
+        /* a skip records exactly that — already provided / skipped — and
+           never a value the customer did not give */
+        if(opt.skip)chatAnswers[chat.step]="Already provided / skipped — the customer chose the skip option; no value was recorded for this question.";
+        else if(opt.q)applyChatOption(opt);
+        /* Question 10 ends the flow either way: plan tap or skip alike */
+        if(opt.finish){chatFinishFlow("create","");return}
         chatGoTo(opt.go);return}
       var ed=e.target.closest("[data-edit]");
       if(ed&&!chat.thinking){var s=ed.getAttribute("data-edit");var idx=chat.msgs.findIndex(function(m){return m.step===s});
         if(idx>=0)chat.msgs=chat.msgs.slice(0,idx+1);
-        if(s==="logo"){customerLogo=null;logoChoice="";chat.data.logo="";renderAll()}
+        if(s==="q5"){customerLogo=null;logoChoice="";chat.data.logo="";renderAll()}
         chat.step=s;chat.done=false;chatRender()}
     });
     $("chat-msgs").addEventListener("input",function(e){
@@ -3799,34 +3888,23 @@
          this is the identity the AI greets and answers by — the email stays unshown */
       if(field==="custFirst"){customerFirstName=v.trim();siFirstName=customerFirstName;chat.data.customerFirstName=customerFirstName}
       if(field==="custLast"){customerLastName=v.trim();siLastName=customerLastName;chat.data.customerLastName=customerLastName;if(customerFullName())chat.data.customerName=customerFullName()}
+      /* typed answers in the 10-question flow: kept word for word in the
+         chat answers, and the ones the project state has a home for (business
+         name, audience, service area, call-to-action) land there too, so the
+         preview, brief, summary and checkout all carry them */
+      var tv=v.trim();
+      if(chat.step==="q1"){S.name=tv;chat.data.name=tv;chatAnswers.q1=tv;renderAll()}
+      else if(chat.step==="q2"){chatAnswers.q2=tv;chat.data.purposeNote=tv}
+      else if(chat.step==="q3"){chatAnswers.q3=tv;chat.data.styleNote=tv}
+      else if(chat.step==="q4"){chatAnswers.q4=tv;chat.data.colorNote=tv}
+      else if(chat.step==="q5"){chatAnswers.q5=tv;chat.data.logoNote=tv}
+      else if(chat.step==="q6"){S.audience=tv;chatAnswers.q6=tv;renderAll()}
+      else if(chat.step==="q7"){S.serviceArea=tv;chatAnswers.q7=tv;renderAll()}
+      else if(chat.step==="q8"){chatAnswers.q8=tv;chat.data.sectionsNote=tv}
+      else if(chat.step==="q9"){S.cta=tv;chatAnswers.q9=tv;renderAll()}
+      else if(chat.step==="q10"){chatAnswers.q10=tv;chat.data.plan="Custom plan preference (typed by the customer): "+tv}
       var next=step.next;
-      if(next==="create"||next==="login"){
-        /* the chat signs the customer in by email + code, exactly like the Sign in button:
-           the code and notifications go to the email the customer entered */
-        var siMail=(chat.data.loginEmail||chat.data.contactEmail||chat.data.email||"").trim().toLowerCase();
-        if(isEmail(siMail)&&!customerEmail){customerEmail=siMail;customerCode=(v||"").replace(/\D/g,"").slice(0,6)||"483920";renderSigninState()}
-        /* the chat request is delivered into the owner side place, marked as received "by email" */
-        textNotices.push({when:"2 Nov 2026", kind:next==="create"?"New chat — sign-up completed":"Chat — returning customer signed in", code:customerCode||genCode(),
-          detail:["Customer: "+(customerFullName()||chat.data.customerName||"—"),"Business: "+(chat.data.name||S.name||"—"),"Email: "+(chat.data.contactEmail||"—"),"Phone: "+(chat.data.phone||"—")].join(" · ")});
-        if(next==="login"){
-          chat.done=true;
-          chatSay((customerGreetingName()?("Welcome back, "+customerGreetingName()+" — you're in! "):"Welcome back — you're in! ")+"Your website preview is below. Take a look, change anything you like, and tap Continue when you're happy.").then(function(){chatRender()});
-          return;
-        }
-        /* the finish: the creating screen (5-minute countdown) shows while the
-           first version is produced; the moment it is ready, its Open button
-           appears and the finished website arrives in the chat as cards */
-        chat.building=true;chatRender();
-        startCreating(function(){
-          chat.building=false;chat.done=true;
-          initStyleFlow();
-          chat.msgs.push({id:chat.idc++,from:"ai",kind:"site"});
-          chat.msgs.push({id:chat.idc++,from:"ai",kind:"handoff"});
-          chat.msgs.push({id:chat.idc++,from:"ai",kind:"styletry"});
-          chatSay((customerGreetingName()?("All done, "+customerGreetingName()+" — that was easy! "):"All done — that was easy! ")+"Your first style is in the preview card above, and everything you answered is packaged in the “Ready to send to the owner” block under it. Like this style? Continue to checkout to confirm it. Want a different look? You have 3 free style changes in the Style tries card — after those, $5 credit adds 10 more tries.").then(function(){chatRender()});
-        });
-        return;
-      }
+      if(next==="create"||next==="login"){chatFinishFlow(next,v);return}
       chatGoTo(next);
     });
     /* the finishing mixers' colour picker + hex field: "input" updates the
@@ -3860,7 +3938,7 @@
       $("sound-on-ic").style.display=chat.sound?"":"none";$("sound-off-ic").style.display=chat.sound?"none":"";
       if(chat.sound){unlockSound();tapSound()}
     });
-    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}if(typeof creatingTimer!=="undefined"&&creatingTimer){clearInterval(creatingTimer);creatingTimer=null}if(typeof creatingClock!=="undefined"&&creatingClock){clearInterval(creatingClock);creatingClock=null}styleFlow=null;chatConfirmedStyle="";customerLogo=null;logoChoice="";previewAdjust={touched:false,confirmed:false};chat={msgs:[],step:"hello",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1,howSaid:false,creating:null};chatRender();chatGoTo("hello")}
+    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}if(typeof creatingTimer!=="undefined"&&creatingTimer){clearInterval(creatingTimer);creatingTimer=null}if(typeof creatingClock!=="undefined"&&creatingClock){clearInterval(creatingClock);creatingClock=null}styleFlow=null;chatConfirmedStyle="";customerLogo=null;logoChoice="";chatAnswers={};previewAdjust={touched:false,confirmed:false};chat={msgs:[],step:"q1",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1,howSaid:false,creating:null};chatRender();chatGoTo("q1")}
 
     /* ============ card form + order submission ============ */
     function luhn(num){var sum=0,alt=false;for(var i=num.length-1;i>=0;i--){var d=+num[i];if(alt){d*=2;if(d>9)d-=9}sum+=d;alt=!alt}return num.length>=15&&sum%10===0}
@@ -4014,7 +4092,7 @@
       rd.onload=function(){
         customerLogo={name:(f.name||"My logo").replace(/\.[^.]+$/,"").replace(/[-_]+/g," ").trim()||"My logo",src:String(rd.result||"")};
         logoChoice="uploaded";chat.data.logo="uploaded";renderAll();
-        chatSay("Beautiful — I've got it. Here's your logo, exactly as you sent it — it will sit in your website's header. Happy with it? Tap “Use this logo” to carry on, or replace it first.","logo");
+        chatSay("Beautiful — I've got it. Here's your logo, exactly as you sent it — it will sit in your website's header. Happy with it? Tap “Use this logo” to carry on, or replace it first.","q5");
       };
       rd.onerror=function(){toast("That file couldn't be read — please try another logo file.")};
       rd.readAsDataURL(f);
