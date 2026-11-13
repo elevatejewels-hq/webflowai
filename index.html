@@ -274,7 +274,7 @@
       /* height fits the conversation: the card grows with the messages
          (capped in .chat-msgs below) instead of holding ~400px of empty
          space under the greeting; chat-stage mode sets its own height */
-      .chat{display:flex;flex-direction:column;height:auto;max-height:78vh;padding:18px}
+      .chat{display:flex;flex-direction:column;height:auto;max-height:78vh;padding:18px;overflow:hidden}
       .chat-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
       .chat-head h3{font-size:18px}
       .iconbtn{border:0;background:none;border-radius:12px;padding:7px;color:var(--muted);display:grid;place-items:center}
@@ -283,7 +283,7 @@
       .chat-prog p{font-size:12px;color:var(--muted)}
       .chat-prog .track{height:4px;border-radius:4px;background:var(--surface-2);margin-top:5px;overflow:hidden}
       .chat-prog .fill{height:100%;background:var(--grad);transition:width .5s ease}
-      .chat-msgs{flex:1;overflow-y:auto;margin-top:14px;padding-right:4px;display:flex;flex-direction:column;gap:14px}
+      .chat-msgs{flex:1;min-height:0;overflow-y:auto;margin-top:14px;padding-right:4px;display:flex;flex-direction:column;gap:14px}
       .msg{display:flex;gap:10px;animation:viewin .3s ease both}
       .msg .avatar{width:34px;height:34px;border-radius:50%;flex:none}
       /* Only the newest AI message's logo spins — every earlier logo stays still. */
@@ -301,7 +301,7 @@
       .dots span{width:7px;height:7px;border-radius:50%;background:var(--brand-2);animation:bounce 1s infinite}
       .dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
       @keyframes bounce{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-4px);opacity:1}}
-      .chat-form{margin-top:14px}
+      .chat-form{margin-top:14px;flex:none;position:relative;z-index:2}
       .chat-input{display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--surface-2);border-radius:11px;padding:5px}
       .chat-input input{flex:1;min-width:0;border:0;background:transparent;padding:8px 10px;font-size:15px;color:var(--ink)}
       .chat-input input:focus{outline:none}
@@ -376,7 +376,7 @@
       @keyframes bkpulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--brand-2) 35%,transparent)}50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--brand-2) 0%,transparent)}}
       .site-card{border:1px solid var(--border);background:var(--surface);border-radius:16px;border-top-left-radius:4px;overflow:hidden;max-width:92%}
       .site-card .sc-body{padding:12px 14px 14px}
-      .site-card .sc-name{font-weight:800;font-size:16px;font-family:"Inter Tight",sans-serif}
+      .site-card .sc-name{font-weight:800;font-size:16px;font-family:"Inter Tight",sans-serif;overflow-wrap:anywhere}
       .site-card .sc-url{color:var(--brand-2);font-size:13.5px;font-weight:600;margin-top:1px;overflow-wrap:anywhere}
       .site-card .sc-note{color:var(--muted);font-size:12.5px;margin-top:7px;line-height:1.5}
       /* ---------- in-chat owner handoff + style tries ---------- */
@@ -2083,13 +2083,13 @@
       <div style="height:100%;display:flex;flex-direction:column">
         <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;background:var(--surface);flex:none">
           <h3 id="pv-title" style="font-size:18px">Your website</h3>
-          <span style="color:var(--muted);font-size:13px">Full-screen · generated from your answers</span>
+          <span id="pv-subtitle" style="color:var(--muted);font-size:13px">Full-screen · generated from your answers</span>
           <button class="btn small" id="pv-back-chat" style="margin-left:auto">← Continue in the chat</button>
           <button class="btn ghost small" id="pv-close" style="margin-left:8px">Close ✕</button>
         </div>
         <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain">
           <div id="pv-frame" class="pv-fade"></div>
-          <div style="max-width:960px;margin:0 auto;padding:22px 18px 30px">
+          <div id="pv-controls" style="max-width:960px;margin:0 auto;padding:22px 18px 30px">
             <p style="font-weight:600;font-size:14.5px">Try a different colour mood — the website recolours live:</p>
             <div id="pv-swatches" style="margin-top:8px"></div>
             <div data-balpanel style="margin-top:16px"></div>
@@ -2333,7 +2333,7 @@
       {label:"🛍 Shop", data:{purpose:"E-Commerce / Shop", style:"Bold & Colorful", audience:"General public", name:"Pop Store", features:["Online shop","Newsletter","Socials"], tone:"Playful", colors:"Sunset Coral", tagline:"New drops every Friday"}},
       {label:"🎨 Portfolio", data:{purpose:"Portfolio", style:"Modern & Minimalist", audience:"Creative professionals", name:"Studio Nova", features:["Gallery","Forms","Socials"], tone:"Professional", colors:"Cyan & Purple", tagline:"Design that speaks for itself"}}
     ];
-    var DEFAULTS = {purpose:"Portfolio", style:"Modern & Minimalist", stylePicked:false, audience:"Creative professionals", name:"",
+    var DEFAULTS = {purpose:"", style:"Modern & Minimalist", stylePicked:false, audience:"Creative professionals", name:"",
       pages:["Hero","Project Showcase","About Me","Contact form"], features:["Gallery","Forms"],
       colors:"Cyan & Purple", primaryPick:null, accentPick:null, bgPick:null, kit:"", tone:"Professional", complex:true, pageCount:"1", custom:"", tagline:"", vision:"",
       layout:"Centred hero", font:"Clean sans", btnShape:"Rounded", btnStyleName:"", btnRadius:"", btnRadiusShape:"", balanceMain:50, balanceSecond:50, mixMain:0, mixSecond:0, mixBg:0,
@@ -2387,7 +2387,7 @@
       if(promptOverride)return promptOverride;
       var style=b.style.toLowerCase();
       var name=b.name?(' called "'+b.name+'"'):"";
-      var p='Create a '+style+' '+b.purpose.toLowerCase()+' website'+name+' for '+b.audience.toLowerCase()+
+      var p='Create a '+style+' '+(b.purpose?b.purpose.toLowerCase()+' ':'')+'website'+name+(b.audience?' for '+b.audience.toLowerCase():'')+
         '. Focus on clean lines, ample whitespace, and a '+b.tone.toLowerCase()+' tone throughout. Key sections should include: '+((typeof sectionNames==="function")?sectionNames():b.pages).join(", ")+
         '. Include '+(b.features.join(", ")||"basic features")+'. Use a colour scheme of '+b.colors.toLowerCase()+
         ', with '+effPrimary().name+' ('+effPrimary().hex+') as the primary colour and '+effAccent().name+' ('+effAccent().hex+') as the accent colour. Lay the page out as a '+b.layout.toLowerCase()+' design, set type in a '+b.font.toLowerCase()+' style, and use '+b.btnShape.toLowerCase()+' buttons. Make it '+
@@ -2855,6 +2855,12 @@
       var kick=T.kicker?'<p style="font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:'+ACCHEX+';margin:0 0 10px">'+esc(T.kicker)+'</p>':"";
       var btn='<span style="display:inline-block;background:'+T.btnBg+';color:'+T.btnColor+';border:'+T.btnBorder+';box-shadow:'+T.btnShadow+';padding:'+T.btnPad+';border-radius:'+T.btnR+';font-weight:600;font-size:14.5px;'+T.btnExtra+'">'+esc(S.cta||"Get started")+'</span>';
       var btn2='<span style="display:inline-block;background:'+T.btn2Bg+';border:'+T.btn2Border+';box-shadow:'+T.btn2Shadow+';color:'+T.btn2Color+';padding:'+T.btnPad+';border-radius:'+T.btnR+';font-weight:600;font-size:14.5px;'+T.btnExtra+'">Learn more</span>';
+      /* the hero's own buttons are real navigation inside the preview: the
+         main call-to-action scrolls to the Contact section and "Learn more"
+         scrolls to the About section — never dead ends, never a fake
+         phone link when no number was given */
+      var btnGo='<span data-pvgo="Contact form" style="cursor:pointer">'+btn+'</span>';
+      var btn2Go='<span data-pvgo="About Me" style="cursor:pointer">'+btn2+'</span>';
       var heroImg=null;userImages.forEach(function(im){if(!heroImg&&im.slot==="Hero")heroImg=im});if(!heroImg&&userImages.length)heroImg=userImages[0];
       var visual=heroImg
         ? '<div role="img" aria-label="'+esc(heroImg.name)+'" style="'+imgPhStyle(heroImg)+';border-radius:'+(T.visualR||cardR)+';min-height:190px;position:relative;overflow:hidden;'+T.visualExtra+'">'+(heroImg.src?'<img src="'+heroImg.src+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;'+imgTagStyle(heroImg)+'" />':"")+'<span style="position:absolute;left:10px;bottom:10px;background:rgba(10,14,22,.72);color:#fff;font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px">Your image · '+esc(heroImg.name)+'</span></div>'
@@ -2862,13 +2868,13 @@
       var heroWrap='position:relative;overflow:hidden;background:'+T.heroBg+';'+heroInkCSS;
       var hero="";
       if(heroLayout==="Split hero"){
-        hero='<div style="'+heroWrap+'display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center;padding:34px 30px">@T@</div>'.replace("@T@",'<div>'+T.deco+kick+'<h2 style="'+hCSS(Math.max(20,T.hsize-2))+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 0 18px">'+esc(introText)+'</p>'+btn+' '+btn2+'</div><div>'+visual+'</div>');
+        hero='<div style="'+heroWrap+'display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center;padding:34px 30px">@T@</div>'.replace("@T@",'<div>'+T.deco+kick+'<h2 style="'+hCSS(Math.max(20,T.hsize-2))+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 0 18px">'+esc(introText)+'</p>'+btnGo+' '+btn2Go+'</div><div>'+visual+'</div>');
       }else if(heroLayout==="Sidebar"){
-        hero='<div style="'+heroWrap+'padding:30px">'+T.deco+kick+'<h2 style="'+hCSS(Math.max(20,T.hsize-3))+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 0 18px;max-width:520px">'+esc(introText)+'</p>'+btn+' '+btn2+'<div style="margin-top:20px">'+visual+'</div></div>';
+        hero='<div style="'+heroWrap+'padding:30px">'+T.deco+kick+'<h2 style="'+hCSS(Math.max(20,T.hsize-3))+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 0 18px;max-width:520px">'+esc(introText)+'</p>'+btnGo+' '+btn2Go+'<div style="margin-top:20px">'+visual+'</div></div>';
       }else if(heroLayout==="Magazine grid"){
-        hero='<div style="'+heroWrap+'padding:30px 30px 6px;text-align:left">'+T.deco+kick+'<h2 style="'+hCSS(Math.max(20,T.hsize-2))+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0">'+esc(introText)+'</p><div style="margin-top:16px">'+btn+'</div></div>';
+        hero='<div style="'+heroWrap+'padding:30px 30px 6px;text-align:left">'+T.deco+kick+'<h2 style="'+hCSS(Math.max(20,T.hsize-2))+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0">'+esc(introText)+'</p><div style="margin-top:16px">'+btnGo+'</div></div>';
       }else{
-        hero='<div style="'+heroWrap+'padding:'+T.heroPad+';text-align:center">'+T.deco+'<div style="width:56px;height:56px;border-radius:'+T.avatarR+';background:'+grad135+';color:#fff;display:grid;place-items:center;font-size:24px;font-weight:800;margin:0 auto 14px;font-family:'+T.hfont+'">'+initial+'</div>'+kick+'<h2 style="'+hCSS(T.hsize)+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 auto 20px;max-width:480px">'+esc(introText)+'</p>'+btn+' '+btn2+'</div>';
+        hero='<div style="'+heroWrap+'padding:'+T.heroPad+';text-align:center">'+T.deco+'<div style="width:56px;height:56px;border-radius:'+T.avatarR+';background:'+grad135+';color:#fff;display:grid;place-items:center;font-size:24px;font-weight:800;margin:0 auto 14px;font-family:'+T.hfont+'">'+initial+'</div>'+kick+'<h2 style="'+hCSS(T.hsize)+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 auto 20px;max-width:480px">'+esc(introText)+'</p>'+btnGo+' '+btn2Go+'</div>';
       }
       if(T.layout==="bento")hero='<div style="margin:16px 16px 0;'+cardCSS+'border-radius:20px;overflow:hidden">'+hero+'</div>';
       /* exactly the sections the customer picked, each rendered as a real
@@ -2895,10 +2901,10 @@
         if(p==="Menu"){
           /* example items, plainly labelled as starter content the customer
              can swap — never presented as the business's real menu */
-          var menuItems=[["Fresh bagel with cream cheese","$3.50"],["Toasted breakfast sandwich","$6.95"],["Fresh-brewed coffee","$2.50"],["Fresh orange juice","$3.25"]];
-          return '<div style="'+bCSS+';padding:18px"><h3 style="margin:0 0 4px;font-size:17px;'+h3CSS+'">Menu</h3>'
+          var menuItems=["Fresh bagel with cream cheese","Toasted breakfast sandwich","Fresh-brewed coffee","Fresh orange juice"];
+          return '<div data-pvsec="'+p+'" style="'+bCSS+';padding:18px"><h3 style="margin:0 0 4px;font-size:17px;'+h3CSS+'">Menu</h3>'
             +'<p style="margin:0 0 10px;opacity:.72;font-size:13.5px">Example items to get you started — swap in your real menu whenever you like.</p>'
-            +menuItems.map(function(mi){return '<div style="display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed '+T.line+'"><span style="font-size:14.5px">'+esc(mi[0])+'</span><span style="font-size:14.5px;font-weight:700;color:'+ACCHEX+'">'+esc(mi[1])+'</span></div>'}).join("")
+            +menuItems.map(function(mi){return '<div style="padding:6px 0;border-bottom:1px dashed '+T.line+'"><span style="font-size:14.5px">'+esc(mi)+'</span></div>'}).join("")
             +'</div>';
         }
         if(p==="FAQ"){
@@ -2906,7 +2912,7 @@
           if(S.serviceArea)faqs.push(["Which area do you serve?","We look after "+S.serviceArea+"."]);
           if(S.cta)faqs.push(["How do I get started?","Just tap \u201C"+S.cta+"\u201D above — or send us a message and we\u2019ll take it from there."]);
           if(!faqs.length)faqs.push(["Your most-asked questions","The questions your customers ask most will be answered right here."]);
-          return '<div style="'+bCSS+';padding:18px"><h3 style="margin:0 0 8px;font-size:17px;'+h3CSS+'">FAQ</h3>'
+          return '<div data-pvsec="'+p+'" style="'+bCSS+';padding:18px"><h3 style="margin:0 0 8px;font-size:17px;'+h3CSS+'">FAQ</h3>'
             +faqs.map(function(f){return '<p style="margin:0 0 3px;font-size:14.5px;font-weight:700">'+esc(f[0])+'</p><p style="margin:0 0 10px;opacity:.72;font-size:14px">'+esc(f[1])+'</p>'}).join("")
             +'</div>';
         }
@@ -2915,15 +2921,21 @@
           if(S.displayPhone)contactBits.push(esc(S.displayPhone));
           if(S.displayEmail)contactBits.push(esc(S.displayEmail));
           if(S.serviceArea)contactBits.push("Serving "+esc(S.serviceArea));
-          return '<div style="'+bCSS+';padding:18px"><h3 style="margin:0 0 10px;font-size:17px;'+h3CSS+'">'+esc(disp(p))+'</h3><div style="display:grid;gap:8px"><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">Your name</span><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">Your email</span><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">How can we help?</span></div>'+(contactBits.length?'<p style="margin:12px 0 0;font-size:14px;opacity:.85">'+contactBits.join(" · ")+'</p>':"")+'<div style="margin-top:12px">'+btn+'</div></div>';
+          /* the form's Send is real: with a business email it opens a
+             pre-filled mailto to it; without one it says honestly that the
+             build team connects the form in the full build */
+          var sendCtl=S.displayEmail
+            ?'<a href="mailto:'+esc(S.displayEmail)+'?subject='+encodeURIComponent("Website enquiry")+'" style="display:inline-block;background:'+T.btnBg+';color:'+T.btnColor+';border:'+T.btnBorder+';box-shadow:'+T.btnShadow+';padding:'+T.btnPad+';border-radius:'+T.btnR+';font-weight:600;font-size:14.5px;'+T.btnExtra+'text-decoration:none">Send</a>'
+            :'<span data-pvsend style="display:inline-block;background:'+T.btnBg+';color:'+T.btnColor+';border:'+T.btnBorder+';box-shadow:'+T.btnShadow+';padding:'+T.btnPad+';border-radius:'+T.btnR+';font-weight:600;font-size:14.5px;'+T.btnExtra+'cursor:pointer">Send</span><p data-pvsend-note style="display:none;margin:10px 0 0;font-size:13.5px;opacity:.85">Your build team connects this form in the full build.</p>';
+          return '<div data-pvsec="'+p+'" style="'+bCSS+';padding:18px"><h3 style="margin:0 0 10px;font-size:17px;'+h3CSS+'">'+esc(disp(p))+'</h3><div style="display:grid;gap:8px"><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">Your name</span><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">Your email</span><span style="display:block;border:'+T.inputBorder+';background:'+T.inputBg+';'+T.inputExtra+';border-radius:8px;padding:9px 12px;font-size:14px;opacity:.65">How can we help?</span></div>'+(contactBits.length?'<p style="margin:12px 0 0;font-size:14px;opacity:.85">'+contactBits.join(" · ")+'</p>':"")+'<div style="margin-top:12px">'+sendCtl+'</div></div>';
         }
         if(arch==="list"){
-          return '<div style="border-bottom:1px solid '+T.line+';padding:14px 4px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap"><h3 style="margin:0;font-size:17px;min-width:150px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0;opacity:.72;font-size:14px;flex:1;min-width:200px">'+esc(sectionCopy[p]||"")+'</p></div>';
+          return '<div data-pvsec="'+p+'" style="border-bottom:1px solid '+T.line+';padding:14px 4px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap"><h3 style="margin:0;font-size:17px;min-width:150px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0;opacity:.72;font-size:14px;flex:1;min-width:200px">'+esc(sectionCopy[p]||"")+'</p></div>';
         }
         if(arch==="gallery"){
-          return '<div style="'+bCSS+';overflow:hidden"><div style="height:74px;background:'+grad135+'"></div><div style="padding:13px 15px"><h3 style="margin:0 0 4px;font-size:16px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p></div></div>';
+          return '<div data-pvsec="'+p+'" style="'+bCSS+';overflow:hidden"><div style="height:74px;background:'+grad135+'"></div><div style="padding:13px 15px"><h3 style="margin:0 0 4px;font-size:16px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p></div></div>';
         }
-        return '<div style="'+bCSS+';padding:18px"><h3 style="margin:0 0 6px;font-size:17px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p></div>';
+        return '<div data-pvsec="'+p+'" style="'+bCSS+';padding:18px"><h3 style="margin:0 0 6px;font-size:17px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p></div>';
       }).join("");
       var gridCols=T.layout==="bento"?"repeat(2,1fr)":(arch==="list"?"1fr":(arch==="gallery"?"repeat(auto-fit,minmax(150px,1fr))":(S.layout==="Magazine grid"?"repeat(3,1fr)":"repeat(auto-fit,minmax(200px,1fr))")));
       var featRow=S.features.length?'<div style="display:flex;flex-wrap:wrap;gap:8px;padding:'+(T.layout==="bento"?"14px 18px 0":"0 30px 6px")+'">'+S.features.map(function(f){return '<span style="border:'+T.chipBorder+';background:'+T.chipBg+';color:'+T.chipColor+';border-radius:'+T.chipR+';padding:4px 12px;font-size:13.5px;font-weight:600;'+T.chipExtra+'">'+esc(f)+'</span>'}).join("")+'</div>':"";
@@ -2941,11 +2953,11 @@
       var purposeRow="", saasBar="";
       if(!arch&&S.purpose==="Business / SaaS"){saasBar='<div style="height:4px;background:'+PRIMHEX+'"></div>'}
       var logoMark=(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?'<img src="'+customerLogo.src+'" alt="" style="width:32px;height:32px;object-fit:contain;border-radius:8px;background:#fff;border:1px solid rgba(0,0,0,.08);flex:none" />':"";
-      var nav='<div style="display:flex;align-items:center;gap:14px;padding:14px 22px;background:'+T.navBg+';border-bottom:1px solid '+T.navLine+'">'+logoMark+'<span style="font-weight:800;font-size:17px;'+T.navNameExtra+'">'+esc(name)+'</span><span style="margin-left:auto;display:flex;gap:16px;font-size:14px;opacity:.9;flex-wrap:wrap;'+T.navLinkExtra+'">'+links.map(function(l){return '<span>'+esc(disp(l))+'</span>'}).join("")+'</span><span style="background:'+T.navBtnBg+';color:'+T.navBtnColor+';padding:7px 15px;border-radius:'+T.btnR+';font-size:14px;font-weight:600">Contact</span></div>';
+      var nav='<div style="display:flex;align-items:center;gap:14px;padding:14px 22px;background:'+T.navBg+';border-bottom:1px solid '+T.navLine+'">'+logoMark+'<span style="font-weight:800;font-size:17px;min-width:0;overflow-wrap:anywhere;'+T.navNameExtra+'">'+esc(name)+'</span><span style="margin-left:auto;display:flex;gap:16px;font-size:14px;opacity:.9;flex-wrap:wrap;'+T.navLinkExtra+'">'+links.map(function(l){return '<span data-pvgo="'+l+'" style="cursor:pointer">'+esc(disp(l))+'</span>'}).join("")+'</span><span data-pvgo="Contact form" style="background:'+T.navBtnBg+';color:'+T.navBtnColor+';padding:7px 15px;border-radius:'+T.btnR+';font-size:14px;font-weight:600;flex:none;white-space:nowrap;cursor:pointer">Contact</span></div>';
       var bodyInner=saasBar+nav+hero+featRow+archRow+purposeRow+imgStrip+'<div style="display:grid;grid-template-columns:'+gridCols+';gap:'+T.gap+';padding:'+(T.layout==="bento"?"14px 18px 10px":"16px 30px 8px")+'">'+blocks+'</div>'
         +'<div style="padding:18px 30px 24px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid '+T.line+';margin-top:14px;font-size:13.5px;opacity:.7"><span>© '+esc(name)+(S.serviceArea?' · Serving '+esc(S.serviceArea):"")+'</span><span>'+esc(S.style)+' · '+esc(effPrimary().name)+' / '+esc(effAccent().name)+((S.balanceMain!==50||S.balanceSecond!==50)?' · Balance '+S.balanceMain+'% / '+S.balanceSecond+'%':'')+'</span></div>';
       if(heroLayout==="Sidebar"){
-        bodyInner='<div style="display:grid;grid-template-columns:180px 1fr;min-height:420px"><div style="border-right:1px solid '+T.line+';padding:20px 16px"><div style="font-weight:800;font-size:16px;margin-bottom:16px;'+T.navNameExtra+'">'+(logoMark?'<span style="display:block;margin-bottom:8px">'+logoMark+'</span>':"")+esc(name)+'</div>'+["Home"].concat(links).map(function(l,i){return '<div style="padding:8px 10px;border-radius:8px;font-size:14px;margin-bottom:4px;'+(i===0?"background:"+PRIMHEX+";color:#fff;font-weight:600":"opacity:.85")+'">'+esc(i===0?l:disp(l))+'</div>'}).join("")+'</div><div>'+hero+featRow+archRow+purposeRow+imgStrip+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:'+T.gap+';padding:6px 30px 20px">'+blocks+'</div></div></div>';
+        bodyInner='<div style="display:grid;grid-template-columns:180px 1fr;min-height:420px"><div style="border-right:1px solid '+T.line+';padding:20px 16px"><div style="font-weight:800;font-size:16px;margin-bottom:16px;'+T.navNameExtra+'">'+(logoMark?'<span style="display:block;margin-bottom:8px">'+logoMark+'</span>':"")+esc(name)+'</div>'+["Home"].concat(links).map(function(l,i){return '<div '+(i===0?"":'data-pvgo="'+l+'" ')+'style="padding:8px 10px;border-radius:8px;font-size:14px;margin-bottom:4px;'+(i===0?"background:"+PRIMHEX+";color:#fff;font-weight:600":"opacity:.85;cursor:pointer")+'">'+esc(i===0?l:disp(l))+'</div>'}).join("")+'</div><div>'+hero+featRow+archRow+purposeRow+imgStrip+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:'+T.gap+';padding:6px 30px 20px">'+blocks+'</div></div></div>';
       }
       /* surface texture per purpose (plain-colour backgrounds only): blog gets lined
          paper, SaaS a dotted grid, landing a soft tinted glow at the top */
@@ -2955,7 +2967,7 @@
         else if(S.purpose==="Business / SaaS"&&/^#[0-9a-f]{6}$/i.test(T.bg)){texBg="radial-gradient("+T.ink+"17 1.1px, rgba(0,0,0,0) 1.5px),"+T.bg;texSize="background-size:22px 22px;"}
         else if(S.purpose==="Landing Page")texBg="radial-gradient(620px 250px at 50% 0, "+ACCHEX+"26, rgba(0,0,0,0) 70%),"+T.bg;
       }
-      return '<div style="background:'+texBg+';'+texSize+'color:'+T.ink+';font-family:'+T.font+';text-align:left;min-height:430px">'+bodyInner+'</div>';
+      return '<div data-pvroot style="background:'+texBg+';'+texSize+'color:'+T.ink+';font-family:'+T.font+';text-align:left;min-height:430px">'+bodyInner+'</div>';
     }
     function pvUrlText(){return "https://"+(S.name?S.name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""):"your-business")+".webflowai.site"}
     /* clean rebuild swap: the old preview is removed first, then the new one
@@ -2995,8 +3007,27 @@
       if(pvResizeQueued)return;pvResizeQueued=true;
       requestAnimationFrame(function(){pvResizeQueued=false;fixPvHeights()});
     },{passive:true});
-    function openPreview(){renderPreview();$("preview-overlay").style.display="block";document.body.style.overflow="hidden";$("pv-close").focus()}
-    function closePreview(){$("preview-overlay").style.display="none";document.body.style.overflow=""}
+    var pvShowingFinished=false;
+    function openPreview(){pvShowingFinished=false;renderPreview();var pvc=$("pv-controls");if(pvc)pvc.style.display="";var psub=$("pv-subtitle");if(psub)psub.textContent="Full-screen · generated from your answers";$("preview-overlay").style.display="block";document.body.style.overflow="hidden";$("pv-close").focus()}
+    function closePreview(){pvShowingFinished=false;$("preview-overlay").style.display="none";document.body.style.overflow=""}
+    /* in-preview navigation: the generated site's own links scroll to the
+       section they name, inside the same preview root — no dead ends */
+    function pvGo(el,target){
+      if(!el||!target)return;
+      var root=el.closest?el.closest("[data-pvroot]"):null;if(!root)return;
+      var t=root.querySelector('[data-pvsec="'+target+'"]');
+      if(t)t.scrollIntoView({behavior:"smooth",block:"start"});
+    }
+    /* the finished website the build team delivered: opened in this same
+       full-screen view, in an iframe, with its real address on show */
+    function openFinishedSite(){
+      if(typeof wfBrief==="undefined"||!wfBrief.siteUrl)return;
+      pvShowingFinished=true;
+      $("pv-frame").innerHTML='<iframe title="Your finished website" src="'+esc(wfBrief.siteUrl)+'" style="display:block;width:100%;height:calc(100dvh - 70px);border:0;background:#fff"></iframe>';
+      var pvc=$("pv-controls");if(pvc)pvc.style.display="none";
+      var psub=$("pv-subtitle");if(psub)psub.textContent="Your finished website · "+wfBrief.siteUrl;
+      $("preview-overlay").style.display="block";document.body.style.overflow="hidden";$("pv-close").focus();
+    }
 
     /* ============ navigation ============ */
     var chatStarted=false;
@@ -3058,6 +3089,11 @@
       if(pvt){var hid=document.body.classList.toggle("pv-hidden");
         document.querySelectorAll("[data-pv-toggle]").forEach(function(b){b.textContent=hid?"Show preview":"Hide preview";b.setAttribute("aria-expanded",hid?"false":"true")});
         setTimeout(fixPvHeights,40);return}
+      var pvg=e.target.closest("[data-pvgo]");
+      if(pvg){pvGo(pvg,pvg.getAttribute("data-pvgo"));return}
+      var pvsn=e.target.closest("[data-pvsend]");
+      if(pvsn){var pnn=pvsn.parentNode.querySelector("[data-pvsend-note]");if(pnn)pnn.style.display="block";return}
+      if(e.target.closest("[data-openwebsite]")){if(typeof wfBrief!=="undefined"&&wfBrief.status==="ready"&&wfBrief.siteUrl)openFinishedSite();else openPreview();return}
       if(e.target.closest("[data-preview]")){openPreview();return}
       if(e.target.closest("[data-target]")){toast("Brief sent to the WebFlowAI Builder — continue to checkout to place the order.");showView("checkout");return}
       var ad=e.target.closest("[data-addon]");
@@ -3118,7 +3154,7 @@
     $("pv-keep").addEventListener("click",closePreview);
     $("preview-overlay").addEventListener("click",function(e){if(e.target===this)closePreview()});
     document.addEventListener("keydown",function(e){if(e.key==="Escape")closePreview()});
-    $("pv-continue").addEventListener("click",function(){closePreview();showView("checkout");toast("Design packaged — review your order and add your card to finish.")});
+    $("pv-continue").addEventListener("click",function(){wfSendBrief();closePreview();showView("checkout");toast("Design packaged — review your order and add your card to finish.")});
 
     /* ============ colour balance: live on input, recorded like every other choice ============ */
     document.addEventListener("input",function(e){
@@ -3130,7 +3166,7 @@
         promptOverride=null;
         syncMixerUI();syncBalanceUI();renderPickers();
         renderMinis(true); /* instant swap while the finger moves — no fade, no ghosting */
-        if($("preview-overlay").style.display!=="none")fadeSwap($("pv-frame"),pvHTML(),true);
+        if($("preview-overlay").style.display!=="none"&&!pvShowingFinished)fadeSwap($("pv-frame"),pvHTML(),true);
         $("mini-prompt").textContent=buildPrompt(S);$("details-prompt").textContent=buildPrompt(S);
         return;
       }
@@ -3140,7 +3176,7 @@
       promptOverride=null;
       syncBalanceUI();
       renderMinis(true); /* instant swap while the finger moves — no fade, no ghosting */
-      if($("preview-overlay").style.display!=="none")fadeSwap($("pv-frame"),pvHTML(),true);
+      if($("preview-overlay").style.display!=="none"&&!pvShowingFinished)fadeSwap($("pv-frame"),pvHTML(),true);
       $("mini-prompt").textContent=buildPrompt(S);$("details-prompt").textContent=buildPrompt(S);
     });
     document.addEventListener("change",function(e){
@@ -3216,8 +3252,9 @@
         {label:"🔥 Vibrant & Energetic (Bright Accents, High Contrast)",go:"q5",q:"palette",v:"Sunset Coral"},
         {label:"🔄 Color preferences already provided / Skip",go:"q5",skip:true}]},
       q5:{say:"Do you have a company logo ready to upload for your header?",field:"logoT",next:"q6",options:[
-        {label:"📁 Upload Logo File (PNG, JPG, SVG)",q:"logoUpload"},
-        {label:"🔤 Generate a Clean Text Logo for Now",go:"q6",q:"logoText"},
+        {label:"Upload my logo now",q:"logoUpload"},
+        {label:"I'll upload / upgrade my logo later",q:"logoLater"},
+        {label:"Generate a clean text logo for now",go:"q6",q:"logoText"},
         {label:"🔄 Logo already provided / Skip",go:"q6",skip:true}]},
       q6:{say:"Who is your primary target audience?",field:"audienceT",next:"q7",options:[
         {label:"📍 Local Customers",go:"q7",q:"audience",v:"Local customers"},
@@ -3279,7 +3316,7 @@
       var parts=[];
       if(a.sections&&a.sections.length)parts.push(a.sections.join(", "));
       if(a.tapLabel&&!a.skip)parts.push(a.tapLabel);
-      if(a.text)parts.push("Typed: \u201C"+a.text+"\u201D");
+      if(a.text)parts.push(k==="q5"?("Logo note: \u201C"+a.text+"\u201D"):("Typed: \u201C"+a.text+"\u201D"));
       if(parts.length)chatAnswers[k]=parts.join(" · ");else delete chatAnswers[k];
     }
     function recordTyped(k,tv){var r=ansRec(k);r.text=tv;if(r.skip)r.skip=false;syncChatAnswer(k)}
@@ -3355,6 +3392,7 @@
       else if(opt.q==="style"){S.style=opt.v;S.stylePicked=true;chat.data.styleConfirmed=opt.v;chatConfirmedStyle=opt.v;renderAll()}
       else if(opt.q==="palette"){S.colors=opt.v;S.primaryPick=null;S.accentPick=null;S.kit="";S.mixMain=0;S.mixSecond=0;S.mixBg=0;renderAll()}
       else if(opt.q==="logoText"){logoChoice="text";chat.data.logo="text";renderAll()}
+      else if(opt.q==="logoLater"){logoChoice="later";chat.data.logo="later";renderAll()}
       else if(opt.q==="audience"){S.audience=opt.v;renderAll()}
       else if(opt.q==="area"){S.serviceArea=opt.v;renderAll()}
       else if(opt.q==="cta"){S.cta=opt.v;renderAll()}
@@ -3444,6 +3482,109 @@
        changes in the chat. After those, a $5 credit pack adds 10 more tries.
        No tries are granted any other way in the chat, so switches cannot run forever. */
     var OWNER_EMAIL="webflowai301@gmail.com";
+    /* ---- the live build relay (the real back end for this page) ----
+       Confirming sends the customer's brief — the same order package the
+       owner handoff assembles — to the build relay for real, and the
+       finished website's status is polled from the same service. To the
+       customer this is only ever "our build team": the relay, like every
+       model behind it, is never named in customer-facing copy. */
+    const WF_RELAY="https://webflowai-relay.onrender.com";
+    var wfBrief={id:null,status:null,siteUrl:null,sending:false,pollTimer:null};
+    function wfHash(s){var h=0;for(var i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))>>>0}return "h"+h}
+    function wfStored(k){try{return localStorage.getItem(k)}catch(e){return null}}
+    function wfStore(k,v){try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}}
+    function wfQueuedExists(){return !!wfStored("wfBriefQueued")}
+    /* the one truthful send-state line, shown wherever the send state is
+       displayed (the confirm card, the handoff card, the finish box) */
+    function wfSendLine(){
+      if(wfBrief.id)return "Sent to our build team ✓ · Your details are with our build team — your website is in the build queue. · Brief reference: "+wfBrief.id;
+      if(wfBrief.sending||wfQueuedExists())return "Sending your details…";
+      return "When you confirm, your details go straight to our build team, who build your website from them.";
+    }
+    function wfRefreshSendUI(){if(typeof chatStarted!=="undefined"&&chatStarted)chatRender()}
+    /* the build-status card lives in the finish area of the chat, right
+       alongside the preview and handoff cards, and renders from wfBrief */
+    function wfEnsureStatusCard(){
+      if(!wfBrief.id)return;
+      if(!(chat.done||chat.building))return;
+      for(var i=0;i<chat.msgs.length;i++)if(chat.msgs[i].kind==="buildstatus")return;
+      chat.msgs.push({id:chat.idc++,from:"ai",kind:"buildstatus"});
+    }
+    function wfSendBrief(){
+      if(wfBrief.sending)return;
+      var pkg=orderPackage();
+      var body=JSON.stringify(pkg);
+      var hash=wfHash(body);
+      var storedId=wfStored("wfBriefId"),storedHash=wfStored("wfBriefHash");
+      if(storedId&&storedHash===hash){
+        /* these exact details were already sent — never send them twice */
+        wfBrief.id=storedId;wfStartStatusPoll();wfRefreshSendUI();return;
+      }
+      wfBrief.sending=true;wfRefreshSendUI();
+      fetch(WF_RELAY+"/brief",{method:"POST",headers:{"Content-Type":"application/json"},body:body})
+        .then(function(r){return r.json()})
+        .then(function(d){
+          wfBrief.sending=false;
+          if(d&&d.ok&&d.id){
+            wfBrief.id=d.id;wfBrief.status="new";wfBrief.siteUrl=null;
+            wfStore("wfBriefId",d.id);wfStore("wfBriefHash",hash);wfStore("wfBriefQueued",null);
+            wfEnsureStatusCard();wfStartStatusPoll();wfRefreshSendUI();
+          }else{
+            wfStore("wfBriefQueued",body);wfStore("wfBriefHash",hash);wfRefreshSendUI();
+          }
+        })
+        .catch(function(){
+          wfBrief.sending=false;
+          /* not lost: the brief stays queued on this device and is retried
+             on every page load until it goes through */
+          wfStore("wfBriefQueued",body);wfStore("wfBriefHash",hash);wfRefreshSendUI();
+        });
+    }
+    function wfFetchStatus(){
+      if(!wfBrief.id)return;
+      fetch(WF_RELAY+"/brief-status?id="+encodeURIComponent(wfBrief.id))
+        .then(function(r){return r.json()})
+        .then(function(d){
+          if(!d||!d.ok)return;
+          var changed=d.status!==wfBrief.status||(d.siteUrl||null)!==wfBrief.siteUrl;
+          wfBrief.status=d.status;wfBrief.siteUrl=d.siteUrl||null;
+          if(wfBrief.status==="ready"&&wfBrief.pollTimer){clearInterval(wfBrief.pollTimer);wfBrief.pollTimer=null}
+          if(changed){wfEnsureStatusCard();wfRefreshSendUI()}
+        })
+        .catch(function(){});
+    }
+    function wfStartStatusPoll(){
+      if(!wfBrief.id)return;
+      wfFetchStatus();
+      if(wfBrief.pollTimer)clearInterval(wfBrief.pollTimer);
+      wfBrief.pollTimer=setInterval(function(){
+        if(!wfBrief.id||wfBrief.status==="ready"){if(wfBrief.pollTimer){clearInterval(wfBrief.pollTimer);wfBrief.pollTimer=null}return}
+        wfFetchStatus();
+      },20000);
+    }
+    /* on every page load: an unsent brief is retried until it goes through,
+       and a stored brief id resumes its status polling */
+    (function wfInit(){
+      var q=wfStored("wfBriefQueued");
+      wfBrief.id=wfStored("wfBriefId");
+      if(q&&!wfBrief.id){
+        wfBrief.sending=true;
+        fetch(WF_RELAY+"/brief",{method:"POST",headers:{"Content-Type":"application/json"},body:q})
+          .then(function(r){return r.json()})
+          .then(function(d){
+            wfBrief.sending=false;
+            if(d&&d.ok&&d.id){
+              wfBrief.id=d.id;wfBrief.status="new";
+              wfStore("wfBriefId",d.id);wfStore("wfBriefQueued",null);
+              wfEnsureStatusCard();wfStartStatusPoll();wfRefreshSendUI();
+            }
+          })
+          .catch(function(){wfBrief.sending=false});
+      }else if(wfBrief.id){
+        wfStartStatusPoll();
+      }
+    })();
+
     /* the style the customer CONFIRMED in the chat (confirming the side pick,
        or choosing in the chat) — this is the style the brief builds in */
     var chatConfirmedStyle="";
@@ -3507,8 +3648,7 @@
       lines.push("THE BRIEF");
       lines.push(buildPrompt(S));
       lines.push("");
-      lines.push("OWNER'S NEXT STEP (manual until the back end is connected)");
-      lines.push("Take this brief to Gemini on the best Gemini model available, ask Gemini to return the complete live HTML for this website, then paste that HTML back for the customer's first full preview in this chat for them to confirm.");
+      lines.push("This brief goes straight to the WebFlowAI build team when the customer confirms — the build team builds the website from these details.");
       return lines.join("\n");
     }
     function handoffMailtoHref(){
@@ -3619,6 +3759,7 @@
     function tapSound(){var now=(window.performance&&performance.now)?performance.now():Date.now();if(now-lastTapAt<90)return;lastTapAt=now;softPop(920,540,0.05,0.085)}
     function ding(){var now=(window.performance&&performance.now)?performance.now():Date.now();if(now-lastReplyAt<170)return;lastReplyAt=now;softPop(660,470,0.032,0.11)}
     function chatRender(){
+      wfEnsureStatusCard();
       var box=$("chat-msgs");
       var lastAi=-1;chat.msgs.forEach(function(m,i){if(m.from==="ai")lastAi=i});
       var html=chat.msgs.map(function(m,i){
@@ -3632,7 +3773,7 @@
             {label:"Final polish",done:!!cr.ready,doing:!cr.ready&&cr.pct>=70}];
           var cSteps=csteps.map(function(st){return '<li class="'+(st.done?"done":(st.doing?"doing":""))+'"><span class="bk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>'+esc(st.label)+'</span></li>'}).join("");
           var cStatus=cr.ready
-            ?'<p style="font-weight:700;margin-top:12px">Your first version is ready.</p><button class="btn block" data-preview style="margin-top:10px">Open your website</button><p style="color:var(--muted);font-size:12.5px;margin-top:9px">It opens full-screen — and there is a “Continue in the chat” button at the top whenever you want to come back here.</p>'
+            ?'<p style="font-weight:700;margin-top:12px">Your first version is ready.</p><button class="btn block" data-openwebsite style="margin-top:10px">Open your website</button><p style="color:var(--muted);font-size:12.5px;margin-top:9px">It opens full-screen — and there is a “Continue in the chat” button at the top whenever you want to come back here.</p>'
             :(crem>0
               ?'<p data-cstatus style="color:var(--muted);font-size:13.5px;margin-top:12px">Creating… your Open button appears here the moment your website is ready — usually long before the clock runs out.</p>'
               :'<p data-cstatus style="color:var(--muted);font-size:13.5px;margin-top:12px">Still finishing — just a moment more. Your Open button will appear right here the moment your website is ready.</p>');
@@ -3670,9 +3811,10 @@
           +'<div class="mix-choices"><p class="mix-choices-title">Your choices</p><div data-choices>'+choicesListHTML()+'</div>'
           +'<p class="mix-confirm-note" data-confirm-note'+(previewAdjust.confirmed?'':' style="display:none"')+'>Recorded — these choices are locked in with your details.</p></div>'
           +'<button type="button" class="btn small block mix-confirm" data-pmixconfirm>Confirm &amp; Record</button>'
+          +'<p data-brief-status style="font-size:12.5px;color:var(--muted);margin-top:9px;line-height:1.5">'+esc(wfSendLine())+'</p>'
           +'<p class="mix-note">This preview is the style version of your website — the quick way to feel the look. Deeper detail changes — exact colours, the background and layout details — are easy to adjust afterwards, once your website is built.</p>'
           +'</div></div>'
-          +'<div class="sc-body"><p class="sc-name">'+esc(S.name||"Your Business")+'</p><button class="btn small block" data-preview style="margin-top:10px">Open my website</button><p class="sc-note">This is your instant front-end preview, made from your answers. Your finished website is built from these same details by a real AI run, and arrives on a temporary address within a few hours of your order.</p></div></div></div>';
+          +'<div class="sc-body"><p class="sc-name">'+esc(S.name||"Your Business")+'</p><button class="btn small block" data-openwebsite style="margin-top:10px">Open my website</button><p class="sc-note">This is your instant front-end preview, made from your answers. Your finished website is built from these same details by a real AI run, and arrives on a temporary address within a few hours of your order.</p></div></div></div>';
         }
         if(m.kind==="handoff"){
           var hf=ensureStyleFlow();
@@ -3707,10 +3849,16 @@
             +'<h4 style="margin-top:9px">Ready to send to the owner</h4>'
             +'<p style="color:var(--muted);font-size:13.5px;line-height:1.55;margin-top:5px">Everything you just answered, packaged as one brief — business, style and details together. This is the exact brief the owner works from behind the scenes.</p>'
             +'<ul class="handoff-list">'+hList+'</ul>'
-            +'<p class="handoff-note"><b style="color:var(--ink)">Owner&rsquo;s next step:</b> take this brief to Gemini on the best Gemini model available, ask Gemini to return the complete live HTML, then paste that HTML back so the first full preview appears here in this chat for you to confirm.</p>'
-            +'<div class="handoff-actions"><a class="btn small" href="'+esc(handoffMailtoHref())+'">Open email draft to owner</a><button class="btn ghost small" type="button" data-copyhandoff>Copy the brief</button>'+((customerLogo&&customerLogo.src)?"":'<button class="btn ghost small" type="button" data-addlogo>'+(logoChoice==="later"?"Add your logo now":"Add a logo")+'</button>')+'</div>'
-            +'<p class="handoff-note">Not sent yet — nothing has been emailed and no Gemini build has run. The button above opens a pre-filled email draft to '+esc(OWNER_EMAIL)+' in your own mail app, ready for you to send. Automatic sending to the owner and the Gemini build switch on only when the real email + Gemini back end is connected.</p>'
+            +'<p class="handoff-note" data-brief-status>'+esc(wfSendLine())+'</p>'
+            +((customerLogo&&customerLogo.src)?"":'<div class="handoff-actions"><button class="btn ghost small" type="button" data-addlogo>'+(logoChoice==="later"?"Add your logo now":"Add a logo")+'</button></div>')
             +'</div></div>';
+        }
+        if(m.kind==="buildstatus"){
+          var bReady=wfBrief.status==="ready"&&wfBrief.siteUrl;
+          var bBody=bReady
+            ?'<p style="font-size:14px;line-height:1.55;margin-top:5px">Your finished website is ready — built by our build team from everything you told us.</p><button class="btn block" data-openwebsite style="margin-top:11px">Open your website</button><p style="color:var(--muted);font-size:12.5px;margin-top:9px">Your website address: '+esc(wfBrief.siteUrl)+'</p>'
+            :'<p style="font-size:14px;line-height:1.55;margin-top:5px">Your website is being built now by our build team. This page updates itself the moment it&rsquo;s ready — you can close it and come back, we&rsquo;ll pick up right here.</p>'+(wfBrief.id?'<p style="color:var(--muted);font-size:12.5px;margin-top:9px">Brief reference: '+esc(wfBrief.id)+'</p>':"");
+          return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="build-card"><h4 style="font-size:16px">Your website build</h4>'+bBody+'</div></div>';
         }
         if(m.kind==="styletry"){
           var sf=ensureStyleFlow();
@@ -3782,7 +3930,7 @@
       if(chat.done&&!chat.thinking){
         html+='<div class="donebox"><p>All saved. Here is a first look at your website — made from your answers, in your style and your colours.</p>'
           +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn small" data-preview>View my website preview</button><button class="btn ghost small" id="chat-checkout">Continue to checkout</button><button class="btn ghost small" id="chat-restart">Start over</button></div>'
-          +'<p style="color:var(--muted);font-size:12.5px;margin-top:10px">Nothing leaves this page until you place your order.</p></div>';
+          +'<p data-brief-status style="color:var(--muted);font-size:12.5px;margin-top:10px">'+esc(wfSendLine())+'</p></div>';
       }
       box.innerHTML=html;
       /* instant, not "smooth": a smooth animation restarted on every render
@@ -3813,7 +3961,7 @@
       $("chat-prog-label").textContent=chat.building?"Building your website…":(chat.done?"All questions answered":"Question "+prog+" of "+CHAT_ORDER.length);
       setTimeout(fixPvHeights,40);
       $("chat-prog-fill").style.width=(prog/CHAT_ORDER.length*100)+"%";
-      var cc=$("chat-checkout");if(cc)cc.addEventListener("click",function(){showView("checkout")});
+      var cc=$("chat-checkout");if(cc)cc.addEventListener("click",function(){wfSendBrief();showView("checkout")});
       var cr=$("chat-restart");if(cr)cr.addEventListener("click",chatReset);
     }
     function chatAdd(from,text,step){chat.msgs.push({id:chat.idc++,from:from,text:text,step:step})}
@@ -3822,7 +3970,11 @@
     function chatGoTo(s){
       var say=CHAT_STEPS[s].say;
       if(typeof say==="function")say=say(chat.data);
-      return chatSay(say,s).then(function(){chat.step=s;chatRender()})}
+      /* the step moves FIRST: the progress header reads chat.step while the
+         new question is already on screen — setting it only after the say
+         rendered left the header one question behind the visible question */
+      chat.step=s;
+      return chatSay(say,s).then(function(){chatRender()})}
     /* the finish, shared by Question 10 however it is answered (a plan tap
        or typed notes + the Finish button): the creating screen shows while
        the first version is produced from ALL the details together; the
@@ -3871,6 +4023,7 @@
            owner brief (the same "Preview adjustments — …" line as always),
            and confirm in the chat — never a browser popup */
         previewAdjust.touched=true;previewAdjust.confirmed=true;
+        wfSendBrief();
         renderAll();chatRender();
         chatSay("Your style choices are recorded — "+previewAdjustSummary()+". They're in your details summary and the brief for your website, exactly as you've set them — and if you change your mind later, we can adjust the details any time.",chat.step).then(function(){chatRender()});
         return;
@@ -3881,7 +4034,7 @@
         if(lact==="upload"){$("chat-logo-file").click();return}
         if(lact==="replace"){$("chat-logo-file").click();return}
         if(lact==="remove"){customerLogo=null;logoChoice="";chat.data.logo="";renderAll();chatRender();toast("Logo removed — pick either option whenever you're ready.");return}
-        if(lact==="done"){chatAdd("me","Use this logo");chat.data.logo="uploaded";var lr=ansRec("q5");lr.skip=false;lr.tap="uploaded";lr.tapLabel="📁 Upload Logo File (PNG, JPG, SVG)";syncChatAnswer("q5");chatRender();chatGoTo("q6");return}
+        if(lact==="done"){chatAdd("me","Use this logo");chat.data.logo="uploaded";var lr=ansRec("q5");lr.skip=false;lr.tap="uploaded";lr.tapLabel="Upload my logo now";syncChatAnswer("q5");chatRender();chatGoTo("q6");return}
         if(lact==="later"){
           logoChoice="later";chat.data.logo="later";customerLogo=null;renderAll();
           chatAdd("me","Option 2 — I'll upload / upgrade my logo later");chatRender();
@@ -4017,7 +4170,7 @@
            confirmed by Continue (at Question 10 this IS the Finish button,
            and it is the only thing that starts creation) */
         $("chat-text").value="";$("chat-vision").value="";
-        if(chat.step==="q5"&&customerLogo&&customerLogo.src&&!(selRec&&selRec.tapLabel)){var lr2=ansRec("q5");lr2.skip=false;lr2.tap="uploaded";lr2.tapLabel="📁 Upload Logo File (PNG, JPG, SVG)";syncChatAnswer("q5");chat.data.logo="uploaded";selRec=lr2}
+        if(chat.step==="q5"&&customerLogo&&customerLogo.src&&!(selRec&&selRec.tapLabel)){var lr2=ansRec("q5");lr2.skip=false;lr2.tap="uploaded";lr2.tapLabel="Upload my logo now";syncChatAnswer("q5");chat.data.logo="uploaded";selRec=lr2}
         chatAdd("me",selRec&&selRec.sections&&selRec.sections.length?selRec.sections.join(", "):((selRec&&selRec.tapLabel)||""));
         chatRender();
         var snx=step.next;
@@ -4111,6 +4264,7 @@
       cardLast4=num.slice(-4);
       /* deliver the complete request into the owner side place */
       orders.push({ref:refCode(),when:"2 Nov 2026",pkg:orderPackage(),html:docHTML("order"),siteHTML:pvHTML(),code:customerCode||genCode(),ext:{status:"new",holder:null,work:null}});
+      wfSendBrief();
       renderDocs();
       /* waiting screen (~two minutes message, compressed in this preview build) */
       var ov=$("wait-overlay");ov.style.display="grid";
