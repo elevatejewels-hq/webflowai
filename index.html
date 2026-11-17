@@ -323,6 +323,24 @@
       .chat-skip:hover{color:var(--ink)}
       .err{color:var(--bad);font-size:13.5px;margin-top:8px}
       .donebox{border:1px solid var(--border);border-radius:12px;padding:14px;font-size:14px;background:var(--surface-2)}
+      /* ---------- visual style picker modal (Gemini-style overlay) ---------- */
+      #style-modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.7);z-index:100;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:18px}
+      .style-modal-card{background:var(--surface);color:var(--ink);width:100%;max-width:800px;max-height:85vh;border-radius:16px;padding:28px;overflow-y:auto;box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+      .style-modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:20px}
+      .style-modal-head h3{font-size:20px;font-weight:700}
+      .style-modal-head p{font-size:13px;color:var(--muted);margin-top:4px}
+      .style-modal-x{background:transparent;border:0;font-size:14px;font-weight:600;color:var(--muted);padding:4px 6px;white-space:nowrap}
+      .style-modal-x:hover{color:var(--ink)}
+      .style-modal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px;margin-bottom:24px}
+      .style-tile{border:2px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;transition:border-color .2s ease,box-shadow .2s ease;background:var(--surface);text-align:left;display:flex;flex-direction:column;gap:7px;color:var(--ink);font:inherit}
+      .style-tile:hover{border-color:var(--brand-2)}
+      .style-tile.on{border-color:var(--cyan);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand-2) 22%,transparent)}
+      .style-tile-pv{display:block;height:80px;border-radius:8px;overflow:hidden;border:1px solid var(--border);flex:none}
+      .style-tile-name{font-weight:600;font-size:13.5px;line-height:1.35}
+      .style-tile small{color:var(--muted);font-size:12px;line-height:1.45}
+      .style-modal-foot{text-align:right}
+      #style-modal-apply{background:var(--grad);color:#fff;border:0;padding:12px 28px;border-radius:8px;font-weight:600;cursor:pointer}
+      #style-modal-apply:disabled{opacity:.45;cursor:not-allowed}
       /* ---------- in-chat logo question ---------- */
       .logo-ui{margin-top:10px;display:grid;gap:9px;max-width:92%}
       .logo-opt{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:12px 13px;color:var(--ink);transition:border-color .15s ease,background .15s ease}
@@ -941,7 +959,7 @@
           <div class="hero">
             <span class="pill"><span class="dot"></span>Crafting websites just got 10× easier</span>
             <h1>Build the perfect site. Let AI do the heavy lifting.</h1>
-            <p class="sub">Answer a few easy questions to define your style, and receive a tailored website blueprint — presented as a polished project brief you can copy, download, or send straight to the Build Extension.</p>
+            <p class="sub">There is one way to build here — the chat. Answer a few easy questions right in the conversation and watch your live preview take shape as you go. Before you pay anything, you see every detail: exactly what&rsquo;s included, what each plan adds, and the exact price.</p>
             <div class="hero-cta">
               <button class="btn" data-nav="start">Start your blueprint
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -955,21 +973,21 @@
             <div class="chrome"><span></span><span></span><span></span></div>
             <div class="how-grid">
               <div class="how-cell">
-                <h3>1. Tell us what you need</h3>
+                <h3>1. Tell the chat what you need</h3>
                 <div class="mini-grid">
                   <div>Shop</div><div class="sel">Landing</div><div>Blog</div><div>Business</div>
                 </div>
-                <div class="fake-input">Search your style…</div>
+                <div class="fake-input">Answer in the chat — tap or type…</div>
               </div>
               <div class="how-cell">
-                <h3>2. Generate your AI blueprint</h3>
-                <div class="fake-prompt">I am building a <b>modern</b> <b>landing page</b>…</div>
-                <p style="color:var(--muted);font-size:13px;margin-top:10px">Custom prompt generation, formatted as a professional brief.</p>
+                <h3>2. See your live preview</h3>
+                <div class="fake-prompt">Watch it change as you answer — in <b>your style</b> and <b>your colours</b>.</div>
+                <p style="color:var(--muted);font-size:13px;margin-top:10px">A small preview sits beside the chat the whole way, so every choice lands in front of you before you commit to anything.</p>
               </div>
               <div class="how-cell">
-                <h3>3. Send to Build Extension</h3>
-                <div class="be-row"><img src="assets/logo-dark.png" alt="" />BUILD EXTENSION</div>
-                <button class="btn small block" style="margin-top:12px" data-nav="start">Send to Build Extension</button>
+                <h3>3. Every detail, before you pay</h3>
+                <p style="color:var(--muted);font-size:13px">Exactly what&rsquo;s included, what each plan adds, and the exact price — the website is $9.48 one-time, and add-ons are optional: email +$5/mo, phone &amp; AI service +$12/mo, back end +$12/mo.</p>
+                <button class="btn small block" style="margin-top:12px" data-nav="start">Start building in the chat</button>
               </div>
             </div>
           </div>
@@ -1016,6 +1034,16 @@
                 </ol>
                 <button class="btn block" style="margin-top:22px" data-nav="start">Build my website — $9.48</button>
                 <p style="color:var(--muted);font-size:13px;margin-top:12px;text-align:center">No account needed to start. You review everything before paying.</p>
+              </div>
+            </div>
+            <div class="panel" style="padding:26px;margin-top:22px">
+              <h3 style="font-size:19px">The plans, side by side</h3>
+              <p style="color:var(--muted);font-size:14.5px;margin-top:8px">Every plan starts from the same front-end website — the only difference is what you add to it. This is the same choice the chat offers you at the end, at the same prices.</p>
+              <div style="display:grid;gap:14px;margin-top:16px">
+                <div><b>🌐 Front-end Website — $9.48 one-time</b><br /><span style="color:var(--muted);font-size:14px">The complete website on its own: pages, sections, styling and content, ready to open in any browser. Nothing monthly.</span></div>
+                <div><b>📧 Front-end + Email Linked — $9.48 + $5.00/mo</b><br /><span style="color:var(--muted);font-size:14px">Adds email linked: your existing email connected to the website, so messages from your site land in your inbox.</span></div>
+                <div><b>📞 Front-end + Phone &amp; AI Customer Service — $9.48 + $12.00/mo</b><br /><span style="color:var(--muted);font-size:14px">Adds a phone number, texting &amp; AI customer service: a new phone number for your website, text messaging, and an AI customer-service assistant answering visitors for you.</span></div>
+                <div><b>⚙️ Full System with Back-end — $9.48 + $12.00/mo</b><br /><span style="color:var(--muted);font-size:14px">Adds the back end: accounts, saved data and everything behind the scenes — the full working system behind your front end.</span></div>
               </div>
             </div>
           </div>
@@ -1069,7 +1097,7 @@
                     <svg id="sound-off-ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M11 5 6 9H2v6h4l5 4V5z"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>
                   </button>
                 </div>
-                <div class="chat-prog" id="chat-prog"><p id="chat-prog-label">Question 1 of 11</p><div class="track"><div class="fill" id="chat-prog-fill" style="width:9%"></div></div></div>
+                <div class="chat-prog" id="chat-prog"><p id="chat-prog-label">Step 1 of 10 · Business name</p><div class="track"><div class="fill" id="chat-prog-fill" style="width:10%"></div></div></div>
                 <div class="chat-msgs" id="chat-msgs" aria-live="polite"></div>
                 <form class="chat-form" id="chat-form" style="display:none">
                   <div class="chat-input">
@@ -1948,6 +1976,23 @@
     </div>
 
 
+    <!-- ================= VISUAL STYLE PICKER MODAL (chat, Question 3) ================= -->
+    <div id="style-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="style-modal-title" style="display:none">
+      <div class="style-modal-card">
+        <div class="style-modal-head">
+          <div>
+            <h3 id="style-modal-title">Choose a visual style that speaks to you</h3>
+            <p>Select your aesthetic tile below — it instantly styles your preview canvas.</p>
+          </div>
+          <button type="button" class="style-modal-x" id="style-modal-close">Close ✕</button>
+        </div>
+        <div class="style-modal-grid" id="style-modal-grid"></div>
+        <div class="style-modal-foot">
+          <button type="button" id="style-modal-apply" disabled>Apply Selected Style</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ================= SMART QUESTIONNAIRE MODAL (Studio) ================= -->
     <div id="q-overlay" role="dialog" aria-modal="true" aria-labelledby="q-title" style="display:none;position:fixed;inset:0;z-index:71;background:rgba(8,12,20,.7);padding:18px;overflow-y:auto">
       <div class="panel q-panel">
@@ -2375,13 +2420,13 @@
       return {reference:refCode(), account:customerEmail?{email:customerEmail,keyedBy:"email address",ownerOnly:true}:null, customerName:customerFullName()?{firstName:customerFirstName,lastName:customerLastName,fullName:customerFullName(),greetingName:customerGreetingName(),note:"Collected at sign-in/sign-up so the AI can address the customer by name. The name is shown to the customer and the AI; the sign-in email stays owner-only and is never part of the AI-side identity."}:null, signinCode:customerCode||null, aiSideIdentity:customerCode?((customerFullName()?customerFullName()+" · ":"Customer · ")+"Code "+fmtCode(customerCode)):"Guest (not signed in)",
         displayContacts:{phone:S.displayPhone||null, email:S.displayEmail||null, label:"For the website — provided by the customer", note:"Contact details the customer provided to be shown on their website. Website content: the builder AI sees these and places them on the site exactly as given. This is NOT the sign-in/login email address, which is never included for the AI."},
         createdImagesRequest:aiImageRequest||null, createdImagesRule:"WebFlowAI-created images are always people-free — products, objects, places, interiors and screens only; never any image of a female and no people at all.", businessName:S.name||null, details:{businessName:S.name||null}, business:S.name||"Your Business", purpose:S.purpose, purposeCategory:(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.tap)||null, purposeTyped:(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.text)||null, style:S.style, confirmedStyle:(typeof chatConfirmedStyle!=="undefined"&&chatConfirmedStyle)||S.style, audience:S.audience, audienceTyped:(typeof chatAns!=="undefined"&&chatAns.q6&&chatAns.q6.text)||null, audienceOption:(typeof chatAns!=="undefined"&&chatAns.q6&&chatAns.q6.tap)||null,
-        typedAnswers:{label:"Everything the customer typed in the chat, verbatim, each answer as its own field — never merged into another field and never overwritten by a tapped option",businessName:(typeof chatAns!=="undefined"&&chatAns.q0&&chatAns.q0.text)||null,category:(typeof chatAns!=="undefined"&&chatAns.q1&&chatAns.q1.text)||null,purpose:(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.text)||null,style:(typeof chatAns!=="undefined"&&chatAns.q3&&chatAns.q3.text)||null,colours:(typeof chatAns!=="undefined"&&chatAns.q4&&chatAns.q4.text)||null,logoNotes:(typeof chatAns!=="undefined"&&chatAns.q5&&chatAns.q5.text)||null,audience:(typeof chatAns!=="undefined"&&chatAns.q6&&chatAns.q6.text)||null,serviceArea:(typeof chatAns!=="undefined"&&chatAns.q7&&chatAns.q7.text)||null,sectionsNote:(typeof chatAns!=="undefined"&&chatAns.q8&&chatAns.q8.text)||null,callToAction:(typeof chatAns!=="undefined"&&chatAns.q9&&chatAns.q9.text)||null,planNotes:(typeof chatAns!=="undefined"&&chatAns.q10&&chatAns.q10.text)||null},
+        typedAnswers:{label:"Everything the customer typed in the chat, verbatim, each answer as its own field — never merged into another field and never overwritten by a tapped option",businessName:(typeof chatAns!=="undefined"&&chatAns.q0&&chatAns.q0.text)||null,domain:(typeof chatAns!=="undefined"&&chatAns.q0d&&chatAns.q0d.text)||null,category:(typeof chatAns!=="undefined"&&chatAns.q1&&chatAns.q1.text)||null,purpose:(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.text)||null,style:(typeof chatAns!=="undefined"&&chatAns.q3&&chatAns.q3.text)||null,colours:(typeof chatAns!=="undefined"&&chatAns.q4&&chatAns.q4.text)||null,logoNotes:(typeof chatAns!=="undefined"&&chatAns.q5&&chatAns.q5.text)||null,audience:(typeof chatAns!=="undefined"&&chatAns.q6&&chatAns.q6.text)||null,serviceArea:(typeof chatAns!=="undefined"&&chatAns.q7&&chatAns.q7.text)||null,sectionsNote:(typeof chatAns!=="undefined"&&chatAns.q8&&chatAns.q8.text)||null,callToAction:(typeof chatAns!=="undefined"&&chatAns.q9&&chatAns.q9.text)||null,planNotes:(typeof chatAns!=="undefined"&&chatAns.q10&&chatAns.q10.text)||null},
         sections:(typeof sectionNames==="function")?sectionNames():S.pages, pagesInternal:S.pages, features:S.features, colours:S.colors, brandKit:S.kit||null, primaryColour:{name:effPrimary().name, hex:effPrimary().hex}, accentColour:{name:effAccent().name, hex:effAccent().hex}, backgroundColour:{hex:effBg()}, colourBalance:{mainColour:effPrimary().name, mainPct:S.balanceMain, secondColour:effAccent().name, secondPct:S.balanceSecond}, colourMixer:{mainAdjust:S.mixMain, secondAdjust:S.mixSecond, backgroundAdjust:S.mixBg}, tone:S.tone, layout:S.layout, fontStyle:S.font,
         buttonShape:S.btnShape, complexity:S.complex?"Complex":"Simple", pageCount:S.pageCount, tagline:S.tagline||null,
         ownWords:S.vision||null, ownWordsLabel:"In their own words — the customer's own description of the website they imagine, kept word for word; if null, the customer did not provide one.",
         logo:(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?{status:"uploaded",label:"Logo: uploaded by the customer",name:customerLogo.name,src:customerLogo.src,attachedInThisPage:true}:((typeof logoChoice!=="undefined"&&logoChoice==="later")?{status:"later",label:"Logo: will upload / upgrade later (option 2)",name:null,src:null}:((typeof logoChoice!=="undefined"&&logoChoice==="text")?{status:"text",label:"Logo: clean text logo for now (business name as a wordmark)",name:null,src:null}:null)),
         serviceArea:S.serviceArea||null, callToAction:S.cta||null,
-        chatFlow:{label:"Tap-and-continue chat — the customer's answers to the chat questions, exactly as given (a skip is recorded as skipped; nothing is invented)",category:(typeof chat!=="undefined"&&chat.data&&chat.data.category)||null,planSelected:(typeof chat!=="undefined"&&chat.data&&chat.data.plan)||null,planNotes:(typeof chat!=="undefined"&&chat.data&&chat.data.planNote)||null,answers:(typeof chatAnswers!=="undefined"?chatAnswers:{}),detailed:(typeof chatAns!=="undefined"?chatAns:{})},
+        chatFlow:{label:"Tap-and-continue chat — the customer's answers to the chat questions, exactly as given (a skip is recorded as skipped; nothing is invented)",category:(typeof chat!=="undefined"&&chat.data&&chat.data.category)||null,domain:(typeof chat!=="undefined"&&chat.data&&chat.data.domain)||null,planSelected:(typeof chat!=="undefined"&&chat.data&&chat.data.plan)||null,planNotes:(typeof chat!=="undefined"&&chat.data&&chat.data.planNote)||null,answers:(typeof chatAnswers!=="undefined"?chatAnswers:{}),detailed:(typeof chatAns!=="undefined"?chatAns:{})},
         previewAdjustments:(typeof previewAdjust!=="undefined"&&previewAdjust.touched)?{label:previewAdjustLine(),mainColor:{name:effPrimary().name,hex:effPrimary().hex},background:{name:(S.bgPick?S.bgPick.name:"As created"),hex:effBg()},buttonStyle:mixerBtnLabel(),font:S.font}:{label:"Preview adjustments: none — the customer kept the small preview exactly as created.",touched:false},
         notes:S.custom||null, brief:buildPrompt(S),
         plan:{website:{label:"Front-end website", price:BASE_PRICE, billing:"one-time"},
@@ -3064,13 +3109,70 @@
     function closeChatStage(){document.body.classList.remove("chat-stage");window.scrollTo({top:0});setTimeout(fixPvHeights,60)}
     var _stc=$("studio-to-chat");if(_stc)_stc.addEventListener("click",openChatStage);
     $("chat-stage-close").addEventListener("click",closeChatStage);
+    /* ============ visual style picker modal (Question 3) ============
+       A Gemini-style overlay carrying the chat's five real styles — the
+       same options Question 3 offers as taps, nothing else. It opens once
+       by itself when the chat first arrives at Question 3, and again any
+       time from the "Browse all styles" button in that question's answer
+       area. Applying a tile is exactly a tap on that style option (same
+       record, same state, same preview) plus the customer's confirmation
+       stamped into the chat, and it moves on to Question 4. Closing it
+       records nothing; the plain taps and the text box keep working. */
+    var styleModalPick=null,styleModalAutoOpened=false;
+    var STYLE_MODAL_DESCS={"Modern & Minimalist":"Clean lines, ample whitespace, high typography focus.","Sleek, Clean & Sophisticated":"Polished and refined — quiet luxury, nothing out of place.","Bold & Colorful":"Vibrant hues, expressive shapes, high energy.","Classic & Editorial":"Serif headlines, magazine layouts, a timeless editorial feel.","Up-to-Date Tech":"Crisp, precise and product-led — the look of today’s tech."};
+    var STYLE_MODAL_PREVIEWS={
+      "Modern & Minimalist":'<span style="display:block;height:100%;background:#ffffff;padding:11px"><span style="display:block;width:32%;height:7px;border-radius:3px;background:#16202e"></span><span style="display:block;width:74%;height:5px;border-radius:3px;background:#dbe1ea;margin-top:8px"></span><span style="display:block;width:56%;height:5px;border-radius:3px;background:#dbe1ea;margin-top:5px"></span><span style="display:block;width:46px;height:15px;border:1.5px solid #0e7ea8;border-radius:999px;margin-top:10px"></span></span>',
+      "Sleek, Clean & Sophisticated":'<span style="display:block;height:100%;background:#fbf8f1;padding:11px"><span style="display:block;width:44%;height:8px;border-radius:2px;background:#1d2735"></span><span style="display:block;width:26%;height:2px;background:#f59e0b;margin-top:7px"></span><span style="display:block;width:70%;height:5px;border-radius:3px;background:#e3e0d5;margin-top:7px"></span><span style="display:block;width:58%;height:5px;border-radius:3px;background:#e3e0d5;margin-top:5px"></span><span style="display:block;width:52px;height:15px;background:#16202e;border-radius:3px;margin-top:9px"></span></span>',
+      "Bold & Colorful":'<span style="display:block;height:100%;background:#ffffff"><span style="display:block;height:26px;background:linear-gradient(92deg,#6d28d9,#00a3c8)"></span><span style="display:block;padding:9px 11px"><span style="display:block;width:62%;height:7px;border-radius:3px;background:#d946ef"></span><span style="display:flex;gap:6px;margin-top:8px"><span style="width:34px;height:16px;border-radius:5px;background:#10b981"></span><span style="width:34px;height:16px;border-radius:5px;background:#f59e0b"></span><span style="width:34px;height:16px;border-radius:5px;background:#00b8d9"></span></span></span></span>',
+      "Classic & Editorial":'<span style="display:block;height:100%;background:#fffefa;padding:11px"><span style="display:block;width:66%;height:9px;border-radius:1px;background:#1d2735"></span><span style="display:block;border-top:2.5px solid #1d2735;border-bottom:1px solid #1d2735;height:3px;margin-top:6px"></span><span style="display:flex;gap:8px;margin-top:8px"><span style="flex:1"><span style="display:block;height:4px;background:#e3e0d5;border-radius:2px"></span><span style="display:block;height:4px;background:#e3e0d5;border-radius:2px;margin-top:4px"></span><span style="display:block;height:4px;background:#e3e0d5;border-radius:2px;margin-top:4px"></span></span><span style="flex:1"><span style="display:block;height:4px;background:#e3e0d5;border-radius:2px"></span><span style="display:block;height:4px;background:#e3e0d5;border-radius:2px;margin-top:4px"></span><span style="display:block;height:4px;background:#e3e0d5;border-radius:2px;margin-top:4px"></span></span></span></span>',
+      "Up-to-Date Tech":'<span style="display:block;height:100%;background:#121212;padding:11px"><span style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:#00f2fe"></span><span style="width:38%;height:6px;border-radius:3px;background:#edf2f8"></span></span><span style="display:block;width:78%;height:5px;border-radius:3px;background:#2a3a4f;margin-top:9px"></span><span style="display:block;width:60%;height:5px;border-radius:3px;background:#2a3a4f;margin-top:5px"></span><span style="display:block;width:52px;height:15px;background:#00b8d9;border-radius:4px;margin-top:10px"></span></span>'
+    };
+    function styleModalTilesHTML(){
+      return CHAT_STEPS.q3.options.filter(function(o){return o.q==="style"}).map(function(o){
+        var on=styleModalPick===o.v;
+        return '<button type="button" class="style-tile'+(on?" on":"")+'" data-styletile="'+esc(o.v)+'" aria-pressed="'+on+'"><span class="style-tile-pv">'+(STYLE_MODAL_PREVIEWS[o.v]||"")+'</span><span class="style-tile-name">'+esc(o.v)+'</span><small>'+esc(STYLE_MODAL_DESCS[o.v]||"")+'</small></button>';
+      }).join("");
+    }
+    function syncStyleModalApply(){var b=$("style-modal-apply");if(b)b.disabled=!styleModalPick}
+    function openStyleModal(){
+      var cur=(typeof chatAns!=="undefined"&&chatAns.q3)||null;
+      styleModalPick=(cur&&!cur.skip&&cur.tap)?cur.tap:null;
+      $("style-modal-grid").innerHTML=styleModalTilesHTML();
+      syncStyleModalApply();
+      $("style-modal-overlay").style.display="flex";document.body.style.overflow="hidden";
+    }
+    function closeStyleModal(){$("style-modal-overlay").style.display="none";document.body.style.overflow=""}
+    function applyStyleModal(){
+      if(!styleModalPick)return;
+      var opt=null;CHAT_STEPS.q3.options.forEach(function(o){if(o.q==="style"&&o.v===styleModalPick)opt=o});
+      closeStyleModal();
+      if(!opt||chat.step!=="q3")return;
+      /* exactly the tap path: the pick is recorded and applied to the
+         project state and the preview, then stamped into the chat as the
+         customer's own confirmed selection before moving on */
+      applyChatOption(opt);
+      chatAdd("me","Selected visual style: "+opt.v);
+      chatRender();
+      chatGoTo(opt.go||"q4");
+    }
+    $("style-modal-close").addEventListener("click",closeStyleModal);
+    $("style-modal-apply").addEventListener("click",applyStyleModal);
+    $("style-modal-overlay").addEventListener("click",function(e){if(e.target===this)closeStyleModal()});
+    $("style-modal-grid").addEventListener("click",function(e){var t=e.target.closest("[data-styletile]");if(!t)return;styleModalPick=t.getAttribute("data-styletile");$("style-modal-grid").innerHTML=styleModalTilesHTML();syncStyleModalApply()});
+    document.addEventListener("keydown",function(e){if(e.key==="Escape"&&$("style-modal-overlay").style.display!=="none")closeStyleModal()});
     document.addEventListener("click",function(e){
       /* delegated back-up for the same buttons, so the chat opens even if a
          direct binding is ever lost; openChatStage debounces the double hit */
       var fc=e.target.closest?e.target.closest("#studio-to-chat"):null;
       if(fc){openChatStage();return}
       var nav=e.target.closest("[data-nav]");
-      if(nav){e.preventDefault();var v=nav.getAttribute("data-nav");showView(v);
+      if(nav){e.preventDefault();var v=nav.getAttribute("data-nav");
+        /* "start" always means the chat: every Start button (nav, hero,
+           pricing, showcase, back links) lands in the chat stage — the
+           full-width chat scrolled to the latest message — because the
+           chat is the one way a website gets built here */
+        if(v==="start"){openChatStage();return}
+        showView(v);
         var an=nav.getAttribute("data-anchor");if(an)setTimeout(function(){var el=$(an);if(el)el.scrollIntoView({behavior:"smooth"})},60);return}
       var sc=e.target.closest("[data-scroll]");
       if(sc){var t=$(sc.getAttribute("data-scroll"));if(t)t.scrollIntoView({behavior:"smooth"});return}
@@ -3205,8 +3307,14 @@
        building stages — no credit card is taken there; the pick simply sets
        the same add-ons the checkout uses, so totals stay truthful. */
     var CHAT_STEPS={
-      q0:{say:"Hi there! Welcome to WebFlowAI. What is your business called? Just the short name, exactly as you would like it to appear on your website.",field:"bizName",next:"q1",options:[
-        {label:"🔄 I already filled this out / Skip",go:"q1",skip:true}]},
+      q0:{say:"Hi there! Welcome to WebFlowAI. What is your business called? Just the short name, exactly as you would like it to appear on your website.",field:"bizName",next:"q0d",options:[
+        {label:"🔄 I already filled this out / Skip",go:"q0d",skip:true}]},
+      /* the domain sub-question (Step 1, second half): the .com / .net
+         offers are built from the name the customer just gave — never
+         invented — and a pick is only ever recorded; live availability
+         checking reports honestly (see checkDomainAvailability) */
+      q0d:{say:function(d){var s=domainSlug();if(s)return "Lovely — "+((d&&d.name)||S.name||"your business")+"! Would you like to secure a matching domain name for it? Tap one below, type your own in the box, or skip for now — it can always be sorted at checkout.";return "Would you like a domain name for your website? Type the domain you’d like in the box (for example mybusiness.com), tap below if you already have one, or skip for now — it can always be sorted at checkout."},field:"domainT",next:"q1",
+        get options(){return domainOptions()}},
       q1:{say:"Hi there! Welcome to WebFlowAI. We’re going to get your professional website built together in just a few taps. To help our build steps know exactly how to structure, layout, and build your site from scratch, please select your business category below or type your details. If you've already filled this out previously, feel free to skip ahead. What type of business are we building today?",field:"biz",next:"q2",options:[
         {label:"💎 Luxury Jewelry & Silver",go:"q2",q:"category",v:"Luxury Jewelry & Silver"},
         {label:"💡 Event Lighting & Sound",go:"q2",q:"category",v:"Event Lighting & Sound"},
@@ -3277,10 +3385,16 @@
         {label:"⚙️ Full System with Back-end (+$12.00/mo)",q:"plan",v:"backend",finish:true},
         {label:"🔄 Plan already selected / Skip",skip:true,finish:true}]}
     };
-    var CHAT_ORDER=["q0","q1","q2","q3","q4","q5","q6","q7","q8","q9","q10"];
-    var CHAT_PROG={q0:1,q1:2,q2:3,q3:4,q4:5,q5:6,q6:7,q7:8,q8:9,q9:10,q10:11};
-    var CHAT_Q_LABELS={q0:"Business name",q1:"Business category",q2:"Website purpose",q3:"Visual style & vibe",q4:"Color palette & branding",q5:"Logo",q6:"Target audience",q7:"Service area",q8:"Key sections & pages",q9:"Primary call-to-action",q10:"Website plan"};
-    var CHAT_PLACEHOLDER={bizName:"Type your business name here...",biz:"Type your business name or custom details here...",purposeT:"Describe your website purpose or type custom details...",styleT:"Describe your custom visual style or aesthetic...",colorT:"Type custom color codes or specific brand colors...",logoT:"Provide logo notes or alternative brand text...",audienceT:"Type or describe your target audience...",areaT:"Type custom location or service area...",sectionsT:"Type any specific pages or sections you need...",ctaT:"Type custom call-to-action details...",planT:"Type custom plan preferences or notes here..."};
+    var CHAT_ORDER=["q0","q0d","q1","q2","q3","q4","q5","q6","q7","q8","q9","q10"];
+    var CHAT_PROG={q0:1,q0d:2,q1:3,q2:4,q3:5,q4:6,q5:7,q6:8,q7:9,q8:10,q9:11,q10:12};
+    var CHAT_Q_LABELS={q0:"Business name",q0d:"Domain name",q1:"Business category",q2:"Website purpose",q3:"Visual style & vibe",q4:"Color palette & branding",q5:"Logo",q6:"Target audience",q7:"Service area",q8:"Key sections & pages",q9:"Primary call-to-action",q10:"Website plan"};
+    /* the 10 logical steps the progress header speaks in — presentation
+       only: the engine still walks question by question underneath, with
+       the business name + domain grouped as Step 1 and the category +
+       purpose grouped as Step 2 */
+    var CHAT_STEP_OF={q0:1,q0d:1,q1:2,q2:2,q3:3,q4:4,q5:5,q6:6,q7:7,q8:8,q9:9,q10:10};
+    var CHAT_STEP_TITLES={1:"Your business",2:"Category & purpose",3:"Visual style",4:"Colours & branding",5:"Logo",6:"Your audience",7:"Service area",8:"Sections & pages",9:"Call to action",10:"Your plan"};
+    var CHAT_PLACEHOLDER={bizName:"Type your business name here...",domainT:"Type your own domain, e.g. mybusiness.com…",biz:"Type your business name or custom details here...",purposeT:"Describe your website purpose or type custom details...",styleT:"Describe your custom visual style or aesthetic...",colorT:"Type custom color codes or specific brand colors...",logoT:"Provide logo notes or alternative brand text...",audienceT:"Type or describe your target audience...",areaT:"Type custom location or service area...",sectionsT:"Type any specific pages or sections you need...",ctaT:"Type custom call-to-action details...",planT:"Type custom plan preferences or notes here..."};
     /* every answer the 10-question flow collects, keyed by question — taps,
        typed text and honest skips alike. This is what the details summary
        and the owner brief carry for the chat (see handoff + order package). */
@@ -3303,6 +3417,57 @@
       if(parts.length)chatAnswers[k]=parts.join(" · ");else delete chatAnswers[k];
     }
     function recordTyped(k,tv){var r=ansRec(k);r.text=tv;if(r.skip)r.skip=false;syncChatAnswer(k)}
+    /* ---- the domain sub-question (q0d) ----
+       The slug comes only from the business name the customer just gave:
+       lowercased, spaces and punctuation stripped. No name, no slug — the
+       question then simply asks them to type a domain or skip. */
+    function domainSlug(){
+      var n=((typeof chat!=="undefined"&&chat.data&&chat.data.name)||S.name||"").toLowerCase().replace(/[^a-z0-9]+/g,"");
+      return n||"";
+    }
+    function domainOptions(){
+      var s=domainSlug(),opts=[];
+      if(s){
+        opts.push({label:"🌐 "+s+".com",go:"q1",q:"domain",v:s+".com"});
+        opts.push({label:"🌐 "+s+".net",go:"q1",q:"domain",v:s+".net"});
+      }
+      opts.push({label:"🔗 I already have a domain",go:"q1",q:"domainOwn"});
+      opts.push({label:"🔄 I already filled this out / Skip",go:"q1",skip:true});
+      return opts;
+    }
+    /* one availability line per picked domain, and only ever what the
+       relay actually answered: the domain service is not connected yet
+       (it replies 503 domain_sales_not_configured), so until it is, the
+       honest line is that checking isn't open and the pick is confirmed
+       at checkout. Availability and prices are never invented, and the
+       chat never waits on the check — it lands whenever it lands. */
+    var domainCheckFor=null;
+    function checkDomainAvailability(domain){
+      if(!domain||domainCheckFor===domain)return;
+      domainCheckFor=domain;
+      var failLine="Quick note on "+domain+": live availability checking isn’t open yet, so I can’t confirm it this second — your pick is recorded, and it will be confirmed at checkout before anything is charged.";
+      var land=function(line){
+        if(chat.done||chat.building)return;
+        var a=chatAns.q0d;if(!a||a.tap!==domain)return;
+        chatAdd("ai",line,chat.step);chatRender();
+      };
+      var finish=function(resp){
+        if(!resp||!resp.ok){land(failLine);return}
+        resp.json().then(function(d){
+          if(d&&typeof d.available==="boolean"){
+            if(d.available)land("Good news — "+domain+" shows as available"+(d.price!=null?(" at "+(typeof d.price==="number"?("$"+d.price.toFixed(2)):String(d.price))):"")+". Your pick is recorded, and it’s confirmed at checkout before anything is charged.");
+            else land(domain+" looks taken already — your pick is recorded, and you can choose another domain at checkout.");
+          }else land(failLine);
+        }).catch(function(){land(failLine)});
+      };
+      try{
+        var ctl=(typeof AbortController!=="undefined")?new AbortController():null;
+        var to=ctl?setTimeout(function(){try{ctl.abort()}catch(e){}},6000):null;
+        fetch(WF_RELAY+"/api/domain/check",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({domain:domain}),signal:ctl?ctl.signal:undefined})
+          .then(function(r){if(to)clearTimeout(to);finish(r)})
+          .catch(function(){if(to)clearTimeout(to);land(failLine)});
+      }catch(err){land(failLine)}
+    }
     /* the Purpose field, everywhere it is shown: the customer's typed
        purpose verbatim FIRST, with the tapped category shown alongside it —
        the typed words are never replaced by the category */
@@ -3379,6 +3544,8 @@
       else if(opt.q==="audience"){S.audience=opt.v;renderAll()}
       else if(opt.q==="area"){S.serviceArea=opt.v;renderAll()}
       else if(opt.q==="cta"){S.cta=opt.v;renderAll()}
+      else if(opt.q==="domain"){chat.data.domain=opt.v;checkDomainAvailability(opt.v)}
+      else if(opt.q==="domainOwn"){chat.data.domainOwn=true}
       else if(opt.q==="plan"){
         /* the plan pick IS the checkout's add-on state — front-end only
            clears the add-ons; each other tier switches its own one on */
@@ -3881,7 +4048,7 @@
           var spin=(i===lastAi)?" spin":"";
           var opts="";
           if(i===chat.msgs.length-1&&!chat.thinking&&!chat.done&&CHAT_STEPS[chat.step]&&CHAT_STEPS[chat.step].options&&m.step===chat.step&&!(chat.step==="q5"&&customerLogo&&customerLogo.src)){
-            opts='<div class="opts">'+CHAT_STEPS[chat.step].options.map(function(o,j){var on=optSelected(chat.step,o);return '<button data-opt="'+j+'"'+(on?' class="on" aria-pressed="true"':' aria-pressed="false"')+'>'+esc(o.label)+'</button>'}).join("")+'</div>';
+            opts='<div class="opts">'+CHAT_STEPS[chat.step].options.map(function(o,j){var on=optSelected(chat.step,o);return '<button data-opt="'+j+'"'+(on?' class="on" aria-pressed="true"':' aria-pressed="false"')+'>'+esc(o.label)+'</button>'}).join("")+(chat.step==="q3"?'<button type="button" data-styles-browse>🎨 Browse all styles</button>':"")+'</div>';
           }
           var imgUI="";
           if(m.step==="images"&&chat.step==="images"&&i===chat.msgs.length-1&&!chat.done&&!chat.thinking){
@@ -3945,10 +4112,11 @@
         $("chat-vision").style.display=isV?"block":"none";
         $("chat-skip").style.display=isV?"block":"none";
       }else form.style.display="none";
+      var stepN=CHAT_STEP_OF[chat.step]||0;
       var prog=chat.done?CHAT_ORDER.length:(CHAT_PROG[chat.step]||1);
-      $("chat-prog-label").textContent=chat.building?"Building your website…":(chat.done?"All questions answered":"Question "+prog+" of "+CHAT_ORDER.length);
+      $("chat-prog-label").textContent=chat.building?"Building your website…":(chat.done?"All questions answered":(stepN?("Step "+stepN+" of 10 · "+(CHAT_Q_LABELS[chat.step]||CHAT_STEP_TITLES[stepN]||"")):("Question "+prog+" of "+CHAT_ORDER.length)));
       setTimeout(fixPvHeights,40);
-      $("chat-prog-fill").style.width=(prog/CHAT_ORDER.length*100)+"%";
+      $("chat-prog-fill").style.width=chat.done?"100%":(stepN?(stepN/10*100)+"%":(prog/CHAT_ORDER.length*100)+"%");
       var cc=$("chat-checkout");if(cc)cc.addEventListener("click",function(){wfSendBrief();showView("checkout")});
       var cr=$("chat-restart");if(cr)cr.addEventListener("click",chatReset);
     }
@@ -3962,7 +4130,12 @@
          new question is already on screen — setting it only after the say
          rendered left the header one question behind the visible question */
       chat.step=s;
-      return chatSay(say,s).then(function(){chatRender()})}
+      return chatSay(say,s).then(function(){chatRender();
+        /* the style picker opens once by itself when the chat first
+           arrives at the style question; after that it is the customer's
+           to open from the "Browse all styles" button */
+        if(s==="q3"&&!styleModalAutoOpened){styleModalAutoOpened=true;setTimeout(openStyleModal,450)}
+      })}
     /* the finish, shared by Question 10 however it is answered (a plan tap
        or typed notes + the Finish button): the creating screen shows while
        the first version is produced from ALL the details together; the
@@ -3995,6 +4168,8 @@
       if(anyBtn&&!anyBtn.disabled)tapSound();
       var wrt=e.target.closest("[data-wfretry]");
       if(wrt){wfRetrySend();return}
+      var bsb=e.target.closest("[data-styles-browse]");
+      if(bsb){openStyleModal();return}
       var pmx=e.target.closest("[data-pmix]");
       if(pmx){
         var mk=pmx.getAttribute("data-pmix"),mv=pmx.getAttribute("data-val");
@@ -4190,6 +4365,7 @@
          preview, brief, summary and checkout all carry them */
       var tv=v.trim();
       if(chat.step==="q0"){S.name=tv;chat.data.name=tv;recordTyped("q0",tv);renderAll()}
+      else if(chat.step==="q0d"){recordTyped("q0d",tv);chat.data.domain=tv}
       else if(chat.step==="q1"){recordTyped("q1",tv);chat.data.categoryNote=tv}
       else if(chat.step==="q2"){recordTyped("q2",tv);chat.data.purposeNote=tv}
       else if(chat.step==="q3"){recordTyped("q3",tv);chat.data.styleNote=tv}
@@ -4235,7 +4411,7 @@
       $("sound-on-ic").style.display=chat.sound?"":"none";$("sound-off-ic").style.display=chat.sound?"none":"";
       if(chat.sound){unlockSound();tapSound()}
     });
-    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}if(typeof creatingTimer!=="undefined"&&creatingTimer){clearInterval(creatingTimer);creatingTimer=null}styleFlow=null;chatConfirmedStyle="";customerLogo=null;logoChoice="";chatAnswers={};chatAns={};q8Features=[];previewAdjust={touched:false,confirmed:false};S=JSON.parse(JSON.stringify(DEFAULTS));addons={email:false,phone:false,backend:false};userImages=[];aiImageRequest="";promptOverride=null;chat={msgs:[],step:"q0",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1,howSaid:false,creating:null};renderAll();chatRender();chatGoTo("q0")}
+    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}if(typeof creatingTimer!=="undefined"&&creatingTimer){clearInterval(creatingTimer);creatingTimer=null}styleFlow=null;chatConfirmedStyle="";customerLogo=null;logoChoice="";chatAnswers={};chatAns={};styleModalPick=null;styleModalAutoOpened=false;domainCheckFor=null;var _smo=$("style-modal-overlay");if(_smo)_smo.style.display="none";document.body.style.overflow="";q8Features=[];previewAdjust={touched:false,confirmed:false};S=JSON.parse(JSON.stringify(DEFAULTS));addons={email:false,phone:false,backend:false};userImages=[];aiImageRequest="";promptOverride=null;chat={msgs:[],step:"q0",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1,howSaid:false,creating:null};renderAll();chatRender();chatGoTo("q0")}
 
     /* ============ card form + order submission ============ */
     function luhn(num){var sum=0,alt=false;for(var i=num.length-1;i>=0;i--){var d=+num[i];if(alt){d*=2;if(d>9)d-=9}sum+=d;alt=!alt}return num.length>=15&&sum%10===0}
