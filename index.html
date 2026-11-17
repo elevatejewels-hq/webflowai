@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <meta name="description" content="WebFlowAI — the guided AI website creator. Answer easy questions, get a tailored blueprint presented as a professional project brief, and check out in minutes." />
+    <link rel="canonical" href="https://webflowai.app/" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="WebFlowAI" />
+    <meta property="og:title" content="WebFlowAI — Guided AI Website Creator" />
+    <meta property="og:description" content="Answer a few easy questions in a guided chat and WebFlowAI builds your professional website — your name, your colours, your words." />
+    <meta property="og:url" content="https://webflowai.app/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="WebFlowAI — Guided AI Website Creator" />
+    <meta name="twitter:description" content="Answer a few easy questions in a guided chat and WebFlowAI builds your professional website — your name, your colours, your words." />
     <link rel="icon" href="assets/logo-dark.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png" />
@@ -289,7 +299,8 @@
       /* Only the newest AI message's logo spins — every earlier logo stays still. */
       .msg .avatar.spin{animation:logospin 5s linear infinite}
       @keyframes logospin{to{transform:rotate(360deg)}}
-      .msg .bubble{background:var(--grad);color:#fff;border-radius:16px;border-top-left-radius:4px;padding:11px 14px;font-size:14.5px;max-width:92%}
+      .msg .bubble{background:var(--grad);color:#fff;border-radius:16px;border-top-left-radius:4px;padding:11px 14px;font-size:14.5px;line-height:1.55;max-width:92%;white-space:normal;overflow-wrap:anywhere;max-height:none}
+      .msg>div{min-width:0}
       .msg.me{justify-content:flex-end;align-items:center}
       .msg.me .bubble{background:var(--surface-2);color:var(--ink);border-radius:16px;border-top-right-radius:4px;border:1px solid var(--border)}
       .msg .opts{display:flex;flex-direction:column;align-items:flex-start;gap:7px;margin-top:9px}
@@ -379,7 +390,7 @@
       .site-card .sc-name{font-weight:800;font-size:16px;font-family:"Inter Tight",sans-serif;overflow-wrap:anywhere}
       .site-card .sc-url{color:var(--brand-2);font-size:13.5px;font-weight:600;margin-top:1px;overflow-wrap:anywhere}
       .site-card .sc-note{color:var(--muted);font-size:12.5px;margin-top:7px;line-height:1.5}
-      /* ---------- in-chat owner handoff + style tries ---------- */
+      /* ---------- in-chat owner handoff + style changes ---------- */
       .handoff-card,.styletry-card{border:1px solid var(--border);background:var(--surface);border-radius:16px;border-top-left-radius:4px;padding:14px 15px;max-width:92%;overflow:hidden}
       .handoff-card h4,.styletry-card h4{margin:0;font-size:15.5px;font-family:"Inter Tight",sans-serif}
       .handoff-tag{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-2)}
@@ -466,6 +477,9 @@
          "Open the full preview" button never ends up below the fold */
       @media (min-width:921px){.pv-mini-panel .pv-scale{max-height:600px}}
       .pv-fade{display:grid}
+      iframe.pv-iframe{display:block;width:100%;height:640px;border:0;background:#fff}
+      iframe.pv-frame-el{display:block;width:100%;height:min(78dvh,920px);min-height:480px;border:0;background:#fff}
+      #pv-frame{display:block;width:100%;height:min(78dvh,920px);min-height:480px;border:0;background:#fff}
       .pv-fade>*{grid-area:1/1;min-width:0;transition:opacity .35s ease}
       .mobile-preview{display:none}
       @media (max-width:920px){
@@ -914,7 +928,7 @@
           <div class="entry-panel">
             <button class="entry-cta" id="entry-create" type="button">Create new account</button>
             <p class="entry-note">Start for free. You can create your website without spending anything — only at the last step, after you confirm, will you see the small charges.</p>
-            <p class="entry-note" style="margin-top:12px;font-size:15.5px">Sign in is by email — enter your first and last name plus your email address, and your sign-in code and updates are sent there. We greet you by name; your email is never shown. No phone number needed.</p>
+            <p class="entry-note" style="margin-top:12px;font-size:15.5px">Sign in is by email — enter your first and last name plus your email address, and we show your sign-in code right here on this page for now. We greet you by name; your email is never shown. No phone number needed.</p>
             <p class="entry-contact">Questions? Email us at <a href="mailto:webflowai301@gmail.com">webflowai301@gmail.com</a></p>
             <button class="entry-explore" data-nav="home" type="button">See how WebFlowAI works &amp; pricing →</button>
           </div>
@@ -1023,48 +1037,16 @@
       <!-- ================= STEP 1 ================= -->
       <section class="view" id="view-start">
         <div class="wrap">
-          <div class="panel stepbar"><p>Step 1 of 3 · Style &amp; Purpose</p><div class="track"><div class="fill" style="width:33%"></div></div></div>
+          <div class="panel stepbar"><p>Guided chat · Answer the questions, review, then Confirm &amp; Record</p><div class="track"><div class="fill" style="width:100%"></div></div></div>
           <div class="panel" id="chat-stage-bar">
-            <p><b>You're finishing your website by chat.</b> Everything you've picked so far — style, colours, sections, details — is already in, and the chat below opens at your latest message.</p>
+            <p><b>You're finishing your website by chat.</b> Everything you answer here is recorded as you go, and the chat below opens at your latest message.</p>
             <button class="btn ghost small" type="button" id="chat-stage-close">← Back to the questions</button>
           </div>
-          <div class="layout">
-            <div class="qcol">
-              <p class="eyebrow" style="margin-top:6px">Smart questionnaire</p>
-              <h1 style="font-size:clamp(32px,4.6vw,48px);font-weight:800;margin-top:6px">What are we building today?</h1>
-              <p class="sub">Answer a few quick questions to capture your style, and we'll generate the perfect AI prompt for you.</p>
-
-              <div class="chips" style="align-items:center">
-                <span style="color:var(--muted);font-size:14px">Quick start:</span>
-                <span id="starters" style="display:contents"></span>
-                <button class="chip" id="surprise">⤨ Surprise me</button>
-              </div>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">1</span>What is the purpose of your website?</h2>
-              <div class="chips" id="purposes"></div>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">2</span>Choose a visual style that speaks to you.</h2>
-              <div class="style-grid" id="styles"></div>
-
-              <p style="font-weight:700;margin-top:28px;font-size:16.5px;font-family:'Inter Tight',sans-serif">Layout Signatures <span style="color:var(--muted);font-weight:400;font-size:14px">— ready-made layouts by business type; each one reshapes the preview</span></p>
-              <div class="sig-grid" id="signatures"></div>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">3</span>Who is your target audience?</h2>
-              <div class="chips" id="audiences" style="border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--surface)"></div>
-
-              <div class="panel finish-chat-cta" id="chat-launcher">
-                <button class="btn block" type="button" id="finish-by-chat-3">Create your whole website — just by chatting
-                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </button>
-                <p>Skip the forms — the chat asks you everything and builds your whole website with you.</p>
-              </div>
-
-              <button class="backlink" data-nav="home">← Back to home</button>
-            </div>
-            <div class="side-stack">
-              <!-- phone-width: one big in-flow button where the preview panel sits —
-                   it scrolls with the page, opens the preview full-screen, and
-                   closing the preview returns to exactly this spot -->
+          <div style="max-width:880px;margin:26px auto 0">
+            <p class="eyebrow" style="margin-top:6px">The guided chat — the one way in</p>
+            <h1 style="font-size:clamp(32px,4.6vw,48px);font-weight:800;margin-top:6px">Let's build your website — by chat</h1>
+            <p class="sub">One path, start to finish: the chat asks every question, shows you a preview in your style and your colours, and you tap Confirm &amp; Record when you're happy. There is nothing else to fill in.</p>
+            <div class="side-stack" style="margin-top:22px">
               <div class="mobile-preview">
                 <button class="btn mp-open" type="button" data-preview aria-label="See your website — open the full preview">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -1072,7 +1054,7 @@
                 </button>
               </div>
               <aside class="panel pv-mini-panel pv-sticky" aria-label="Live preview of your website">
-                <div class="pv-mini-head"><b>Live preview</b><span>Updates the moment you choose a style</span><button class="btn ghost small pv-toggle" type="button" data-pv-toggle aria-expanded="true">Hide preview</button></div>
+                <div class="pv-mini-head"><b>Live preview</b><span>Updates the moment you answer</span><button class="btn ghost small pv-toggle" type="button" data-pv-toggle aria-expanded="true">Hide preview</button></div>
                 <div class="pv-body">
                 <div class="pv-chrome"><i></i><i></i><i></i><span class="pv-url-mini"></span></div>
                 <div class="pv-scale" id="pv-scale-1"><div class="pv-scale-in"><div class="pv-fade" id="pv-fade-1"></div></div></div>
@@ -1087,7 +1069,7 @@
                     <svg id="sound-off-ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M11 5 6 9H2v6h4l5 4V5z"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>
                   </button>
                 </div>
-                <div class="chat-prog" id="chat-prog"><p id="chat-prog-label">Question 1 of 10</p><div class="track"><div class="fill" id="chat-prog-fill" style="width:10%"></div></div></div>
+                <div class="chat-prog" id="chat-prog"><p id="chat-prog-label">Question 1 of 11</p><div class="track"><div class="fill" id="chat-prog-fill" style="width:9%"></div></div></div>
                 <div class="chat-msgs" id="chat-msgs" aria-live="polite"></div>
                 <form class="chat-form" id="chat-form" style="display:none">
                   <div class="chat-input">
@@ -1103,143 +1085,8 @@
                 <input type="file" id="chat-img-file" accept="image/*" multiple hidden />
                 <input type="file" id="chat-logo-file" accept=".png,.jpg,.jpeg,.svg,image/png,image/jpeg,image/svg+xml" hidden />
               </aside>
-              <div class="panel" style="padding:18px">
-                <p style="font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700">Your brief so far</p>
-                <p id="mini-prompt" style="margin-top:8px;font-size:14.5px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden"></p>
-                <button class="btn block" style="margin-top:14px" data-nav="details">Next: details &amp; generate
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </button>
-                <button class="btn ghost block" type="button" id="finish-by-chat-2" style="margin-top:10px">Or finish by chatting instead</button>
-              </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= STEP 2 ================= -->
-      <section class="view" id="view-details">
-        <div class="wrap">
-          <div class="panel stepbar"><p>Step 2 of 3 · Details &amp; Personality</p><div class="track"><div class="fill" style="width:66%"></div></div></div>
-          <div class="layout">
-            <div>
-              <p class="eyebrow" style="margin-top:6px">Make it yours</p>
-              <h1 style="font-size:clamp(32px,4.6vw,48px);font-weight:800;margin-top:6px">Tell us the details</h1>
-              <p class="sub">The more you share, the smarter your blueprint. Everything you enter is presented back to you as a tidy, professional brief — never as raw notes.</p>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">1</span>What's your website or business name?</h2>
-              <input class="field" id="f-name" type="text" placeholder="e.g. Studio Nova" autocomplete="organization" />
-              <p id="f-name-warn" hidden style="color:#b3261e;font-size:12.5px;margin-top:6px">That looks like an email address, so it isn't saved as your business name — your email belongs in the email field further down.</p>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">2</span>Which sections do you need?</h2>
-              <div class="chips" id="pages"></div>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">3</span>Extra features</h2>
-              <div class="chips" id="features"></div>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">4</span>Colour mood — pick from the swatches</h2>
-              <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Every colour, shown as it will appear. Your preview recolours the moment you choose.</p>
-              <div id="swatches" style="margin-top:14px"></div>
-              <p style="font-weight:600;margin-top:24px">Brand kits — colours &amp; font in one tap</p>
-              <p style="color:var(--muted);font-size:14.5px;margin-top:6px">A ready-made brand set: a primary colour, an accent colour and a font, chosen to work together. Tap one and your preview changes at once — you can still fine-tune the exact colours and font afterwards, just below.</p>
-              <div id="kits" style="margin-top:12px"></div>
-              <div class="panel" style="padding:18px;margin-top:16px">
-                <p style="font-weight:600">Or fine-tune with exact colours</p>
-                <p style="color:var(--muted);font-size:14px;margin-top:4px">Pick a primary colour for buttons and the main elements, and an accent colour for highlights and gradients. Your preview recolours the moment you choose — tap a picked colour again to go back to your colour mood.</p>
-                <div class="pick-grid">
-                  <div>
-                    <p class="pick-label">Primary colour</p>
-                    <div class="sw7-row" id="pick-primary"></div>
-                    <p class="pick-read" id="pick-primary-read"></p>
-                  </div>
-                  <div>
-                    <p class="pick-label">Accent colour</p>
-                    <div class="sw7-row" id="pick-accent"></div>
-                    <p class="pick-read" id="pick-accent-read"></p>
-                  </div>
-                </div>
-              </div>
-              <div data-balpanel style="margin-top:16px"></div>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">5</span>Tone of voice</h2>
-              <div class="chips" id="tones"></div>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">6</span>Page layout</h2>
-              <div class="chips" id="layouts"></div>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">7</span>Font style</h2>
-              <div class="chips" id="fonts"></div>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">8</span>Button shape</h2>
-              <div class="chips" id="btnshapes"></div>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">9</span>Your images — add &amp; customise up to 10</h2>
-              <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Already have images you want on your website — a logo, product photos, pictures of your place or your work? Add them here, choose where each one goes, and set its crop and look. They appear in your live preview, your brief and your order. (Kept in this page while you work, like everything else here.)</p>
-              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px">
-                <button class="btn small" type="button" id="img-add-btn">+ Add images</button>
-                <span style="color:var(--muted);font-size:14px" id="img-count">0 of 10 images added</span>
-                <input type="file" id="img-file" accept="image/*" multiple hidden />
-              </div>
-              <div class="img-grid" id="img-grid"></div>
-              <div class="panel" style="padding:18px;margin-top:16px">
-                <p style="font-weight:700;font-size:16px">Or ask WebFlowAI to create images for you</p>
-                <p style="color:var(--muted);font-size:14.5px;margin-top:5px">Your own images come first — add them above whenever you have them. No images of your own, or missing a few? Describe what you need here and WebFlowAI will create images from your request, in your colours and style. They are listed in your brief and order, word for word.</p>
-                <label for="f-img-req" style="display:block;font-weight:600;font-size:14px;margin-top:14px">What should the created images show?</label>
-                <textarea class="field" id="f-img-req" rows="3" placeholder="e.g. Our shop counter with products on shelves, a bright storefront at daytime, close-ups of the items we sell…"></textarea>
-                <p style="font-size:13.5px;margin-top:10px;border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:11px 13px"><b>People-free, always:</b> images WebFlowAI creates are always people-free — products, objects, places, interiors and screens only. Never any image of a female — no women, no girls, no older ladies — and no people at all. (Images you upload yourself are your own content and are used exactly as you provided them.)</p>
-              </div>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">10</span>Your tagline <span style="color:var(--muted);font-weight:400;font-size:15px">(optional — shown under your name in the preview)</span></h2>
-              <input class="field" id="f-tagline" type="text" placeholder="e.g. Fresh bread, baked at dawn" />
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">11</span>Anything else? <span style="color:var(--muted);font-weight:400;font-size:15px">(optional)</span></h2>
-              <textarea class="field" id="f-custom" rows="3" placeholder="e.g. Add a big photo of our studio, opening hours on the home page…"></textarea>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">12</span>In your own words — the website you imagine <span style="color:var(--muted);font-weight:400;font-size:15px">(optional)</span></h2>
-              <p style="color:var(--muted);font-size:14.5px;margin-top:6px">A few sentences is perfect: what your website is for, what it should offer, and the feeling you want people to get from it. We keep your words exactly as you write them and build from them — and if you write it here, the chat won&rsquo;t ask you again.</p>
-              <textarea class="field" id="f-vision" rows="3" placeholder="e.g. A warm, elegant site for my bakery — people should see the menu, photos of the cakes, and be able to order for pickup."></textarea>
-
-              <h2 class="q"><span class="qnum" aria-hidden="true">13</span>Contact details to show on your website <span style="color:var(--muted);font-weight:400;font-size:15px">(optional)</span></h2>
-              <p style="color:var(--muted);font-size:14.5px;margin-top:6px">The phone number and email address your visitors should see on your finished website — in the contact section, header or footer. These are website content: they go to the builder exactly as you type them, so your site shows them. They are separate from the email address you sign in with, which is never shown to the builder.</p>
-              <label for="f-dphone" style="display:block;font-weight:600;font-size:14.5px;margin-top:14px">Phone number — to show on your website</label>
-              <input class="field" id="f-dphone" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. (555) 019-2834" style="margin-top:8px" />
-              <p id="f-dphone-warn" hidden style="color:#b3261e;font-size:12.5px;margin-top:6px">That doesn't look like a phone number yet, so it isn't saved — it saves here once it has at least 7 digits.</p>
-              <label for="f-demail" style="display:block;font-weight:600;font-size:14.5px;margin-top:14px">Email address — to show on your website</label>
-              <input class="field" id="f-demail" type="email" inputmode="email" autocomplete="email" placeholder="e.g. hello@yourbusiness.com" style="margin-top:8px" />
-              <p id="f-demail-warn" hidden style="color:#b3261e;font-size:12.5px;margin-top:6px">That doesn't look like an email address yet, so it isn't saved — it saves here once it looks like name@example.com.</p>
-
-              <div class="panel finish-chat-cta">
-                <button class="btn block" type="button" id="finish-by-chat">Create your whole website — just by chatting
-                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </button>
-                <p>Skip the forms — the chat asks you everything and builds your whole website with you.</p>
-              </div>
-
-              <button class="backlink" data-nav="start">← Back to Step 1</button>
-            </div>
-            <div class="side-stack">
-              <div class="mobile-preview">
-                <button class="btn mp-open" type="button" data-preview aria-label="See your website — open the full preview">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
-                  See your website
-                </button>
-              </div>
-              <aside class="panel pv-mini-panel pv-sticky" aria-label="Live preview of your website">
-                <div class="pv-mini-head"><b>Live preview</b><span>Recolours the moment you pick</span><button class="btn ghost small pv-toggle" type="button" data-pv-toggle aria-expanded="true">Hide preview</button></div>
-                <div class="pv-body">
-                <div class="pv-chrome"><i></i><i></i><i></i><span class="pv-url-mini"></span></div>
-                <div class="pv-scale" id="pv-scale-2"><div class="pv-scale-in"><div class="pv-fade" id="pv-fade-2"></div></div></div>
-                <button class="btn ghost small block" style="margin-top:10px" data-preview>Open the full preview</button>
-                </div>
-              </aside>
-            <aside class="panel" style="padding:22px">
-              <h3 style="font-size:19px">Your AI prompt builder</h3>
-              <p style="color:var(--muted);font-size:13.5px;margin-top:5px">Live preview — the full formatted brief is generated on the next step.</p>
-              <div style="border:1px solid var(--border);background:var(--surface-2);border-radius:11px;padding:15px;margin-top:14px;font-size:14.5px;line-height:1.6" id="details-prompt"></div>
-              <button class="btn block" style="margin-top:18px" data-nav="prompt">Generate my brief
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </button>
-            </aside>
-            </div>
+            <button class="backlink" data-nav="home" style="margin-top:18px">← Back to home</button>
           </div>
         </div>
       </section>
@@ -1247,7 +1094,7 @@
       <!-- ================= STEP 3: BRIEF / PROMPT ================= -->
       <section class="view" id="view-prompt">
         <div class="wrap">
-          <div class="panel stepbar"><p>Final step · Your Brief is Ready</p><div class="track"><div class="fill" style="width:100%"></div></div></div>
+          <div class="panel stepbar"><p>Your brief · Written from your chat answers</p><div class="track"><div class="fill" style="width:100%"></div></div></div>
           <div class="layout">
             <div>
               <p class="eyebrow" style="margin-top:6px">Generated brief &amp; customisation</p>
@@ -1280,7 +1127,7 @@
                   </div>
                 </div>
               </div>
-              <button class="backlink" data-nav="details">← Back to Step 2</button>
+              <button class="backlink" data-nav="start">← Back to the chat</button>
             </div>
             <aside class="panel sticky" style="padding:22px">
               <h3 style="font-size:20px">What's next?</h3>
@@ -1288,11 +1135,7 @@
               <p style="color:var(--muted);font-size:14.5px;margin-top:4px">Open a live front-end preview generated instantly from your brief — your name, style, colours and sections, exactly as entered.</p>
               <button class="btn block" style="margin-top:12px" data-preview>Preview my website</button>
               <p style="font-weight:600;margin-top:22px">Option 2 · Send it to be built</p>
-              <button class="addon" data-target="build" style="margin-top:10px">
-                <img src="assets/logo-dark.png" alt="" style="width:34px;height:34px;border-radius:50%" />
-                <span><span style="font-weight:700;display:block">WebFlowAI Builder</span><span style="color:var(--muted);font-size:13.5px">We create the full website from this brief</span></span>
-                <span style="margin-left:auto;color:var(--brand-2);font-weight:700">Send →</span>
-              </button>
+              <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Your brief goes to our build team when you tap <b style="color:var(--ink)">Confirm &amp; Record</b> in the guided chat — that is the one finish, so nothing is ever sent from the wrong place or sent twice.</p>
               <p style="font-weight:600;margin-top:22px">Option 3 · Take the brief with you</p>
               <div style="display:grid;gap:10px;margin-top:10px">
                 <button class="btn ghost block" id="copy-prompt-2">Copy the brief text</button>
@@ -1301,9 +1144,6 @@
               </div>
               <img src="assets/preview.jpg" alt="Example website layout generated from a brief" style="width:100%;border-radius:10px;margin-top:22px;border:1px solid var(--border)" />
               <p style="text-align:center;color:var(--muted);font-size:13.5px;margin-top:8px">See what this could look like — tap “Preview my website” for yours.</p>
-              <button class="btn block" style="margin-top:20px" data-nav="checkout">Continue to checkout
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </button>
             </aside>
           </div>
         </div>
@@ -1471,8 +1311,8 @@
             <div class="studio-foot">
               <button class="btn ghost small" type="button" id="studio-code-toggle" aria-expanded="false"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg>Code Visualizer</button>
               <button class="btn ghost small" type="button" data-preview>Full preview</button>
-              <button class="btn small" type="button" data-nav="details" style="margin-left:auto">Details &amp; colours</button>
-              <button class="btn small" type="button" data-nav="prompt">Generate my brief</button>
+              <button class="btn small" type="button" data-nav="prompt" style="margin-left:auto">View my brief</button>
+              <button class="btn small" type="button" id="studio-to-chat">Continue in the chat</button>
             </div>
             <div class="studio-code" id="studio-code" hidden>
               <div class="studio-code-tabs">
@@ -2062,7 +1902,7 @@
           </div>
           <div>
             <p class="code-pane-label">Live preview <span>— the same site, as your code makes it</span></p>
-            <iframe class="code-frame" id="code-frame" title="Live preview of the edited code" sandbox="allow-same-origin"></iframe>
+            <iframe class="code-frame" id="code-frame" title="Live preview of the edited code" sandbox="allow-scripts"></iframe>
           </div>
         </div>
         <p style="color:var(--muted);font-size:13px;margin-top:14px">Honest note: in this free build, the code shown is the code generated in this page for the preview. When the back end connects, this same view holds the real delivered website's code — same place, same editing. Saved edits are kept in this page for this visit.</p>
@@ -2088,7 +1928,7 @@
           <button class="btn ghost small" id="pv-close" style="margin-left:8px">Close ✕</button>
         </div>
         <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain">
-          <div id="pv-frame" class="pv-fade"></div>
+          <iframe id="pv-frame" sandbox="allow-scripts" title="Your website preview"></iframe>
           <div id="pv-controls" style="max-width:960px;margin:0 auto;padding:22px 18px 30px">
             <p style="font-weight:600;font-size:14.5px">Try a different colour mood — the website recolours live:</p>
             <div id="pv-swatches" style="margin-top:8px"></div>
@@ -2125,7 +1965,7 @@
         <p style="color:var(--muted);font-size:13.5px;margin-top:4px">The full style library — all fifteen, each one restyles your whole site.</p>
         <div class="q-styles" id="q-styles"></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;align-items:center">
-          <button class="btn" id="q-generate" type="button">Generate Site Blueprint
+          <button class="btn" id="q-generate" type="button">Continue in the chat
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
           <button class="btn ghost" id="q-stay" type="button">Keep editing in the Studio</button>
@@ -2142,7 +1982,7 @@
         </div>
         <div id="si-step1">
           <h3 id="si-title" style="font-size:21px">Sign in with your email</h3>
-          <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Enter your name and email address to sign in or create a new account. We greet you by name — your email itself is never shown on screen. Your 6-digit sign-in code and your updates are sent to that email — no phone number needed.</p>
+          <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Enter your name and email address to sign in or create a new account. We greet you by name — your email itself is never shown on screen. For now, your 6-digit sign-in code is shown right here on this page — no phone number needed.</p>
           <div class="si-name-grid">
             <div>
               <label for="si-first">First name</label>
@@ -2155,15 +1995,15 @@
           </div>
           <label for="si-email" style="display:block;font-weight:600;margin-top:16px">Email address</label>
           <input class="field" id="si-email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" />
-          <p style="color:var(--muted);font-size:13px;margin-top:8px">Your code and notifications go to the email you enter here. WebFlowAI&rsquo;s own website email is set in this site as <a href="mailto:webflowai301@gmail.com">webflowai301@gmail.com</a>.</p>
+          <p style="color:var(--muted);font-size:13px;margin-top:8px">For now, your sign-in code is shown on this page itself (see the next step) — nothing is emailed yet. WebFlowAI&rsquo;s own website email is set in this site as <a href="mailto:webflowai301@gmail.com">webflowai301@gmail.com</a>.</p>
           <p class="err" id="si-err" role="alert"></p>
-          <button class="btn block" id="si-continue" type="button" style="margin-top:14px">Email me my code</button>
+          <button class="btn block" id="si-continue" type="button" style="margin-top:14px">Show my sign-in code</button>
           <button class="btn ghost block" id="si-cancel" type="button" style="margin-top:9px">Not now</button>
         </div>
         <div id="si-step2" style="display:none">
           <h3 style="font-size:21px">Enter your code</h3>
-          <p style="color:var(--muted);font-size:14.5px;margin-top:6px" id="si-sent-to">We've sent a 6-digit code to your email.</p>
-          <p style="color:var(--muted);font-size:12.5px;margin-top:8px">In this preview build your fresh 6-digit code is shown below so you can try the flow; once the email connection is live, that same code is emailed to the address you entered — no password, ever. It verifies by itself the moment all 6 digits are typed.</p>
+          <p style="color:var(--muted);font-size:14.5px;margin-top:6px" id="si-sent-to">Here is your sign-in code — shown right here on this page for now.</p>
+          <p style="color:var(--muted);font-size:12.5px;margin-top:8px">Here is your sign-in code — we show it right here on this page for now: type it below to continue. No password, ever. It verifies by itself the moment all 6 digits are typed.</p>
           <p id="si-demo-code" style="font-weight:700;font-size:15px;margin-top:10px;text-align:center;letter-spacing:.06em"></p>
           <div class="code-boxes" id="si-boxes" style="flex-wrap:wrap">
             <input class="code-box" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Code digit 1" />
@@ -2184,6 +2024,8 @@
           <div class="si-done-check"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
           <h3 style="font-size:21px;margin-top:14px">Verified</h3>
           <p style="color:var(--muted);font-size:14.5px;margin-top:5px" id="si-done-msg">You're signed in.</p>
+          <button class="btn block" id="si-done-continue" type="button" style="margin-top:16px">Continue</button>
+          <button class="btn ghost block" id="si-done-close" type="button" style="margin-top:9px">Close ✕</button>
         </div>
         <p style="color:var(--muted);font-size:12.5px;text-align:center;margin-top:18px">By continuing, you agree to our Terms of Service and Privacy Policy.</p>
       </div>
@@ -2205,6 +2047,85 @@
 
     <script>
     "use strict";
+    /* ============ third-party tools — the single wiring point ============
+       Fill in a value to switch that tool on; leave it empty and the tool
+       is completely off: nothing is loaded, nothing is sent, and the page
+       behaves exactly as it does with all three empty. The IDs/keys come
+       from the tool accounts and are filled in here only — nowhere else. */
+    var WF_TOOLS = { clarityId: "", turnstileSiteKey: "", sentryDsn: "" };
+
+    /* ---- Microsoft Clarity (only when clarityId is set) ---- */
+    if (WF_TOOLS.clarityId) {
+      (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", WF_TOOLS.clarityId);
+    }
+
+    /* ---- Sentry, browser side (only when sentryDsn is set) ---- */
+    if (WF_TOOLS.sentryDsn) {
+      (function(){
+        var s=document.createElement("script");
+        s.src="https://browser.sentry-cdn.com/8.38.0/bundle.min.js";
+        s.crossOrigin="anonymous";
+        s.onload=function(){ if (window.Sentry) window.Sentry.init({ dsn: WF_TOOLS.sentryDsn }); };
+        (document.head||document.documentElement).appendChild(s);
+      })();
+    }
+
+    /* ---- Cloudflare Turnstile (only when turnstileSiteKey is set) ----
+       An invisible widget keeps a fresh token ready in the background;
+       wfBodyWithToken() attaches it to relay POST bodies as
+       turnstileToken. If no fresh token exists at submit time the submit
+       still goes out without one — the relay decides, and a customer is
+       never blocked by this check. */
+    var wfTs = { token: "", at: 0, widgetId: null };
+    function wfTurnstileExecute(){
+      try { if (window.turnstile && wfTs.widgetId !== null) window.turnstile.execute(wfTs.widgetId); } catch (e) {}
+    }
+    function wfTurnstileToken(){
+      if (!WF_TOOLS.turnstileSiteKey) return "";
+      if (wfTs.token && (Date.now() - wfTs.at) < 240000) return wfTs.token;
+      wfTurnstileExecute(); /* ask for a fresh one for next time */
+      return "";
+    }
+    window.wfTurnstileReady = function(){
+      try {
+        var host = document.createElement("div");
+        host.style.cssText = "position:fixed;bottom:0;right:0;width:1px;height:1px;overflow:hidden";
+        (document.body || document.documentElement).appendChild(host);
+        wfTs.widgetId = window.turnstile.render(host, {
+          sitekey: WF_TOOLS.turnstileSiteKey,
+          size: "invisible",
+          callback: function(token){ wfTs.token = token || ""; wfTs.at = Date.now(); },
+          "expired-callback": function(){ wfTs.token = ""; wfTs.at = 0; wfTurnstileExecute(); },
+          "error-callback": function(){ wfTs.token = ""; wfTs.at = 0; }
+        });
+        wfTurnstileExecute();
+      } catch (e) { /* the widget is optional — submits never depend on it */ }
+    };
+    if (WF_TOOLS.turnstileSiteKey) {
+      (function(){
+        var s=document.createElement("script");
+        s.src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=wfTurnstileReady&render=explicit";
+        s.async=true; s.defer=true;
+        (document.head||document.documentElement).appendChild(s);
+      })();
+    }
+    /* Attach the current Turnstile token (when one is available) to a JSON
+       request body string; returns the body unchanged otherwise. */
+    function wfBodyWithToken(jsonBody){
+      var t = wfTurnstileToken();
+      if (!t) return jsonBody;
+      try {
+        var obj = JSON.parse(jsonBody);
+        obj.turnstileToken = t;
+        return JSON.stringify(obj);
+      } catch (e) { return jsonBody; }
+    }
+    /* ============ end third-party tools ============ */
+
     /* ============ data (from the original WebFlowAI blueprint, corrected & extended) ============ */
     var PURPOSES = ["E-Commerce / Shop","Portfolio","Landing Page","Blog / Personal","Business / SaaS"];
     var PURPOSE_ICONS = ["🛒","🗂","📄","✎","💼"];
@@ -2360,6 +2281,7 @@
 
     /* ============ helpers ============ */
     function $(id){return document.getElementById(id)}
+    function hSet(id,html){var el=document.getElementById(id);if(el)el.innerHTML=html}
     function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
     function money(n){return "$"+n.toFixed(2)}
     function monthlyTotal(){var t=0;ADDONS.forEach(function(a){if(addons[a.key])t+=a.price});return t}
@@ -2371,6 +2293,20 @@
     function effPrimary(){var b=basePrimary();return{name:b.name,hex:shadeHex(b.hex,S.mixMain||0)}}
     function effAccent(){var b=baseAccent();return{name:b.name,hex:shadeHex(b.hex,S.mixSecond||0)}}
     function effBg(){var base=(S.bgPick&&S.bgPick.hex)?S.bgPick.hex:palette().bg;return shadeHex(base,S.mixBg||0)}
+    /* ---- one final colour record (Fix: last explicit choice wins) ----
+       A custom hex becomes the primary; its paired accent and background are
+       derived from it the same way everywhere, and the recorded answer, the
+       summary and the brief all read the single record below. */
+    function hexToHsl(hex){var r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slice(3,5),16)/255,b=parseInt(hex.slice(5,7),16)/255;var mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,d=mx-mn;var h=0,s=0;if(d){s=l>0.5?d/(2-mx-mn):d/(mx+mn);if(mx===r)h=((g-b)/d+(g<b?6:0));else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;h*=60}return{h:Math.round(h),s:Math.round(s*100),l:Math.round(l*100)}}
+    function hslToHex(h,s,l){h=((h%360)+360)%360;s=Math.max(0,Math.min(100,s))/100;l=Math.max(0,Math.min(100,l))/100;var c=(1-Math.abs(2*l-1))*s,x=c*(1-Math.abs((h/60)%2-1)),m=l-c/2,r=0,g=0,b=0;if(h<60){r=c;g=x}else if(h<120){r=x;g=c}else if(h<180){g=c;b=x}else if(h<240){g=x;b=c}else if(h<300){r=x;b=c}else{r=c;b=x}function cc(v){return ("0"+Math.round((v+m)*255).toString(16)).slice(-2)}return "#"+cc(r)+cc(g)+cc(b)}
+    function deriveAccent(hex){var o=hexToHsl(hex);return hslToHex(o.h+38,Math.min(85,Math.max(35,o.s)),Math.min(62,Math.max(30,o.l)))}
+    function deriveBg(hex){var o=hexToHsl(hex);return hslToHex(o.h,Math.min(o.s,32),96)}
+    function setFinalColour(hex){hex=String(hex||"").toLowerCase();if(!/^#[0-9a-f]{6}$/.test(hex))return false;var acc=deriveAccent(hex);S.primaryPick={name:"Custom colour "+hex.toUpperCase(),hex:hex};S.accentPick={name:"Custom accent "+acc.toUpperCase(),hex:acc};S.bgPick={name:"Custom background",hex:deriveBg(hex)};S.colors="Custom colour "+hex.toUpperCase();S.kit="";S.mixMain=0;S.mixSecond=0;S.mixBg=0;promptOverride=null;recordFinalColours();return true}
+    function finalColourRecord(){var p=effPrimary(),a=effAccent();
+      if(S.primaryPick&&S.primaryPick.name.indexOf("Custom colour")===0)return S.primaryPick.name+" — primary "+p.hex+", accent "+a.hex+", background "+effBg();
+      var lbl=S.primaryPick?S.primaryPick.name:palette().name;
+      return lbl+" — primary "+p.name+" "+p.hex+", accent "+a.name+" "+a.hex+", background "+effBg()}
+    function recordFinalColours(){if(typeof chatAns==="undefined"||typeof ansRec!=="function")return;var r=ansRec("q4");r.colourFinal=finalColourRecord();syncChatAnswer("q4")}
     /* colour balance: how much of the colour presence the second colour carries (0 = all main, 1 = all second) */
     function balShare(){var t=(+S.balanceMain||0)+(+S.balanceSecond||0);return t>0?(+S.balanceSecond)/t:0.5}
     function hexBlend(a,b,t){function p(h){h=String(h).replace("#","");if(h.length===3)h=h.split("").map(function(c){return c+c}).join("");return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]}
@@ -2383,6 +2319,11 @@
       function fallback(){var ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done()}catch(e){toast("Copy didn't work here — the text is on screen to select.")}document.body.removeChild(ta)}}
     function download(name,content,type){var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([content],{type:type||"text/plain"}));a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},400)}
 
+    /* the brief text areas stay neutral until the customer has actually
+       answered something — never a default style or audience they did not choose */
+    function briefStarted(){return !!((S&&(S.name||S.vision||S.purpose||S.stylePicked))||(typeof chatAnswers!=="undefined"&&Object.keys(chatAnswers).length))}
+    function briefDisplayText(){return briefStarted()?buildPrompt(S):"Your brief will be written here from your answers."}
+    function setBriefPrompts(){var t=briefDisplayText();var a=$("mini-prompt");if(a)a.textContent=t;var b=$("details-prompt");if(b)b.textContent=t}
     function buildPrompt(b){
       if(promptOverride)return promptOverride;
       var style=b.style.toLowerCase();
@@ -2402,6 +2343,7 @@
          is never dropped or replaced by the option tapped alongside it */
       var ca=(typeof chatAns!=="undefined")?chatAns:null;
       if(ca){
+        if(ca.q1&&ca.q1.text)p+=' The business category, in the customer\u2019s own words: "'+ca.q1.text+'".';
         if(ca.q2&&ca.q2.text)p+=' The customer gives the website\u2019s purpose in their own words: "'+ca.q2.text+'" — build to exactly that purpose.';
         if(ca.q6&&ca.q6.text)p+=' The customer describes their audience in their own words: "'+ca.q6.text+'".';
         if(ca.q3&&ca.q3.text)p+=' The look and feel, in the customer\u2019s own words: "'+ca.q3.text+'".';
@@ -2432,14 +2374,14 @@
     function orderPackage(){
       return {reference:refCode(), account:customerEmail?{email:customerEmail,keyedBy:"email address",ownerOnly:true}:null, customerName:customerFullName()?{firstName:customerFirstName,lastName:customerLastName,fullName:customerFullName(),greetingName:customerGreetingName(),note:"Collected at sign-in/sign-up so the AI can address the customer by name. The name is shown to the customer and the AI; the sign-in email stays owner-only and is never part of the AI-side identity."}:null, signinCode:customerCode||null, aiSideIdentity:customerCode?((customerFullName()?customerFullName()+" · ":"Customer · ")+"Code "+fmtCode(customerCode)):"Guest (not signed in)",
         displayContacts:{phone:S.displayPhone||null, email:S.displayEmail||null, label:"For the website — provided by the customer", note:"Contact details the customer provided to be shown on their website. Website content: the builder AI sees these and places them on the site exactly as given. This is NOT the sign-in/login email address, which is never included for the AI."},
-        createdImagesRequest:aiImageRequest||null, createdImagesRule:"WebFlowAI-created images are always people-free — products, objects, places, interiors and screens only; never any image of a female and no people at all.", business:S.name||"My Website", purpose:S.purpose, purposeCategory:(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.tap)||null, purposeTyped:(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.text)||null, style:S.style, confirmedStyle:(typeof chatConfirmedStyle!=="undefined"&&chatConfirmedStyle)||S.style, audience:S.audience, audienceTyped:(typeof chatAns!=="undefined"&&chatAns.q6&&chatAns.q6.text)||null, audienceOption:(typeof chatAns!=="undefined"&&chatAns.q6&&chatAns.q6.tap)||null,
-        typedAnswers:{label:"Everything the customer typed in the 10-question chat, verbatim, each answer as its own field — never merged into another field and never overwritten by a tapped option",businessName:(typeof chatAns!=="undefined"&&chatAns.q1&&chatAns.q1.text)||null,purpose:(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.text)||null,style:(typeof chatAns!=="undefined"&&chatAns.q3&&chatAns.q3.text)||null,colours:(typeof chatAns!=="undefined"&&chatAns.q4&&chatAns.q4.text)||null,logoNotes:(typeof chatAns!=="undefined"&&chatAns.q5&&chatAns.q5.text)||null,audience:(typeof chatAns!=="undefined"&&chatAns.q6&&chatAns.q6.text)||null,serviceArea:(typeof chatAns!=="undefined"&&chatAns.q7&&chatAns.q7.text)||null,sectionsNote:(typeof chatAns!=="undefined"&&chatAns.q8&&chatAns.q8.text)||null,callToAction:(typeof chatAns!=="undefined"&&chatAns.q9&&chatAns.q9.text)||null,planNotes:(typeof chatAns!=="undefined"&&chatAns.q10&&chatAns.q10.text)||null},
+        createdImagesRequest:aiImageRequest||null, createdImagesRule:"WebFlowAI-created images are always people-free — products, objects, places, interiors and screens only; never any image of a female and no people at all.", businessName:S.name||null, details:{businessName:S.name||null}, business:S.name||"Your Business", purpose:S.purpose, purposeCategory:(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.tap)||null, purposeTyped:(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.text)||null, style:S.style, confirmedStyle:(typeof chatConfirmedStyle!=="undefined"&&chatConfirmedStyle)||S.style, audience:S.audience, audienceTyped:(typeof chatAns!=="undefined"&&chatAns.q6&&chatAns.q6.text)||null, audienceOption:(typeof chatAns!=="undefined"&&chatAns.q6&&chatAns.q6.tap)||null,
+        typedAnswers:{label:"Everything the customer typed in the chat, verbatim, each answer as its own field — never merged into another field and never overwritten by a tapped option",businessName:(typeof chatAns!=="undefined"&&chatAns.q0&&chatAns.q0.text)||null,category:(typeof chatAns!=="undefined"&&chatAns.q1&&chatAns.q1.text)||null,purpose:(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.text)||null,style:(typeof chatAns!=="undefined"&&chatAns.q3&&chatAns.q3.text)||null,colours:(typeof chatAns!=="undefined"&&chatAns.q4&&chatAns.q4.text)||null,logoNotes:(typeof chatAns!=="undefined"&&chatAns.q5&&chatAns.q5.text)||null,audience:(typeof chatAns!=="undefined"&&chatAns.q6&&chatAns.q6.text)||null,serviceArea:(typeof chatAns!=="undefined"&&chatAns.q7&&chatAns.q7.text)||null,sectionsNote:(typeof chatAns!=="undefined"&&chatAns.q8&&chatAns.q8.text)||null,callToAction:(typeof chatAns!=="undefined"&&chatAns.q9&&chatAns.q9.text)||null,planNotes:(typeof chatAns!=="undefined"&&chatAns.q10&&chatAns.q10.text)||null},
         sections:(typeof sectionNames==="function")?sectionNames():S.pages, pagesInternal:S.pages, features:S.features, colours:S.colors, brandKit:S.kit||null, primaryColour:{name:effPrimary().name, hex:effPrimary().hex}, accentColour:{name:effAccent().name, hex:effAccent().hex}, backgroundColour:{hex:effBg()}, colourBalance:{mainColour:effPrimary().name, mainPct:S.balanceMain, secondColour:effAccent().name, secondPct:S.balanceSecond}, colourMixer:{mainAdjust:S.mixMain, secondAdjust:S.mixSecond, backgroundAdjust:S.mixBg}, tone:S.tone, layout:S.layout, fontStyle:S.font,
         buttonShape:S.btnShape, complexity:S.complex?"Complex":"Simple", pageCount:S.pageCount, tagline:S.tagline||null,
         ownWords:S.vision||null, ownWordsLabel:"In their own words — the customer's own description of the website they imagine, kept word for word; if null, the customer did not provide one.",
         logo:(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?{status:"uploaded",label:"Logo: uploaded by the customer",name:customerLogo.name,src:customerLogo.src,attachedInThisPage:true}:((typeof logoChoice!=="undefined"&&logoChoice==="later")?{status:"later",label:"Logo: will upload / upgrade later (option 2)",name:null,src:null}:((typeof logoChoice!=="undefined"&&logoChoice==="text")?{status:"text",label:"Logo: clean text logo for now (business name as a wordmark)",name:null,src:null}:null)),
         serviceArea:S.serviceArea||null, callToAction:S.cta||null,
-        chatFlow:{label:"Tap-and-continue chat — the customer's answers to the 10 questions, exactly as given (a skip is recorded as skipped; nothing is invented)",category:(typeof chat!=="undefined"&&chat.data&&chat.data.category)||null,planSelected:(typeof chat!=="undefined"&&chat.data&&chat.data.plan)||null,planNotes:(typeof chat!=="undefined"&&chat.data&&chat.data.planNote)||null,answers:(typeof chatAnswers!=="undefined"?chatAnswers:{}),detailed:(typeof chatAns!=="undefined"?chatAns:{})},
+        chatFlow:{label:"Tap-and-continue chat — the customer's answers to the chat questions, exactly as given (a skip is recorded as skipped; nothing is invented)",category:(typeof chat!=="undefined"&&chat.data&&chat.data.category)||null,planSelected:(typeof chat!=="undefined"&&chat.data&&chat.data.plan)||null,planNotes:(typeof chat!=="undefined"&&chat.data&&chat.data.planNote)||null,answers:(typeof chatAnswers!=="undefined"?chatAnswers:{}),detailed:(typeof chatAns!=="undefined"?chatAns:{})},
         previewAdjustments:(typeof previewAdjust!=="undefined"&&previewAdjust.touched)?{label:previewAdjustLine(),mainColor:{name:effPrimary().name,hex:effPrimary().hex},background:{name:(S.bgPick?S.bgPick.name:"As created"),hex:effBg()},buttonStyle:mixerBtnLabel(),font:S.font}:{label:"Preview adjustments: none — the customer kept the small preview exactly as created.",touched:false},
         notes:S.custom||null, brief:buildPrompt(S),
         plan:{website:{label:"Front-end website", price:BASE_PRICE, billing:"one-time"},
@@ -2463,8 +2405,8 @@
         +'<p class="docsub">Prepared by WebFlowAI · The guided AI website creator</p>'
         +'<h3>1 · The brief</h3>'
         +(mode==="brief"
-          ? '<p class="prompt-text" id="brief-text" title="Click to edit the wording" style="cursor:text">'+highlighted(buildPrompt(S))+'</p><p class="note">Click the brief text to fine-tune the wording — your specification below stays as chosen.</p>'
-          : '<p class="prompt-text">'+highlighted(buildPrompt(S))+'</p>')
+          ? '<p class="prompt-text" id="brief-text" title="Click to edit the wording" style="cursor:text">'+highlighted(briefDisplayText())+'</p><p class="note">Click the brief text to fine-tune the wording — your specification below stays as chosen.</p>'
+          : '<p class="prompt-text">'+highlighted(briefDisplayText())+'</p>')
         +'<h3>2 · Specification</h3><table class="spec"><tbody>'
         +'<tr><th>Business / site name</th><td>'+esc(S.name||"— to be confirmed —")+'</td></tr>'
         +'<tr><th>In their own words</th><td>'+(S.vision?('“'+esc(S.vision)+'” — the customer&rsquo;s own description of the website they imagine, kept word for word.'):'Not provided')+'</td></tr>'
@@ -2490,7 +2432,7 @@
         +'<tr><th>Sections</th><td>'+esc(((typeof sectionNames==="function")?sectionNames():S.pages).join(", ")||"—")+'</td></tr>'
         +((typeof chatAns!=="undefined"&&chatAns.q8&&chatAns.q8.text)?'<tr><th>Specific pages — in their own words</th><td>“'+esc(chatAns.q8.text)+'” — typed by the customer at the sections question, kept word for word.</td></tr>':"")
         +'<tr><th>Features</th><td>'+esc(S.features.join(", ")||"—")+'</td></tr>'
-        +'<tr><th>Colour mood</th><td>'+swatchDots(pal)+' '+esc(S.colors)+'</td></tr>'
+        +'<tr><th>Colour mood</th><td>'+swatchDots({sw:[effPrimary().hex,effAccent().hex,effBg()]})+' '+esc(finalColourRecord())+'</td></tr>'
         +(S.kit?'<tr><th>Brand kit</th><td>'+esc(S.kit)+'</td></tr>':"")
         +'<tr><th>Primary colour</th><td>'+swatchDots({sw:[effPrimary().hex]})+' '+esc(effPrimary().name)+' · '+effPrimary().hex+'</td></tr>'
         +'<tr><th>Accent colour</th><td>'+swatchDots({sw:[effAccent().hex]})+' '+esc(effAccent().name)+' · '+effAccent().hex+'</td></tr>'
@@ -2545,32 +2487,30 @@
     /* ============ choices, swatches, add-ons, totals ============ */
     function chipHTML(label,on){return '<button class="chip'+(on?" on":"")+'" data-val="'+esc(label)+'">'+esc(label)+'</button>'}
     function renderChoices(){
-      $("purposes").innerHTML=PURPOSES.map(function(p,i){return '<button class="chip'+(S.purpose===p?" on":"")+'" data-val="'+esc(p)+'">'+PURPOSE_ICONS[i]+" "+esc(p)+'</button>'}).join("");
-      $("styles").innerHTML=STYLES.map(function(s,i){return '<button class="style-card'+(S.style===s?" on":"")+'" data-val="'+esc(s)+'"><span class="tile" role="img" aria-label="'+esc(s)+' website style example">'+STYLE_TILES[i]+'</span><span>'+esc(s)+'</span><small>'+esc(STYLE_DESCS[i])+'</small></button>'}).join("");
-      $("signatures").innerHTML=SIGNATURES.map(function(g){return '<button class="sig-card'+(S.style===g.name?" on":"")+'" data-val="'+esc(g.name)+'"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+SIG_ICONS[g.name]+'</svg><span><b>'+esc(g.name)+'</b><small>'+esc(g.desc)+'</small></span></button>'}).join("");
-      $("audiences").innerHTML=AUDIENCES.map(function(a){return chipHTML(a,S.audience===a)}).join("");
-      $("pages").innerHTML=PAGES.map(function(p){return chipHTML(p,S.pages.indexOf(p)>=0)}).join("");
-      $("features").innerHTML=FEATURES.map(function(f){return chipHTML(f,S.features.indexOf(f)>=0)}).join("");
-      $("tones").innerHTML=TONES.map(function(t){return chipHTML(t,S.tone===t)}).join("");
-      $("layouts").innerHTML=LAYOUTS.map(function(l){return chipHTML(l,S.layout===l)}).join("");
-      $("fonts").innerHTML=FONTSTYLES.map(function(f){return chipHTML(f,S.font===f)}).join("");
-      $("btnshapes").innerHTML=BTNSHAPES.map(function(b){return chipHTML(b,S.btnShape===b)}).join("");
-      $("starters").innerHTML=STARTERS.map(function(s,i){return '<button class="chip" data-starter="'+i+'">'+esc(s.label)+'</button>'}).join("");
-      $("pagecount").innerHTML=["1","3","5+"].map(function(n){return chipHTML(n,S.pageCount===n)}).join("");
-      $("feat-quick").innerHTML=["Gallery","Forms","Socials"].map(function(f){return chipHTML(f,S.features.indexOf(f)>=0)}).join("");
+      hSet("purposes",PURPOSES.map(function(p,i){return '<button class="chip'+(S.purpose===p?" on":"")+'" data-val="'+esc(p)+'">'+PURPOSE_ICONS[i]+" "+esc(p)+'</button>'}).join(""));
+      hSet("styles",STYLES.map(function(s,i){return '<button class="style-card'+(S.style===s?" on":"")+'" data-val="'+esc(s)+'"><span class="tile" role="img" aria-label="'+esc(s)+' website style example">'+STYLE_TILES[i]+'</span><span>'+esc(s)+'</span><small>'+esc(STYLE_DESCS[i])+'</small></button>'}).join(""));
+      hSet("signatures",SIGNATURES.map(function(g){return '<button class="sig-card'+(S.style===g.name?" on":"")+'" data-val="'+esc(g.name)+'"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+SIG_ICONS[g.name]+'</svg><span><b>'+esc(g.name)+'</b><small>'+esc(g.desc)+'</small></span></button>'}).join(""));
+      hSet("audiences",AUDIENCES.map(function(a){return chipHTML(a,S.audience===a)}).join(""));
+      hSet("pages",PAGES.map(function(p){return chipHTML(p,S.pages.indexOf(p)>=0)}).join(""));
+      hSet("features",FEATURES.map(function(f){return chipHTML(f,S.features.indexOf(f)>=0)}).join(""));
+      hSet("tones",TONES.map(function(t){return chipHTML(t,S.tone===t)}).join(""));
+      hSet("layouts",LAYOUTS.map(function(l){return chipHTML(l,S.layout===l)}).join(""));
+      hSet("fonts",FONTSTYLES.map(function(f){return chipHTML(f,S.font===f)}).join(""));
+      hSet("btnshapes",BTNSHAPES.map(function(b){return chipHTML(b,S.btnShape===b)}).join(""));
+      hSet("starters",STARTERS.map(function(s,i){return '<button class="chip" data-starter="'+i+'">'+esc(s.label)+'</button>'}).join(""));
+      hSet("pagecount",["1","3","5+"].map(function(n){return chipHTML(n,S.pageCount===n)}).join(""));
+      hSet("feat-quick",["Gallery","Forms","Socials"].map(function(f){return chipHTML(f,S.features.indexOf(f)>=0)}).join(""));
       document.querySelectorAll('[data-complex]').forEach(function(b){b.classList.toggle("on",(b.getAttribute("data-complex")==="true")===S.complex)});
-      $("complex-switch").setAttribute("aria-checked",S.complex?"true":"false");
+      var _cs=$("complex-switch");if(_cs)_cs.setAttribute("aria-checked",S.complex?"true":"false");
       renderSwatches($("swatches")); renderSwatches($("pv-swatches")); renderKits(); renderPickers();
-      $("pv-layouts").innerHTML=LAYOUTS.map(function(l){return chipHTML(l,S.layout===l)}).join("");
+      hSet("pv-layouts",LAYOUTS.map(function(l){return chipHTML(l,S.layout===l)}).join(""));
       var ap=addonHTML();
-      $("home-addons").innerHTML=ap; $("checkout-addons").innerHTML=ap;
+      hSet("home-addons",ap); hSet("checkout-addons",ap);
       document.querySelectorAll("[data-totals]").forEach(function(el){el.innerHTML=totalsHTML()});
-      $("mini-prompt").textContent=buildPrompt(S);
-      $("details-prompt").textContent=buildPrompt(S);
-      $("f-name").value=S.name; $("f-tagline").value=S.tagline; $("f-custom").value=S.custom; $("f-vision").value=S.vision||"";
-      $("f-dphone").value=S.displayPhone||""; $("f-demail").value=S.displayEmail||"";
+      setBriefPrompts();
+      setBriefPrompts();
       if(typeof formWarns==="function")formWarns();
-      $("pay-btn").innerHTML="Submit order &amp; add card — "+money(BASE_PRICE)+" due today";
+      hSet("pay-btn","Submit order &amp; add card — "+money(BASE_PRICE)+" due today");
     }
     function renderSwatches(container){
       if(!container)return;
@@ -2824,6 +2764,7 @@
       }
       T.hColor="";
       if(S.balanceMain>50&&/^#[0-9a-f]{6}$/i.test(T.ink))T.hColor=hexBlend(T.ink,PRIM,(S.balanceMain-50)/50*0.8);
+      if(S.bgPick)T.bg=effBg();
       /* Dark Executive background: flip the whole preview to a dark, readable
          treatment — deep background, light text, dark cards — whatever the style */
       if(S.bgPick&&S.bgPick.dark){T.bg="#121212";T.ink="#f4f4f4";T.cardBg="#1e1e1e";T.cardBorder="1px solid rgba(255,255,255,.16)";T.line="rgba(255,255,255,.14)";T.navLine="rgba(255,255,255,.14)";T.inputBorder="1px solid rgba(255,255,255,.28)";T.heroBg="transparent";T.heroInk="";T.hColor="";if(T.chipBg==="transparent"){T.chipColor="#f4f4f4";T.chipBorder="1px solid rgba(255,255,255,.45)"}}
@@ -2831,6 +2772,30 @@
       if(S.btnRadius&&S.btnRadiusShape===S.btnShape)T.btnR=S.btnRadius;
       T.cardCSS="border:"+T.cardBorder+";border-radius:"+T.cardR+";background:"+T.cardBg+";box-shadow:"+T.cardShadow+";"+T.cardExtra+T.blockBar;
       return T;
+    }
+    /* representative item names drawn from what the customer said they
+       offer (their own-words purpose, split into offerings) — used so a
+       gallery / shop / services section is never an empty box. Falls back
+       to category-based staples, then plain starter labels. No prices are
+       ever invented. */
+    function offeringNames(){
+      var src=[(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.text)||"",S.vision||""].join(" ");
+      var items=[];
+      src.split(/[.;!?]+/).forEach(function(seg){
+        seg.split(/,| and /).forEach(function(part){
+          var s=part.replace(/^.*—/,"").replace(/^(our|we offer|we provide|we sell|including|featuring|fresh)\s+/i,"").replace(/\s+for\s+.*$/i,"").trim();
+          if(s.length>=3&&s.length<=40&&!/^(a|the|and|for|with|in|on|local|family|offices|homes|customers|people|clients|business|brooklyn)$/i.test(s)&&items.indexOf(s)<0)items.push(s.charAt(0).toUpperCase()+s.slice(1));
+        });
+      });
+      if(items.length>=2)return items.slice(0,6);
+      var cat=((typeof chat!=="undefined"&&chat.data&&chat.data.category)||"")+" "+(S.purpose||"");
+      if(/jewel/i.test(cat))return ["Necklaces & pendants","Rings","Bracelets","Earrings"];
+      if(/lighting|sound/i.test(cat))return ["Table lamps","Ceiling lights","Wall lights","Event lighting"];
+      if(/smoothie|açai|acai/i.test(cat))return ["Smoothies","Açai bowls","Fresh juices"];
+      if(/bookkeep|finance/i.test(cat))return ["Bookkeeping","Payroll","Tax preparation"];
+      if(/restaurant|food|bakery|cafe/i.test(cat))return ["Fresh from the kitchen","Daily specials","Catering"];
+      if(items.length)return items.slice(0,6);
+      return ["Featured favourite","New this week","Best loved","Just added"];
     }
     function pvHTML(){
       var pal=palette(), T=pvTheme();
@@ -2853,8 +2818,8 @@
       var hCSS=function(sz){return "font-family:"+T.hfont+";font-size:"+sz+"px;line-height:1.16;margin:0 0 10px;font-weight:"+T.hw+";letter-spacing:"+T.hls+";text-transform:"+T.htrans+";text-shadow:"+T.hshadow+(T.hColor?";color:"+T.hColor:"")};
       var heroInkCSS=T.heroInk?("color:"+T.heroInk+";"):"";
       var kick=T.kicker?'<p style="font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:'+ACCHEX+';margin:0 0 10px">'+esc(T.kicker)+'</p>':"";
-      var btn='<span style="display:inline-block;background:'+T.btnBg+';color:'+T.btnColor+';border:'+T.btnBorder+';box-shadow:'+T.btnShadow+';padding:'+T.btnPad+';border-radius:'+T.btnR+';font-weight:600;font-size:14.5px;'+T.btnExtra+'">'+esc(S.cta||"Get started")+'</span>';
-      var btn2='<span style="display:inline-block;background:'+T.btn2Bg+';border:'+T.btn2Border+';box-shadow:'+T.btn2Shadow+';color:'+T.btn2Color+';padding:'+T.btnPad+';border-radius:'+T.btnR+';font-weight:600;font-size:14.5px;'+T.btnExtra+'">Learn more</span>';
+      var btn='<span data-pvbtn style="display:inline-block;background:'+T.btnBg+';color:'+T.btnColor+';border:'+T.btnBorder+';box-shadow:'+T.btnShadow+';padding:'+T.btnPad+';border-radius:'+T.btnR+';font-weight:600;font-size:14.5px;'+T.btnExtra+'">'+esc(S.cta||"Get started")+'</span>';
+      var btn2='<span data-pvbtn style="display:inline-block;background:'+T.btn2Bg+';border:'+T.btn2Border+';box-shadow:'+T.btn2Shadow+';color:'+T.btn2Color+';padding:'+T.btnPad+';border-radius:'+T.btnR+';font-weight:600;font-size:14.5px;'+T.btnExtra+'">Learn more</span>';
       /* the hero's own buttons are real navigation inside the preview: the
          main call-to-action scrolls to the Contact section and "Learn more"
          scrolls to the About section — never dead ends, never a fake
@@ -2864,7 +2829,7 @@
       var heroImg=null;userImages.forEach(function(im){if(!heroImg&&im.slot==="Hero")heroImg=im});if(!heroImg&&userImages.length)heroImg=userImages[0];
       var visual=heroImg
         ? '<div role="img" aria-label="'+esc(heroImg.name)+'" style="'+imgPhStyle(heroImg)+';border-radius:'+(T.visualR||cardR)+';min-height:190px;position:relative;overflow:hidden;'+T.visualExtra+'">'+(heroImg.src?'<img src="'+heroImg.src+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;'+imgTagStyle(heroImg)+'" />':"")+'<span style="position:absolute;left:10px;bottom:10px;background:rgba(10,14,22,.72);color:#fff;font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px">Your image · '+esc(heroImg.name)+'</span></div>'
-        : '<div style="background:'+grad135+';border-radius:'+(T.visualR||cardR)+';min-height:190px;display:grid;place-items:center;color:#fff;font-size:64px;font-weight:800;font-family:'+T.hfont+';'+T.visualExtra+'">'+initial+'</div>';
+        : '<div data-pvgrad style="background:'+grad135+';border-radius:'+(T.visualR||cardR)+';min-height:190px;display:grid;place-items:center;color:#fff;font-size:64px;font-weight:800;font-family:'+T.hfont+';'+T.visualExtra+'">'+initial+'</div>';
       var heroWrap='position:relative;overflow:hidden;background:'+T.heroBg+';'+heroInkCSS;
       var hero="";
       if(heroLayout==="Split hero"){
@@ -2874,7 +2839,7 @@
       }else if(heroLayout==="Magazine grid"){
         hero='<div style="'+heroWrap+'padding:30px 30px 6px;text-align:left">'+T.deco+kick+'<h2 style="'+hCSS(Math.max(20,T.hsize-2))+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0">'+esc(introText)+'</p><div style="margin-top:16px">'+btnGo+'</div></div>';
       }else{
-        hero='<div style="'+heroWrap+'padding:'+T.heroPad+';text-align:center">'+T.deco+'<div style="width:56px;height:56px;border-radius:'+T.avatarR+';background:'+grad135+';color:#fff;display:grid;place-items:center;font-size:24px;font-weight:800;margin:0 auto 14px;font-family:'+T.hfont+'">'+initial+'</div>'+kick+'<h2 style="'+hCSS(T.hsize)+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 auto 20px;max-width:480px">'+esc(introText)+'</p>'+btnGo+' '+btn2Go+'</div>';
+        hero='<div style="'+heroWrap+'padding:'+T.heroPad+';text-align:center">'+T.deco+(textLogo?'<div style="margin:0 auto 14px;font-family:'+T.hfont+';font-weight:800;font-size:25px;letter-spacing:.03em;color:'+PRIMHEX+'">'+esc(name)+'</div>':'<div data-pvgrad style="width:56px;height:56px;border-radius:'+T.avatarR+';background:'+grad135+';color:#fff;display:grid;place-items:center;font-size:24px;font-weight:800;margin:0 auto 14px;font-family:'+T.hfont+'">'+initial+'</div>')+kick+'<h2 style="'+hCSS(T.hsize)+'">'+esc(headline)+'</h2><p style="opacity:.78;margin:0 auto 20px;max-width:480px">'+esc(introText)+'</p>'+btnGo+' '+btn2Go+'</div>';
       }
       if(T.layout==="bento")hero='<div style="margin:16px 16px 0;'+cardCSS+'border-radius:20px;overflow:hidden">'+hero+'</div>';
       /* exactly the sections the customer picked, each rendered as a real
@@ -2882,7 +2847,7 @@
          their own typed purpose), and starter content is labelled as
          starter content, never dressed up as the business's real facts */
       var sectionCopy={
-        "About Me":purposeText||("A short introduction to "+name+" — who we are, what we do, and why people choose us."),
+        "About Me":purposeText||("Welcome to "+name+((typeof chat!=="undefined"&&chat.data&&chat.data.category)?(", a "+chat.data.category+" business"):"")+(S.serviceArea?(" serving "+S.serviceArea):"")+"."),
         "Project Showcase":"A selection of recent work and favourite projects, presented in a clean gallery.",
         "Services":"Everything "+name+" offers, explained simply with clear next steps.",
         "Pricing":"Clear pricing for everything "+name+" offers — your real prices will be listed here, with no surprises.",
@@ -2898,6 +2863,18 @@
         var tint=T.tileTint?["background:"+T.cardBg, "background:"+PRIMHEX+"17", "background:"+ACCHEX+"17", "background:#ffffff"][bi%4]:"";
         var bCSS=cardCSS+(tint?";"+tint:"")+((T.layout==="bento"&&bi===0&&blockList.length>1)?";grid-column:span 2":"");
         var h3CSS="font-family:"+T.hfont+";"+(T.hColor?("color:"+T.hColor+";"):"")+(T.htrans==="uppercase"?"text-transform:uppercase;letter-spacing:.03em;":"");
+        if(p==="Project Showcase"){
+          var offs=offeringNames();
+          return '<div data-pvsec="'+p+'" style="'+bCSS+';padding:18px"><h3 style="margin:0 0 10px;font-size:17px;'+h3CSS+'">'+esc(disp(p))+'</h3><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'
+            +offs.map(function(o,oi){return '<div style="border:1px solid '+T.line+';border-radius:'+cardR+';overflow:hidden"><div data-pvgrad style="height:52px;background:'+grad135+';filter:hue-rotate('+(oi*28)+'deg);opacity:'+(1-oi*0.07)+'"></div><p style="margin:0;padding:8px 10px;font-size:13.5px;font-weight:600">'+esc(o)+'</p></div>'}).join("")
+            +'</div></div>';
+        }
+        if(p==="Services"){
+          var soff=offeringNames();
+          return '<div data-pvsec="'+p+'" style="'+bCSS+';padding:18px"><h3 style="margin:0 0 6px;font-size:17px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0 0 8px;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p>'
+            +soff.map(function(o){return '<p style="margin:0;padding:6px 0;border-bottom:1px dashed '+T.line+';font-size:14.5px">'+esc(o)+'</p>'}).join("")
+            +'</div>';
+        }
         if(p==="Menu"){
           /* example items, plainly labelled as starter content the customer
              can swap — never presented as the business's real menu */
@@ -2933,7 +2910,7 @@
           return '<div data-pvsec="'+p+'" style="border-bottom:1px solid '+T.line+';padding:14px 4px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap"><h3 style="margin:0;font-size:17px;min-width:150px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0;opacity:.72;font-size:14px;flex:1;min-width:200px">'+esc(sectionCopy[p]||"")+'</p></div>';
         }
         if(arch==="gallery"){
-          return '<div data-pvsec="'+p+'" style="'+bCSS+';overflow:hidden"><div style="height:74px;background:'+grad135+'"></div><div style="padding:13px 15px"><h3 style="margin:0 0 4px;font-size:16px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p></div></div>';
+          return '<div data-pvsec="'+p+'" style="'+bCSS+';overflow:hidden"><div data-pvgrad style="height:74px;background:'+grad135+'"></div><div style="padding:13px 15px"><h3 style="margin:0 0 4px;font-size:16px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p></div></div>';
         }
         return '<div data-pvsec="'+p+'" style="'+bCSS+';padding:18px"><h3 style="margin:0 0 6px;font-size:17px;'+h3CSS+'">'+esc(disp(p))+'</h3><p style="margin:0;opacity:.72;font-size:14px">'+esc(sectionCopy[p]||"")+'</p></div>';
       }).join("");
@@ -2943,7 +2920,7 @@
       var imgStrip=restImgs.length?'<div style="padding:10px 30px 2px"><p style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:0 0 8px">Your images</p><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px">'+restImgs.map(function(im){return '<figure style="margin:0"><div style="'+imgPhStyle(im)+';border-radius:'+cardR+';aspect-ratio:4/3;position:relative;overflow:hidden">'+(im.src?'<img src="'+im.src+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;'+imgTagStyle(im)+'" />':"")+'</div><figcaption style="font-size:13px;opacity:.75;margin-top:4px">'+esc(im.name)+(im.slot&&im.slot!=="Auto"?" · "+esc(im.slot):"")+'</figcaption></figure>'}).join("")+'</div></div>':"";
       var archRow="";
       if(arch==="store"){
-        archRow='<div style="padding:12px 30px 2px"><p style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:0 0 8px">Featured products</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'+[0,1,2].map(function(i){return '<div style="'+cardCSS+';overflow:hidden"><div style="height:56px;background:'+grad135+';opacity:'+(1-i*0.18)+'"></div><div style="padding:9px 11px"><p style="margin:0;font-size:14px;font-weight:600">Example product</p><p style="margin:2px 0 0;font-size:13px;color:'+ACCHEX+';font-weight:600">An example — your products go here</p></div></div>'}).join("")+'</div></div>';
+        archRow='<div style="padding:12px 30px 2px"><p style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:0 0 8px">Featured products</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'+offeringNames().slice(0,4).map(function(o,i){return '<div style="'+cardCSS+';overflow:hidden"><div data-pvgrad style="height:56px;background:'+grad135+';filter:hue-rotate('+(i*28)+'deg);opacity:'+(1-i*0.12)+'"></div><div style="padding:9px 11px"><p style="margin:0;font-size:14px;font-weight:600">'+esc(o)+'</p></div></div>'}).join("")+'</div></div>';
       }else if(arch==="dashboard"){
         archRow='<div style="padding:12px 30px 2px"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'+[["Overview",70],["Activity",45],["Progress",85]].map(function(t){return '<div style="'+cardCSS+';padding:12px"><p style="margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.65">'+t[0]+'</p><div style="display:flex;align-items:flex-end;gap:4px;height:30px">'+[40,65,52,80,58,92,70].map(function(h,i){return '<span style="flex:1;height:'+Math.round(h*t[1]/100)+'%;background:'+(i%2?ACCHEX:PRIMHEX)+';border-radius:2px"></span>'}).join("")+'</div></div>'}).join("")+'</div></div>';
       }
@@ -2953,11 +2930,13 @@
       var purposeRow="", saasBar="";
       if(!arch&&S.purpose==="Business / SaaS"){saasBar='<div style="height:4px;background:'+PRIMHEX+'"></div>'}
       var logoMark=(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?'<img src="'+customerLogo.src+'" alt="" style="width:32px;height:32px;object-fit:contain;border-radius:8px;background:#fff;border:1px solid rgba(0,0,0,.08);flex:none" />':"";
-      var nav='<div style="display:flex;align-items:center;gap:14px;padding:14px 22px;background:'+T.navBg+';border-bottom:1px solid '+T.navLine+'">'+logoMark+'<span style="font-weight:800;font-size:17px;min-width:0;overflow-wrap:anywhere;'+T.navNameExtra+'">'+esc(name)+'</span><span style="margin-left:auto;display:flex;gap:16px;font-size:14px;opacity:.9;flex-wrap:wrap;'+T.navLinkExtra+'">'+links.map(function(l){return '<span data-pvgo="'+l+'" style="cursor:pointer">'+esc(disp(l))+'</span>'}).join("")+'</span><span data-pvgo="Contact form" style="background:'+T.navBtnBg+';color:'+T.navBtnColor+';padding:7px 15px;border-radius:'+T.btnR+';font-size:14px;font-weight:600;flex:none;white-space:nowrap;cursor:pointer">Contact</span></div>';
+      var textLogo=(!logoMark&&typeof logoChoice!=="undefined"&&logoChoice==="text");
+      var wordmark=textLogo?'<span style="font-family:'+T.hfont+';font-weight:800;font-size:18px;letter-spacing:.03em;color:'+PRIMHEX+'">'+esc(name)+'</span>':"";
+      var nav='<div style="display:flex;align-items:center;gap:14px;padding:14px 22px;background:'+T.navBg+';border-bottom:1px solid '+T.navLine+'">'+(textLogo?wordmark:logoMark+'<span style="font-weight:800;font-size:17px;min-width:0;overflow-wrap:anywhere;'+T.navNameExtra+'">'+esc(name)+'</span>')+'<span style="margin-left:auto;display:flex;gap:16px;font-size:14px;opacity:.9;flex-wrap:wrap;'+T.navLinkExtra+'">'+links.map(function(l){return '<span data-pvgo="'+l+'" style="cursor:pointer">'+esc(disp(l))+'</span>'}).join("")+'</span><span data-pvgo="Contact form" style="background:'+T.navBtnBg+';color:'+T.navBtnColor+';padding:7px 15px;border-radius:'+T.btnR+';font-size:14px;font-weight:600;flex:none;white-space:nowrap;cursor:pointer">Contact</span></div>';
       var bodyInner=saasBar+nav+hero+featRow+archRow+purposeRow+imgStrip+'<div style="display:grid;grid-template-columns:'+gridCols+';gap:'+T.gap+';padding:'+(T.layout==="bento"?"14px 18px 10px":"16px 30px 8px")+'">'+blocks+'</div>'
         +'<div style="padding:18px 30px 24px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid '+T.line+';margin-top:14px;font-size:13.5px;opacity:.7"><span>© '+esc(name)+(S.serviceArea?' · Serving '+esc(S.serviceArea):"")+'</span><span>'+esc(S.style)+' · '+esc(effPrimary().name)+' / '+esc(effAccent().name)+((S.balanceMain!==50||S.balanceSecond!==50)?' · Balance '+S.balanceMain+'% / '+S.balanceSecond+'%':'')+'</span></div>';
       if(heroLayout==="Sidebar"){
-        bodyInner='<div style="display:grid;grid-template-columns:180px 1fr;min-height:420px"><div style="border-right:1px solid '+T.line+';padding:20px 16px"><div style="font-weight:800;font-size:16px;margin-bottom:16px;'+T.navNameExtra+'">'+(logoMark?'<span style="display:block;margin-bottom:8px">'+logoMark+'</span>':"")+esc(name)+'</div>'+["Home"].concat(links).map(function(l,i){return '<div '+(i===0?"":'data-pvgo="'+l+'" ')+'style="padding:8px 10px;border-radius:8px;font-size:14px;margin-bottom:4px;'+(i===0?"background:"+PRIMHEX+";color:#fff;font-weight:600":"opacity:.85;cursor:pointer")+'">'+esc(i===0?l:disp(l))+'</div>'}).join("")+'</div><div>'+hero+featRow+archRow+purposeRow+imgStrip+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:'+T.gap+';padding:6px 30px 20px">'+blocks+'</div></div></div>';
+        bodyInner='<div style="display:grid;grid-template-columns:180px 1fr;min-height:420px"><div style="border-right:1px solid '+T.line+';padding:20px 16px"><div style="font-weight:800;font-size:16px;margin-bottom:16px;'+T.navNameExtra+'">'+(textLogo?wordmark:(logoMark?'<span style="display:block;margin-bottom:8px">'+logoMark+'</span>':"")+esc(name))+'</div>'+["Home"].concat(links).map(function(l,i){return '<div '+(i===0?"":'data-pvgo="'+l+'" ')+'style="padding:8px 10px;border-radius:8px;font-size:14px;margin-bottom:4px;'+(i===0?"background:"+PRIMHEX+";color:#fff;font-weight:600":"opacity:.85;cursor:pointer")+'">'+esc(i===0?l:disp(l))+'</div>'}).join("")+'</div><div>'+hero+featRow+archRow+purposeRow+imgStrip+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:'+T.gap+';padding:6px 30px 20px">'+blocks+'</div></div></div>';
       }
       /* surface texture per purpose (plain-colour backgrounds only): blog gets lined
          paper, SaaS a dotted grid, landing a soft tinted glow at the top */
@@ -2984,7 +2963,7 @@
       }
       fixPvHeights();
     }
-    function renderPreview(){fadeSwap($("pv-frame"),pvHTML())}
+    function renderPreview(){var f=$("pv-frame");if(f){f.removeAttribute("src");f.srcdoc=safeSiteDocument()}}
     function fixPvHeights(){
       document.querySelectorAll(".pv-scale").forEach(function(sc){
         var w=sc.clientWidth;if(!w)return;
@@ -2994,9 +2973,9 @@
       });
     }
     function renderMinis(instant){
-      var html=pvHTML();
       document.querySelectorAll(".pv-url-mini").forEach(function(el){el.textContent=pvUrlText().replace("https://","")});
-      ["pv-fade-1","pv-fade-2","pv-fade-pro","pv-fade-dash","pv-fade-studio"].forEach(function(id){var h=$(id);if(h)fadeSwap(h,html,instant)});
+      var frame=pvIframeHTML();
+      ["pv-fade-1","pv-fade-2","pv-fade-pro","pv-fade-dash","pv-fade-studio"].forEach(function(id){var h=$(id);if(h)fadeSwap(h,frame,instant)});
       fixPvHeights();
     }
     /* rAF-throttled: fixPvHeights reads layout (clientWidth/offsetHeight) and
@@ -3018,12 +2997,24 @@
       var t=root.querySelector('[data-pvsec="'+target+'"]');
       if(t)t.scrollIntoView({behavior:"smooth",block:"start"});
     }
+    /* preview iframes forward their nav clicks here; the parent validates
+       that the message really came from a preview iframe, then asks that
+       same iframe to scroll to the named section — the same page switching
+       the inline preview always had */
+    window.addEventListener("message",function(e){
+      var d=e&&e.data;if(!d||(!d.wfPvNav&&d.type!=="regenerate"))return;
+      var frames=document.querySelectorAll("iframe.pv-iframe,#pv-frame");
+      for(var i=0;i<frames.length;i++){if(frames[i].contentWindow===e.source){
+        if(d.type==="regenerate"){renderPreview();renderMinis(true)}
+        else{try{frames[i].contentWindow.postMessage({wfPvScroll:d.wfPvNav},"*")}catch(err){}}
+        break}}
+    });
     /* the finished website the build team delivered: opened in this same
        full-screen view, in an iframe, with its real address on show */
     function openFinishedSite(){
       if(typeof wfBrief==="undefined"||!wfBrief.siteUrl)return;
       pvShowingFinished=true;
-      $("pv-frame").innerHTML='<iframe title="Your finished website" src="'+esc(wfBrief.siteUrl)+'" style="display:block;width:100%;height:calc(100dvh - 70px);border:0;background:#fff"></iframe>';
+      var pf=$("pv-frame");pf.removeAttribute("srcdoc");pf.src=wfBrief.siteUrl;
       var pvc=$("pv-controls");if(pvc)pvc.style.display="none";
       var psub=$("pv-subtitle");if(psub)psub.textContent="Your finished website · "+wfBrief.siteUrl;
       $("preview-overlay").style.display="block";document.body.style.overflow="hidden";$("pv-close").focus();
@@ -3037,7 +3028,7 @@
       document.querySelectorAll(".view").forEach(function(v){v.classList.toggle("active",v.id==="view-"+name)});
       window.scrollTo({top:0});
       setTimeout(fixPvHeights,60);
-      if(name==="start"&&!chatStarted){chatStarted=true;chatGoTo("q1")}
+      if(name==="start"&&!chatStarted){chatStarted=true;chatGoTo("q0")}
       else if(name==="start"&&chatStarted)setTimeout(scrollChatLatest,90);
       if(name==="owner")renderOwnerGate();
       if(name==="pro")renderPro();
@@ -3071,14 +3062,12 @@
       setTimeout(bringChatIntoView,1050);
     }
     function closeChatStage(){document.body.classList.remove("chat-stage");window.scrollTo({top:0});setTimeout(fixPvHeights,60)}
-    $("finish-by-chat").addEventListener("click",openChatStage);
-    $("finish-by-chat-2").addEventListener("click",openChatStage);
-    $("finish-by-chat-3").addEventListener("click",openChatStage);
+    var _stc=$("studio-to-chat");if(_stc)_stc.addEventListener("click",openChatStage);
     $("chat-stage-close").addEventListener("click",closeChatStage);
     document.addEventListener("click",function(e){
       /* delegated back-up for the same buttons, so the chat opens even if a
          direct binding is ever lost; openChatStage debounces the double hit */
-      var fc=e.target.closest?e.target.closest("#finish-by-chat,#finish-by-chat-2,#finish-by-chat-3"):null;
+      var fc=e.target.closest?e.target.closest("#studio-to-chat"):null;
       if(fc){openChatStage();return}
       var nav=e.target.closest("[data-nav]");
       if(nav){e.preventDefault();var v=nav.getAttribute("data-nav");showView(v);
@@ -3104,20 +3093,17 @@
         else{S.accentPick=(S.accentPick&&S.accentPick.hex===pick7.hex)?null:pick7;S.mixSecond=0}
         promptOverride=null;renderAll();return}
       var pl=e.target.closest("[data-palette]");
-      if(pl){S.colors=pl.getAttribute("data-palette");S.primaryPick=null;S.accentPick=null;S.kit="";S.mixMain=0;S.mixSecond=0;S.mixBg=0;promptOverride=null;renderAll();return}
+      if(pl){S.colors=pl.getAttribute("data-palette");S.primaryPick=null;S.accentPick=null;S.kit="";S.mixMain=0;S.mixSecond=0;S.mixBg=0;promptOverride=null;recordFinalColours();renderAll();return}
       var kt=e.target.closest("[data-kit]");
       if(kt){var kn=kt.getAttribute("data-kit");
         for(var ki=0;ki<KITS.length;ki++){if(KITS[ki].name===kn){S.primaryPick={name:KITS[ki].pn,hex:KITS[ki].primary};S.accentPick={name:KITS[ki].an,hex:KITS[ki].accent};S.font=KITS[ki].font;S.kit=KITS[ki].name}}
-        S.mixMain=0;S.mixSecond=0;S.mixBg=0;promptOverride=null;renderAll();toast(kn+" brand kit applied — colours and font together");return}
+        S.mixMain=0;S.mixSecond=0;S.mixBg=0;promptOverride=null;recordFinalColours();renderAll();toast(kn+" brand kit applied — colours and font together");return}
       var st=e.target.closest("[data-starter]");
       if(st){Object.assign(S,JSON.parse(JSON.stringify(STARTERS[+st.getAttribute("data-starter")].data)));S.stylePicked=true;S.primaryPick=null;S.accentPick=null;S.kit="";S.mixMain=0;S.mixSecond=0;S.mixBg=0;renderAll();toast("Quick start applied — check the brief preview");return}
     });
-    $("surprise").addEventListener("click",function(){
-      function pick(a){return a[Math.floor(Math.random()*a.length)]}
-      S.purpose=pick(PURPOSES);S.style=pick(STYLES);S.stylePicked=true;S.audience=pick(AUDIENCES);renderAll();toast("Surprise combination applied");
-    });
     function bindChips(containerId,fn){
-      $(containerId).addEventListener("click",function(e){var b=e.target.closest("[data-val]");if(!b)return;promptOverride=null;fn(b.getAttribute("data-val"))});
+      var c=$(containerId);if(!c)return;
+      c.addEventListener("click",function(e){var b=e.target.closest("[data-val]");if(!b)return;promptOverride=null;fn(b.getAttribute("data-val"))});
     }
     bindChips("purposes",function(v){S.purpose=v;renderAll()});
     bindChips("styles",function(v){S.style=v;S.stylePicked=true;renderAll()});
@@ -3139,12 +3125,6 @@
       a.hidden=!($("f-name").value.indexOf("@")>=0);
       b.hidden=!($("f-dphone").value.trim()&&!isPhone($("f-dphone").value));
       c.hidden=!($("f-demail").value.trim()&&!isEmail($("f-demail").value))}
-    $("f-name").addEventListener("input",function(e){promptOverride=null;if(e.target.value.indexOf("@")<0)S.name=e.target.value;formWarns();renderDocs();renderMinis();$("mini-prompt").textContent=buildPrompt(S);$("details-prompt").textContent=buildPrompt(S)});
-    $("f-tagline").addEventListener("input",function(e){promptOverride=null;S.tagline=e.target.value;renderDocs();$("details-prompt").textContent=buildPrompt(S);$("mini-prompt").textContent=buildPrompt(S)});
-    $("f-custom").addEventListener("input",function(e){promptOverride=null;S.custom=e.target.value;renderDocs();$("details-prompt").textContent=buildPrompt(S);$("mini-prompt").textContent=buildPrompt(S)});
-    $("f-vision").addEventListener("input",function(e){promptOverride=null;S.vision=e.target.value;renderDocs();$("details-prompt").textContent=buildPrompt(S);$("mini-prompt").textContent=buildPrompt(S)});
-    $("f-dphone").addEventListener("input",function(e){promptOverride=null;if(!e.target.value.trim()||isPhone(e.target.value))S.displayPhone=e.target.value;formWarns();renderDocs();$("details-prompt").textContent=buildPrompt(S);$("mini-prompt").textContent=buildPrompt(S)});
-    $("f-demail").addEventListener("input",function(e){promptOverride=null;if(!e.target.value.trim()||isEmail(e.target.value))S.displayEmail=e.target.value;formWarns();renderDocs();$("details-prompt").textContent=buildPrompt(S);$("mini-prompt").textContent=buildPrompt(S)});
     $("complex-switch").addEventListener("click",function(){S.complex=!S.complex;renderAll()});
     document.querySelectorAll("[data-complex]").forEach(function(b){b.addEventListener("click",function(){S.complex=b.getAttribute("data-complex")==="true";renderAll()})});
 
@@ -3166,8 +3146,8 @@
         promptOverride=null;
         syncMixerUI();syncBalanceUI();renderPickers();
         renderMinis(true); /* instant swap while the finger moves — no fade, no ghosting */
-        if($("preview-overlay").style.display!=="none"&&!pvShowingFinished)fadeSwap($("pv-frame"),pvHTML(),true);
-        $("mini-prompt").textContent=buildPrompt(S);$("details-prompt").textContent=buildPrompt(S);
+        postStyleToPreviews();
+        setBriefPrompts();setBriefPrompts();
         return;
       }
       var r=e.target.closest(".bal-range");if(!r)return;
@@ -3176,11 +3156,11 @@
       promptOverride=null;
       syncBalanceUI();
       renderMinis(true); /* instant swap while the finger moves — no fade, no ghosting */
-      if($("preview-overlay").style.display!=="none"&&!pvShowingFinished)fadeSwap($("pv-frame"),pvHTML(),true);
-      $("mini-prompt").textContent=buildPrompt(S);$("details-prompt").textContent=buildPrompt(S);
+      postStyleToPreviews();
+      setBriefPrompts();setBriefPrompts();
     });
     document.addEventListener("change",function(e){
-      if(e.target.closest&&e.target.closest(".bal-range,.mix-range"))renderDocs();
+      if(e.target.closest&&e.target.closest(".bal-range,.mix-range")){renderDocs();renderMinis(true);renderPreview()}
     });
     document.addEventListener("click",function(e){
       var mr=e.target.closest?e.target.closest(".mix-reset"):null;
@@ -3191,9 +3171,9 @@
     });
 
     /* ============ copy / download buttons ============ */
-    function briefText(){return "WebFlowAI — PROJECT BRIEF\nReference "+refCode()+" · 2 November 2026\n\n"+buildPrompt(S)}
-    $("copy-prompt-2").addEventListener("click",function(){copyText(buildPrompt(S),"Brief copied — paste it anywhere you like.")});
-    $("copy-prompt-3").addEventListener("click",function(){copyText(buildPrompt(S),"Brief copied.")});
+    function briefText(){return "WebFlowAI — PROJECT BRIEF\nReference "+refCode()+" · 2 November 2026\n\n"+briefDisplayText()}
+    $("copy-prompt-2").addEventListener("click",function(){copyText(briefDisplayText(),"Brief copied — paste it anywhere you like.")});
+    $("copy-prompt-3").addEventListener("click",function(){copyText(briefDisplayText(),"Brief copied.")});
     $("copy-all").addEventListener("click",function(){copyText(JSON.stringify(orderPackage(),null,2),"All details copied.")});
     $("copy-order").addEventListener("click",function(){copyText(JSON.stringify(orderPackage(),null,2),"Order copied.")});
     $("download-brief").addEventListener("click",function(){download("webflowai-brief.txt",briefText());toast("Brief downloaded")});
@@ -3210,7 +3190,7 @@
         $("stars-note").textContent="Thanks for your feedback!";toast("Thanks for rating "+rating+" star"+(rating>1?"s":"")+"!")});
     })();
     $("new-project").addEventListener("click",function(){
-      S=JSON.parse(JSON.stringify(DEFAULTS));addons={email:false,phone:false,backend:false};cardLast4=null;rating=0;userImages=[];aiImageRequest="";$("f-img-req").value="";
+      S=JSON.parse(JSON.stringify(DEFAULTS));addons={email:false,phone:false,backend:false};cardLast4=null;rating=0;userImages=[];aiImageRequest="";var _fir0=$("f-img-req");if(_fir0)_fir0.value="";
       $("stars").querySelectorAll("button").forEach(function(x){x.classList.remove("lit")});$("stars-note").textContent="";
       chatReset();renderAll();showView("start");toast("New project started");
     });
@@ -3225,6 +3205,8 @@
        building stages — no credit card is taken there; the pick simply sets
        the same add-ons the checkout uses, so totals stay truthful. */
     var CHAT_STEPS={
+      q0:{say:"Hi there! Welcome to WebFlowAI. What is your business called? Just the short name, exactly as you would like it to appear on your website.",field:"bizName",next:"q1",options:[
+        {label:"🔄 I already filled this out / Skip",go:"q1",skip:true}]},
       q1:{say:"Hi there! Welcome to WebFlowAI. We’re going to get your professional website built together in just a few taps. To help our build steps know exactly how to structure, layout, and build your site from scratch, please select your business category below or type your details. If you've already filled this out previously, feel free to skip ahead. What type of business are we building today?",field:"biz",next:"q2",options:[
         {label:"💎 Luxury Jewelry & Silver",go:"q2",q:"category",v:"Luxury Jewelry & Silver"},
         {label:"💡 Event Lighting & Sound",go:"q2",q:"category",v:"Event Lighting & Sound"},
@@ -3295,10 +3277,10 @@
         {label:"⚙️ Full System with Back-end (+$12.00/mo)",q:"plan",v:"backend",finish:true},
         {label:"🔄 Plan already selected / Skip",skip:true,finish:true}]}
     };
-    var CHAT_ORDER=["q1","q2","q3","q4","q5","q6","q7","q8","q9","q10"];
-    var CHAT_PROG={q1:1,q2:2,q3:3,q4:4,q5:5,q6:6,q7:7,q8:8,q9:9,q10:10};
-    var CHAT_Q_LABELS={q1:"Business name & category",q2:"Website purpose",q3:"Visual style & vibe",q4:"Color palette & branding",q5:"Logo",q6:"Target audience",q7:"Service area",q8:"Key sections & pages",q9:"Primary call-to-action",q10:"Website plan"};
-    var CHAT_PLACEHOLDER={biz:"Type your business name or custom details here...",purposeT:"Describe your website purpose or type custom details...",styleT:"Describe your custom visual style or aesthetic...",colorT:"Type custom color codes or specific brand colors...",logoT:"Provide logo notes or alternative brand text...",audienceT:"Type or describe your target audience...",areaT:"Type custom location or service area...",sectionsT:"Type any specific pages or sections you need...",ctaT:"Type custom call-to-action details...",planT:"Type custom plan preferences or notes here..."};
+    var CHAT_ORDER=["q0","q1","q2","q3","q4","q5","q6","q7","q8","q9","q10"];
+    var CHAT_PROG={q0:1,q1:2,q2:3,q3:4,q4:5,q5:6,q6:7,q7:8,q8:9,q9:10,q10:11};
+    var CHAT_Q_LABELS={q0:"Business name",q1:"Business category",q2:"Website purpose",q3:"Visual style & vibe",q4:"Color palette & branding",q5:"Logo",q6:"Target audience",q7:"Service area",q8:"Key sections & pages",q9:"Primary call-to-action",q10:"Website plan"};
+    var CHAT_PLACEHOLDER={bizName:"Type your business name here...",biz:"Type your business name or custom details here...",purposeT:"Describe your website purpose or type custom details...",styleT:"Describe your custom visual style or aesthetic...",colorT:"Type custom color codes or specific brand colors...",logoT:"Provide logo notes or alternative brand text...",audienceT:"Type or describe your target audience...",areaT:"Type custom location or service area...",sectionsT:"Type any specific pages or sections you need...",ctaT:"Type custom call-to-action details...",planT:"Type custom plan preferences or notes here..."};
     /* every answer the 10-question flow collects, keyed by question — taps,
        typed text and honest skips alike. This is what the details summary
        and the owner brief carry for the chat (see handoff + order package). */
@@ -3315,7 +3297,8 @@
       if(a.skip&&!a.text){chatAnswers[k]=SKIP_ANSWER;return}
       var parts=[];
       if(a.sections&&a.sections.length)parts.push(a.sections.join(", "));
-      if(a.tapLabel&&!a.skip)parts.push(a.tapLabel);
+      if(k==="q4"&&a.colourFinal)parts.push(a.colourFinal);
+      if(a.tapLabel&&!a.skip&&!(k==="q4"&&a.colourFinal))parts.push(a.tapLabel);
       if(a.text)parts.push(k==="q5"?("Logo note: \u201C"+a.text+"\u201D"):("Typed: \u201C"+a.text+"\u201D"));
       if(parts.length)chatAnswers[k]=parts.join(" · ");else delete chatAnswers[k];
     }
@@ -3390,7 +3373,7 @@
       if(opt.q==="category"){chat.data.category=opt.v}
       else if(opt.q==="purpose"){S.purpose=opt.v;renderAll()}
       else if(opt.q==="style"){S.style=opt.v;S.stylePicked=true;chat.data.styleConfirmed=opt.v;chatConfirmedStyle=opt.v;renderAll()}
-      else if(opt.q==="palette"){S.colors=opt.v;S.primaryPick=null;S.accentPick=null;S.kit="";S.mixMain=0;S.mixSecond=0;S.mixBg=0;renderAll()}
+      else if(opt.q==="palette"){S.colors=opt.v;S.primaryPick=null;S.accentPick=null;S.kit="";S.mixMain=0;S.mixSecond=0;S.mixBg=0;recordFinalColours();renderAll()}
       else if(opt.q==="logoText"){logoChoice="text";chat.data.logo="text";renderAll()}
       else if(opt.q==="logoLater"){logoChoice="later";chat.data.logo="later";renderAll()}
       else if(opt.q==="audience"){S.audience=opt.v;renderAll()}
@@ -3461,12 +3444,12 @@
     function applyMixerColor(hex,srcEl){
       hex=String(hex||"").toLowerCase();if(!/^#[0-9a-f]{6}$/.test(hex))return;
       promptOverride=null;
-      S.primaryPick={name:"Custom colour",hex:hex};S.mixMain=0;
+      setFinalColour(hex);
       previewAdjust.touched=true;previewAdjust.confirmed=false;
       renderAll();
       var card=srcEl&&srcEl.closest?srcEl.closest(".site-card"):null;
       if(!card)return;
-      var pv=card.querySelector(".finish-pv .pv-scale-in > div");if(pv)pv.innerHTML=pvHTML();
+      var pv=card.querySelector(".finish-pv .pv-scale-in > div");if(pv)pv.innerHTML=pvIframeHTML();
       var rd=card.querySelector("[data-mixmain-read]");if(rd)rd.textContent=effPrimary().name+" · "+effPrimary().hex;
       var ch=card.querySelector("[data-choices]");if(ch)ch.innerHTML=choicesListHTML();
       card.querySelectorAll('[data-pmix="main"]').forEach(function(b){var on=b.getAttribute("data-val")===hex;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on?"true":"false")});
@@ -3475,11 +3458,11 @@
       var cn=card.querySelector("[data-confirm-note]");if(cn)cn.style.display="none";
       setTimeout(fixPvHeights,30);
     }
-    var chat={msgs:[],step:"q1",data:{},thinking:false,sound:true,done:false,building:false,idc:1,howSaid:false,creating:null};
+    var chat={msgs:[],step:"q0",data:{},thinking:false,sound:true,done:false,building:false,idc:1,howSaid:false,creating:null};
     var buildTimer=null;
-    /* ---- style tries & owner handoff (this page only, in memory — nothing is stored) ----
+    /* ---- style changes & owner handoff (this page only, in memory — nothing is stored) ----
        The first style is free to keep. The customer then gets up to 3 free style
-       changes in the chat. After those, a $5 credit pack adds 10 more tries.
+       changes in the chat. After those, a $5 credit pack adds 10 more style changes.
        No tries are granted any other way in the chat, so switches cannot run forever. */
     var OWNER_EMAIL="webflowai301@gmail.com";
     /* ---- the live build relay (the real back end for this page) ----
@@ -3489,7 +3472,7 @@
        customer this is only ever "our build team": the relay, like every
        model behind it, is never named in customer-facing copy. */
     const WF_RELAY="https://webflowai-relay.onrender.com";
-    var wfBrief={id:null,status:null,siteUrl:null,sending:false,pollTimer:null};
+    var wfBrief={id:null,status:null,siteUrl:null,sending:false,failed:false,pollTimer:null};
     function wfHash(s){var h=0;for(var i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))>>>0}return "h"+h}
     function wfStored(k){try{return localStorage.getItem(k)}catch(e){return null}}
     function wfStore(k,v){try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}}
@@ -3498,8 +3481,38 @@
        displayed (the confirm card, the handoff card, the finish box) */
     function wfSendLine(){
       if(wfBrief.id)return "Sent to our build team ✓ · Your details are with our build team — your website is in the build queue. · Brief reference: "+wfBrief.id;
-      if(wfBrief.sending||wfQueuedExists())return "Sending your details…";
+      if(wfBrief.sending)return "Sending your details…";
+      if(wfBrief.failed)return "Not sent yet — we couldn’t reach our build team. Your details are saved on this device.";
       return "When you confirm, your details go straight to our build team, who build your website from them.";
+    }
+    /* the send line as shown in the chat cards: the failed state also carries
+       the retry button, so it is rendered as HTML, never escaped text */
+    function wfSendLineHTML(){
+      if(!wfBrief.id&&!wfBrief.sending&&wfBrief.failed)return wfSendLine()+' <button type="button" class="btn ghost small" data-wfretry style="margin-left:6px">Tap to retry sending</button>';
+      return wfSendLine();
+    }
+    function wfRetrySend(){
+      if(wfBrief.sending||wfBrief.id)return;
+      var q=wfStored("wfBriefQueued");
+      if(q){wfPostQueued(q)}else{wfSendBrief()}
+    }
+    /* one POST of a stored/queued brief body — used by Confirm, by the retry
+       button and by the retry-on-load, so every path shares the same states */
+    function wfPostQueued(body){
+      wfBrief.sending=true;wfBrief.failed=false;wfRefreshSendUI();
+      fetch(WF_RELAY+"/brief",{method:"POST",headers:{"Content-Type":"application/json"},body:wfBodyWithToken(body)})
+        .then(function(r){return r.json()})
+        .then(function(d){
+          wfBrief.sending=false;
+          if(d&&d.ok&&d.id){
+            wfBrief.id=d.id;wfBrief.status="new";wfBrief.failed=false;
+            wfStore("wfBriefId",d.id);wfStore("wfBriefQueued",null);
+            wfEnsureStatusCard();wfStartStatusPoll();wfRefreshSendUI();
+          }else{
+            wfBrief.failed=true;wfRefreshSendUI();
+          }
+        })
+        .catch(function(){wfBrief.sending=false;wfBrief.failed=true;wfRefreshSendUI()});
     }
     function wfRefreshSendUI(){if(typeof chatStarted!=="undefined"&&chatStarted)chatRender()}
     /* the build-status card lives in the finish area of the chat, right
@@ -3520,21 +3533,22 @@
         /* these exact details were already sent — never send them twice */
         wfBrief.id=storedId;wfStartStatusPoll();wfRefreshSendUI();return;
       }
-      wfBrief.sending=true;wfRefreshSendUI();
-      fetch(WF_RELAY+"/brief",{method:"POST",headers:{"Content-Type":"application/json"},body:body})
+      wfBrief.sending=true;wfBrief.failed=false;wfRefreshSendUI();
+      fetch(WF_RELAY+"/brief",{method:"POST",headers:{"Content-Type":"application/json"},body:wfBodyWithToken(body)})
         .then(function(r){return r.json()})
         .then(function(d){
           wfBrief.sending=false;
           if(d&&d.ok&&d.id){
-            wfBrief.id=d.id;wfBrief.status="new";wfBrief.siteUrl=null;
+            wfBrief.id=d.id;wfBrief.status="new";wfBrief.siteUrl=null;wfBrief.failed=false;
             wfStore("wfBriefId",d.id);wfStore("wfBriefHash",hash);wfStore("wfBriefQueued",null);
             wfEnsureStatusCard();wfStartStatusPoll();wfRefreshSendUI();
           }else{
+            wfBrief.failed=true;
             wfStore("wfBriefQueued",body);wfStore("wfBriefHash",hash);wfRefreshSendUI();
           }
         })
         .catch(function(){
-          wfBrief.sending=false;
+          wfBrief.sending=false;wfBrief.failed=true;
           /* not lost: the brief stays queued on this device and is retried
              on every page load until it goes through */
           wfStore("wfBriefQueued",body);wfStore("wfBriefHash",hash);wfRefreshSendUI();
@@ -3568,18 +3582,7 @@
       var q=wfStored("wfBriefQueued");
       wfBrief.id=wfStored("wfBriefId");
       if(q&&!wfBrief.id){
-        wfBrief.sending=true;
-        fetch(WF_RELAY+"/brief",{method:"POST",headers:{"Content-Type":"application/json"},body:q})
-          .then(function(r){return r.json()})
-          .then(function(d){
-            wfBrief.sending=false;
-            if(d&&d.ok&&d.id){
-              wfBrief.id=d.id;wfBrief.status="new";
-              wfStore("wfBriefId",d.id);wfStore("wfBriefQueued",null);
-              wfEnsureStatusCard();wfStartStatusPoll();wfRefreshSendUI();
-            }
-          })
-          .catch(function(){wfBrief.sending=false});
+        wfPostQueued(q);
       }else if(wfBrief.id){
         wfStartStatusPoll();
       }
@@ -3620,13 +3623,13 @@
       if(S.cta)lines.push("Primary call-to-action: "+S.cta);
       if(chat.data&&chat.data.plan)lines.push("Plan selected in the chat (for the building stages — no credit card was taken at that step): "+chat.data.plan);
       lines.push("");
-      lines.push("TAP-AND-CONTINUE CHAT ANSWERS (all 10 questions, exactly as answered — a skip is recorded as skipped)");
+      lines.push("TAP-AND-CONTINUE CHAT ANSWERS (all questions, exactly as answered — a skip is recorded as skipped)");
       CHAT_ORDER.forEach(function(k,i){lines.push("Q"+(i+1)+" · "+CHAT_Q_LABELS[k]+": "+(chatAnswers[k]||"— not answered —"))});
       lines.push("Purpose: "+purposeFieldText());
       lines.push("Target audience: "+audienceFieldText());
       lines.push("Chosen style (current): "+S.style+"  (started as: "+(f.initialStyle||S.style)+")");
       lines.push("Style CONFIRMED by the customer in the chat: "+(chatConfirmedStyle||S.style)+" — build in this style.");
-      lines.push("Colour mood: "+S.colors+" — primary "+effPrimary().name+" ("+effPrimary().hex+"), accent "+effAccent().name+" ("+effAccent().hex+"), background "+effBg());
+      lines.push("Colour mood: "+finalColourRecord());
       if(S.kit)lines.push("Brand kit: "+S.kit);
       lines.push("Colour balance: main "+S.balanceMain+"% / second "+S.balanceSecond+"%");
       lines.push("Sections: "+(sectionNames().join(", ")||"—"));
@@ -3643,7 +3646,7 @@
       lines.push(previewAdjustLine());
       if(aiImageRequest)lines.push("Images to create (people-free, always): "+aiImageRequest);
       if(S.custom)lines.push("Extra notes: "+S.custom);
-      lines.push("Style tries so far: "+f.changesUsed+" change(s) used · "+f.freeLeft+" free left · "+f.paidLeft+" paid left · demo credit added in page: $"+f.balance.toFixed(2));
+      lines.push("Style changes so far: "+f.changesUsed+" used · "+f.freeLeft+" free left · "+f.paidLeft+" paid left · demo credit added in page: $"+f.balance.toFixed(2));
       lines.push("");
       lines.push("THE BRIEF");
       lines.push(buildPrompt(S));
@@ -3659,7 +3662,7 @@
     function buildStepsList(){
       var steps=[{label:"Building your layout — "+layoutTypeLabel(),done:false},
         {label:"Applying your style — "+S.style,done:false},
-        {label:S.kit?("Setting your colours — the "+S.kit+" brand kit"):("Setting your colours — "+S.colors+" ("+effPrimary().name+" & "+effAccent().name+")"),done:false},
+        {label:S.kit?("Setting your colours — the "+S.kit+" brand kit"):("Setting your colours — "+finalColourRecord()),done:false},
         {label:"Writing your text — in a "+S.tone.toLowerCase()+" tone",done:false}];
       if(userImages.length)steps.push({label:"Placing your "+userImages.length+" image"+(userImages.length===1?"":"s"),done:false});
       else if(aiImageRequest)steps.push({label:"Creating your images — people-free, as always",done:false});
@@ -3683,13 +3686,10 @@
       if(rm){while(i<steps.length)stepDone();return}
       buildTimer=setInterval(stepDone,540);
     }
-    /* the creating screen: a calm 5-minute countdown while the first version
-       is produced from the customer's details (the same step timing as the
-       build sequence). The Open button appears the moment the version is
-       ready — seconds in, long before 00:00. If the clock ever reached 00:00
-       first, the card switches to "Still finishing" and keeps waiting:
-       never an error, never a dead end. */
-    var creatingTimer=null,creatingClock=null;
+    /* the creating screen: the real build steps only, checking off as each
+       one completes — no countdown and no artificial delay. The Open button
+       appears the moment the version is ready. */
+    var creatingTimer=null;
     function startCreating(done){
       var steps=buildStepsList();
       chat.creating={startedAt:Date.now(),ready:false,pct:0,current:steps[0].label};
@@ -3698,7 +3698,6 @@
       var i=0,rm=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       function finish(){
         if(creatingTimer){clearInterval(creatingTimer);creatingTimer=null}
-        if(creatingClock){clearInterval(creatingClock);creatingClock=null}
         if(chat.creating){chat.creating.ready=true;chat.creating.pct=100;chat.creating.current=""}
         chatRender();setTimeout(done,rm?60:430);
       }
@@ -3706,14 +3705,6 @@
         if(i<steps.length){i++;if(chat.creating){chat.creating.pct=Math.round(i/steps.length*100);chat.creating.current=i<steps.length?steps[i].label:""}chatRender();ding()}
         if(i>=steps.length)finish();
       }
-      creatingClock=setInterval(function(){
-        if(!chat.creating||chat.creating.ready){if(creatingClock){clearInterval(creatingClock);creatingClock=null}return}
-        var el=document.querySelector("[data-ctime]");if(!el)return;
-        var crem=Math.max(0,300-Math.floor((Date.now()-chat.creating.startedAt)/1000));
-        var cmm=String(Math.floor(crem/60)),css=String(crem%60);if(css.length<2)css="0"+css;if(cmm.length<2)cmm="0"+cmm;
-        el.textContent=cmm+":"+css;
-        if(crem<=0){var st=document.querySelector("[data-cstatus]");if(st)st.textContent="Still finishing — just a moment more. Your Open button will appear right here the moment your website is ready.";if(creatingClock){clearInterval(creatingClock);creatingClock=null}}
-      },1000);
       if(rm){i=steps.length;finish();return}
       creatingTimer=setInterval(stepDone,540);
     }
@@ -3765,8 +3756,6 @@
       var html=chat.msgs.map(function(m,i){
         if(m.kind==="creating"){
           var cr=chat.creating||{startedAt:Date.now(),ready:false,pct:0};
-          var cel=Math.floor((Date.now()-cr.startedAt)/1000),crem=Math.max(0,300-cel);
-          var cmm=String(Math.floor(crem/60)),css=String(crem%60);if(css.length<2)css="0"+css;if(cmm.length<2)cmm="0"+cmm;
           var csteps=[{label:"Details received",done:true,doing:false},
             {label:"Style confirmed — "+(chatConfirmedStyle||S.style),done:true,doing:false},
             {label:"Building your pages"+(cr.current&&!cr.ready?" — "+cr.current:""),done:!!cr.ready||cr.pct>=70,doing:!cr.ready&&cr.pct<70},
@@ -3774,11 +3763,8 @@
           var cSteps=csteps.map(function(st){return '<li class="'+(st.done?"done":(st.doing?"doing":""))+'"><span class="bk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>'+esc(st.label)+'</span></li>'}).join("");
           var cStatus=cr.ready
             ?'<p style="font-weight:700;margin-top:12px">Your first version is ready.</p><button class="btn block" data-openwebsite style="margin-top:10px">Open your website</button><p style="color:var(--muted);font-size:12.5px;margin-top:9px">It opens full-screen — and there is a “Continue in the chat” button at the top whenever you want to come back here.</p>'
-            :(crem>0
-              ?'<p data-cstatus style="color:var(--muted);font-size:13.5px;margin-top:12px">Creating… your Open button appears here the moment your website is ready — usually long before the clock runs out.</p>'
-              :'<p data-cstatus style="color:var(--muted);font-size:13.5px;margin-top:12px">Still finishing — just a moment more. Your Open button will appear right here the moment your website is ready.</p>');
+            :'<p data-cstatus style="color:var(--muted);font-size:13.5px;margin-top:12px">Creating… your Open button appears here the moment your website is ready.</p>';
           return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="build-card"><h4 style="font-size:17px">We’re creating your website</h4><p style="color:var(--muted);font-size:13.5px;line-height:1.55;margin-top:5px">Please wait — we’re now building your website professionally, from everything you told us.</p>'
-            +(cr.ready?'':'<div data-ctime style="font-size:42px;font-weight:800;letter-spacing:1px;margin:12px 0 4px">'+cmm+':'+css+'</div>')
             +'<ul class="build-steps" style="margin-top:10px">'+cSteps+'</ul>'+cStatus+'</div></div>';
         }
         if(m.kind==="build"){
@@ -3800,7 +3786,7 @@
             return '<button type="button" class="'+(on?"on":"")+'" data-pmix="font" data-val="'+esc(fn)+'" aria-pressed="'+on+'">'+esc(FONT_LABELS[fn]||fn)+'</button>'}).join("");
           return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="site-card">'
           +'<div class="sc-body" style="padding-bottom:0"><p class="sc-name">Your first version is ready</p><p style="font-size:13.5px;line-height:1.55;margin-top:4px">This is a small preview with your style</p></div>'
-          +'<div class="finish-grid"><div class="finish-pv"><div class="pv-scale crop" style="height:200px;border:0;border-radius:0"><div class="pv-scale-in"><div>'+pvHTML()+'</div></div></div></div>'
+          +'<div class="finish-grid"><div class="finish-pv"><div class="pv-scale crop" style="height:200px;border:0;border-radius:0"><div class="pv-scale-in"><div>'+pvIframeHTML()+'</div></div></div></div>'
           +'<div class="mixer-panel"><h5>Try the finishing touches — live</h5>'
           +'<div class="mix-group"><p class="mix-label">Main colour</p><div class="mix-swatches">'+mainSw+'</div>'
           +'<div class="mix-color-row"><input type="color" class="mix-picker" data-pmixcolor value="'+esc(effPrimary().hex)+'" aria-label="Pick any main colour" /><input type="text" class="mix-hex" data-pmixhex value="'+esc(effPrimary().hex)+'" maxlength="7" spellcheck="false" autocomplete="off" aria-label="Main colour hex code" /></div>'
@@ -3811,7 +3797,7 @@
           +'<div class="mix-choices"><p class="mix-choices-title">Your choices</p><div data-choices>'+choicesListHTML()+'</div>'
           +'<p class="mix-confirm-note" data-confirm-note'+(previewAdjust.confirmed?'':' style="display:none"')+'>Recorded — these choices are locked in with your details.</p></div>'
           +'<button type="button" class="btn small block mix-confirm" data-pmixconfirm>Confirm &amp; Record</button>'
-          +'<p data-brief-status style="font-size:12.5px;color:var(--muted);margin-top:9px;line-height:1.5">'+esc(wfSendLine())+'</p>'
+          +'<p data-brief-status style="font-size:12.5px;color:var(--muted);margin-top:9px;line-height:1.5">'+wfSendLineHTML()+'</p>'
           +'<p class="mix-note">This preview is the style version of your website — the quick way to feel the look. Deeper detail changes — exact colours, the background and layout details — are easy to adjust afterwards, once your website is built.</p>'
           +'</div></div>'
           +'<div class="sc-body"><p class="sc-name">'+esc(S.name||"Your Business")+'</p><button class="btn small block" data-openwebsite style="margin-top:10px">Open my website</button><p class="sc-note">This is your instant front-end preview, made from your answers. Your finished website is built from these same details by a real AI run, and arrives on a temporary address within a few hours of your order.</p></div></div></div>';
@@ -3826,7 +3812,7 @@
             ["Purpose",purposeFieldText()],
             ["Audience",audienceFieldText()],
             ["Style","Confirmed in chat: "+(chatConfirmedStyle||S.style)+" · started as "+(hf.initialStyle||S.style)],
-            ["Colours",S.colors+" — "+effPrimary().name+" "+effPrimary().hex+" / "+effAccent().name+" "+effAccent().hex],
+            ["Colours",finalColourRecord()],
             ["Sections",sectionNames().join(", ")||"—"],
             ["Features",S.features.join(", ")||"—"],
             ["Look & feel",S.tone+" tone · "+S.layout+" · "+S.font+" · "+S.btnShape+" buttons"]
@@ -3849,7 +3835,7 @@
             +'<h4 style="margin-top:9px">Ready to send to the owner</h4>'
             +'<p style="color:var(--muted);font-size:13.5px;line-height:1.55;margin-top:5px">Everything you just answered, packaged as one brief — business, style and details together. This is the exact brief the owner works from behind the scenes.</p>'
             +'<ul class="handoff-list">'+hList+'</ul>'
-            +'<p class="handoff-note" data-brief-status>'+esc(wfSendLine())+'</p>'
+            +'<p class="handoff-note" data-brief-status>'+wfSendLineHTML()+'</p>'
             +((customerLogo&&customerLogo.src)?"":'<div class="handoff-actions"><button class="btn ghost small" type="button" data-addlogo>'+(logoChoice==="later"?"Add your logo now":"Add a logo")+'</button></div>')
             +'</div></div>';
         }
@@ -3873,21 +3859,21 @@
           var credit="";
           if(sf.freeLeft<=0){
             if(sf.paidLeft>0){
-              credit='<div class="credit-window"><h5>Credit active — $'+sf.balance.toFixed(2)+' added in this page</h5><p>You have <b>'+sf.paidLeft+' paid style '+(sf.paidLeft===1?"try":"tries")+' left</b>. Each different style you pick uses one. When they run out, this window offers another $5 pack for 10 more tries.</p></div>';
+              credit='<div class="credit-window"><h5>Credit active — $'+sf.balance.toFixed(2)+' added in this page</h5><p>You have <b>'+sf.paidLeft+' paid style '+(sf.paidLeft===1?"change":"changes")+' left</b>. Each different style you pick uses one. When they run out, this window offers another $5 pack for 10 more style changes.</p></div>';
             }else{
-              credit='<div class="credit-window" role="group" aria-label="Add credit for more style tries"><h5>'+(sf.packs>0?"Your style tries are used up":"Your free style changes are used up")+'</h5><p>Add <b>$5 credit</b> and you get <b>10 more style tries</b>. Like the style you have? You don&rsquo;t need credit at all — just continue to checkout to confirm it.</p><button class="btn small block" type="button" data-addcredit style="margin-top:11px">Add $5 credit — get 10 more style tries</button><p><b>No card is charged in this demo.</b> Adding real credit requires a connected payment provider. Tapping the button only adds demo credit and tries inside this page, so you can see exactly how it will work.</p></div>';
+              credit='<div class="credit-window" role="group" aria-label="Add credit for more style changes"><h5>'+(sf.packs>0?"Your style changes are used up":"Your free style changes are used up")+'</h5><p>Add <b>$5 credit</b> and you get <b>10 more style changes</b>. Like the style you have? You don&rsquo;t need credit at all — just continue to checkout to confirm it.</p><button class="btn small block" type="button" data-addcredit style="margin-top:11px">Add $5 credit — get 10 more style changes</button><p><b>No card is charged in this demo.</b> Adding real credit requires a connected payment provider. Tapping the button only adds demo credit and tries inside this page, so you can see exactly how it will work.</p></div>';
             }
           }
           return '<div class="msg"><img class="avatar'+(i===lastAi?" spin":"")+'" src="assets/logo-dark.png" alt="" /><div class="styletry-card">'
-            +'<span class="handoff-tag">Style tries</span>'
+            +'<span class="handoff-tag">Style changes</span>'
             +'<h4 style="margin-top:9px">Like this style? Confirm it — or try a different one</h4>'
             +'<p style="color:var(--muted);font-size:13.5px;line-height:1.55;margin-top:5px">Your preview above is already wearing <b style="color:var(--ink)">'+esc(S.style)+'</b>, built from your business details. Pick a different style below and the same business, colours and sections re-dress in that style at once.</p>'
-            +'<div class="pv-scale crop" style="height:118px;margin-top:11px"><div class="pv-scale-in"><div>'+pvHTML()+'</div></div></div>'
-            +'<div class="try-counter" aria-live="polite"><span class="try-pill">Free changes left: <b>'+sf.freeLeft+' of 3</b></span><span class="try-pill">Paid tries left: <b>'+sf.paidLeft+'</b></span><span class="try-pill">Demo credit: <b>$'+sf.balance.toFixed(2)+'</b></span><span class="try-pill">Changes used: <b>'+sf.changesUsed+'</b></span></div>'
-            +(noTries?'<p class="styletry-note"><b style="color:var(--ink)">No style tries left.</b> Your current style stays exactly as it is — confirm it at checkout, or add the $5 credit pack below for 10 more tries. Styles can&rsquo;t be switched again until credit is added.</p>':"")
+            +'<div class="pv-scale crop" style="height:118px;margin-top:11px"><div class="pv-scale-in"><div>'+pvIframeHTML()+'</div></div></div>'
+            +'<div class="try-counter" aria-live="polite"><span class="try-pill">Free changes left: <b>'+sf.freeLeft+' of 3</b></span><span class="try-pill">Paid changes left: <b>'+sf.paidLeft+'</b></span><span class="try-pill">Demo credit: <b>$'+sf.balance.toFixed(2)+'</b></span><span class="try-pill">Changes used: <b>'+sf.changesUsed+'</b></span></div>'
+            +(noTries?'<p class="styletry-note"><b style="color:var(--ink)">No style changes left.</b> Your current style stays exactly as it is — confirm it at checkout, or add the $5 credit pack below for 10 more style changes. Styles can&rsquo;t be switched again until credit is added.</p>':"")
             +'<div class="styletry-grid">'+btns+'</div>'
             +credit
-            +'<p class="styletry-note">How it counts: your first style is free to keep, then you have 3 free changes. After those, $5 credit adds 10 more tries. Each pick of a <i>different</i> style uses one try — re-picking the style you are already viewing uses none.</p>'
+            +'<p class="styletry-note">How it counts: your first style is free to keep, then you have 3 free changes. After those, adding $5 credit gives 10 more style changes. Each pick of a <i>different</i> style uses one style change — re-picking the style you are already viewing uses none.</p>'
             +'</div></div>';
         }
         if(m.from==="ai"){
@@ -3900,7 +3886,7 @@
           var imgUI="";
           if(m.step==="images"&&chat.step==="images"&&i===chat.msgs.length-1&&!chat.done&&!chat.thinking){
             imgUI='<div style="margin-top:10px">'
-              +'<p style="font-size:13px;color:var(--muted)">'+(userImages.length?userImages.length+" of 10 added — the same set shows in Step 2, under “Your images”.":"No images added yet — up to 10.")+'</p>'
+              +'<p style="font-size:13px;color:var(--muted)">'+(userImages.length?userImages.length+" of 10 added — the same set shows in your website preview.":"No images added yet — up to 10.")+'</p>'
               +(userImages.length?'<div style="display:grid;gap:7px;margin-top:8px">'+userImages.map(function(im,ix){return '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="width:30px;height:30px;border-radius:8px;flex:none;'+imgPhStyle(im)+'"></span><span style="font-size:13px;font-weight:600;flex:1;min-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(im.name)+'</span><select data-chatslot="'+ix+'" aria-label="Where image '+(ix+1)+' goes" style="flex:none;border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:6px 7px;font-size:13px;color:var(--ink)">'+IMG_SLOTS.map(function(s){return '<option'+(im.slot===s?" selected":"")+'>'+s+'</option>'}).join("")+'</select><input data-chatnote="'+ix+'" type="text" value="'+esc(im.note)+'" placeholder="What is it?" aria-label="Note for image '+(ix+1)+'" style="flex:1.3;min-width:90px;border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:6px 9px;font-size:13px;color:var(--ink)" /></div>'}).join("")+'</div>':"")
               +'<div class="opts">'
               +(userImages.length<10?'<button type="button" data-chatimg="add">+ Add images</button>':"")
@@ -3928,9 +3914,11 @@
         html+='<div class="msg"><img class="avatar spin" src="assets/logo-dark.png" alt="" /><div class="dots"><span></span><span></span><span></span></div></div>';
       }
       if(chat.done&&!chat.thinking){
-        html+='<div class="donebox"><p>All saved. Here is a first look at your website — made from your answers, in your style and your colours.</p>'
+        var df=ensureStyleFlow();
+        html+='<div class="donebox"><p><b>Your completion dashboard.</b> All saved — here is a first look at your website, made from your answers, in your style and your colours.</p>'
+          +'<div class="try-counter" aria-live="polite" style="margin-top:11px"><span class="try-pill">Free changes left: <b>'+df.freeLeft+' of 3</b></span><span class="try-pill">Paid changes left: <b>'+df.paidLeft+'</b></span><span class="try-pill">Demo credit: <b>$'+df.balance.toFixed(2)+'</b></span><span class="try-pill">Changes used: <b>'+df.changesUsed+'</b></span></div>'
           +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn small" data-preview>View my website preview</button><button class="btn ghost small" id="chat-checkout">Continue to checkout</button><button class="btn ghost small" id="chat-restart">Start over</button></div>'
-          +'<p data-brief-status style="color:var(--muted);font-size:12.5px;margin-top:10px">'+esc(wfSendLine())+'</p></div>';
+          +'<p data-brief-status style="color:var(--muted);font-size:12.5px;margin-top:10px">'+wfSendLineHTML()+'</p></div>';
       }
       box.innerHTML=html;
       /* instant, not "smooth": a smooth animation restarted on every render
@@ -3998,19 +3986,21 @@
         chat.msgs.push({id:chat.idc++,from:"ai",kind:"site"});
         chat.msgs.push({id:chat.idc++,from:"ai",kind:"handoff"});
         chat.msgs.push({id:chat.idc++,from:"ai",kind:"styletry"});
-        chatSay((customerGreetingName()?("All done, "+customerGreetingName()+" — that was easy! "):"All done — that was easy! ")+"Your first style is in the preview card above, and everything you answered is packaged in the “Ready to send to the owner” block under it. Like this style? Continue to checkout to confirm it. Want a different look? You have 3 free style changes in the Style tries card — after those, $5 credit adds 10 more tries.").then(function(){chatRender()});
+        chatSay((customerGreetingName()?("All done, "+customerGreetingName()+" — that was easy! "):"All done — that was easy! ")+"Your first style is in the preview card above, and everything you answered is packaged in the “Ready to send to the owner” block under it. Like this style? Continue to checkout to confirm it. Want a different look? You have 3 free style changes in the Style changes card — after those, adding $5 credit gives 10 more style changes.").then(function(){chatRender()});
       });
     }
     $("chat-msgs").addEventListener("click",function(e){
       if(chat.building)return;
       var anyBtn=e.target.closest?e.target.closest("button"):null;
       if(anyBtn&&!anyBtn.disabled)tapSound();
+      var wrt=e.target.closest("[data-wfretry]");
+      if(wrt){wfRetrySend();return}
       var pmx=e.target.closest("[data-pmix]");
       if(pmx){
         var mk=pmx.getAttribute("data-pmix"),mv=pmx.getAttribute("data-val");
         promptOverride=null;
-        if(mk==="main"){var mc=null;SEVEN.forEach(function(c){if(c.hex===mv)mc=c});if(mc){S.primaryPick={name:mc.name,hex:mc.hex};S.mixMain=0}}
-        else if(mk==="bg"){var bc=null;BG_OPTIONS.forEach(function(c){if(c.hex===mv)bc=c});if(bc){S.bgPick={name:bc.name,hex:bc.hex,dark:!!bc.dark};S.mixBg=0}}
+        if(mk==="main"){var mc=null;SEVEN.forEach(function(c){if(c.hex===mv)mc=c});if(mc){S.primaryPick={name:mc.name,hex:mc.hex};S.mixMain=0;recordFinalColours()}}
+        else if(mk==="bg"){var bc=null;BG_OPTIONS.forEach(function(c){if(c.hex===mv)bc=c});if(bc){S.bgPick={name:bc.name,hex:bc.hex,dark:!!bc.dark};S.mixBg=0;recordFinalColours()}}
         else if(mk==="btn"){var bst=null;BTN_STYLES.forEach(function(x){if(x.name===mv)bst=x});if(bst){S.btnShape=bst.shape;S.btnStyleName=bst.name;S.btnRadius=bst.radius;S.btnRadiusShape=bst.shape}}
         else if(mk==="font"){S.font=mv}
         previewAdjust.touched=true;previewAdjust.confirmed=false;
@@ -4045,21 +4035,21 @@
       var stb=e.target.closest("[data-styletry]");
       if(stb&&!stb.disabled){
         var ns=stb.getAttribute("data-styletry");
-        if(ns===S.style){toast("That's the style you're already viewing — no try used.");return}
+        if(ns===S.style){toast("That's the style you're already viewing — no style change used.");return}
         var fl=ensureStyleFlow();
-        if(styleTriesLeft()<=0){chatRender();toast("No style tries left — add $5 credit for 10 more tries.");return}
+        if(styleTriesLeft()<=0){chatRender();toast("No style changes left — add $5 credit for 10 more style changes.");return}
         if(fl.freeLeft>0)fl.freeLeft--;else fl.paidLeft--;
         fl.changesUsed++;
         promptOverride=null;S.style=ns;
         renderAll();chatRender();
-        toast("Style changed to "+ns+" — "+styleTriesLeft()+(styleTriesLeft()===1?" try":" tries")+" left.");
+        toast("Style changed to "+ns+" — "+styleTriesLeft()+(styleTriesLeft()===1?" style change":" style changes")+" left.");
         return;
       }
       var acb=e.target.closest("[data-addcredit]");
       if(acb){
         var cf=ensureStyleFlow();cf.balance+=5;cf.paidLeft+=10;cf.packs++;
         chatRender();
-        toast("$5 demo credit added in this page only — 10 more style tries. No card was charged.");
+        toast("$5 demo credit added in this page only — 10 more style changes. No card was charged.");
         return;
       }
       var chb=e.target.closest("[data-copyhandoff]");
@@ -4131,7 +4121,7 @@
           :("Hmm, that doesn't look like a name — "+askQ+" Just the name itself is perfect."));
         return;
       }
-      if(field==="name"&&v.indexOf("@")>=0){
+      if((field==="name"||field==="bizName")&&v.indexOf("@")>=0){
         /* an email address is never a business name — it is not saved here;
            a well-formed one is kept only as a suggestion for the email question */
         if(isEmail(v))chat.data.suggestedEmail=v.trim();
@@ -4188,7 +4178,7 @@
          which stays separate: the email used to sign in is never shown to the AI */
       if(field==="phone"){S.displayPhone=v.trim();var dpf=$("f-dphone");if(dpf)dpf.value=S.displayPhone;renderDocs()}
       if(field==="email"){S.displayEmail=v.trim();var def=$("f-demail");if(def)def.value=S.displayEmail;renderDocs();if(chat.data.suggestedEmail)delete chat.data.suggestedEmail}
-      if(field==="imgreq"){aiImageRequest=v.trim();$("f-img-req").value=aiImageRequest;renderAll()}
+      if(field==="imgreq"){aiImageRequest=v.trim();var _fir2=$("f-img-req");if(_fir2)_fir2.value=aiImageRequest;renderAll()}
       if(field==="email"||field==="loginEmail")chat.data.contactEmail=v.trim();
       /* the customer's own first + last name, collected alongside their email:
          this is the identity the AI greets and answers by — the email stays unshown */
@@ -4199,10 +4189,11 @@
          name, audience, service area, call-to-action) land there too, so the
          preview, brief, summary and checkout all carry them */
       var tv=v.trim();
-      if(chat.step==="q1"){S.name=tv;chat.data.name=tv;recordTyped("q1",tv);renderAll()}
+      if(chat.step==="q0"){S.name=tv;chat.data.name=tv;recordTyped("q0",tv);renderAll()}
+      else if(chat.step==="q1"){recordTyped("q1",tv);chat.data.categoryNote=tv}
       else if(chat.step==="q2"){recordTyped("q2",tv);chat.data.purposeNote=tv}
       else if(chat.step==="q3"){recordTyped("q3",tv);chat.data.styleNote=tv}
-      else if(chat.step==="q4"){recordTyped("q4",tv);chat.data.colorNote=tv}
+      else if(chat.step==="q4"){recordTyped("q4",tv);chat.data.colorNote=tv;var hx4=tv.match(/#?[0-9a-fA-F]{6}\b/);if(hx4)setFinalColour(hx4[0].charAt(0)==="#"?hx4[0]:"#"+hx4[0])}
       else if(chat.step==="q5"){recordTyped("q5",tv);chat.data.logoNote=tv}
       else if(chat.step==="q6"){S.audience=tv;recordTyped("q6",tv);renderAll()}
       else if(chat.step==="q7"){S.serviceArea=tv;recordTyped("q7",tv);renderAll()}
@@ -4244,7 +4235,7 @@
       $("sound-on-ic").style.display=chat.sound?"":"none";$("sound-off-ic").style.display=chat.sound?"none":"";
       if(chat.sound){unlockSound();tapSound()}
     });
-    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}if(typeof creatingTimer!=="undefined"&&creatingTimer){clearInterval(creatingTimer);creatingTimer=null}if(typeof creatingClock!=="undefined"&&creatingClock){clearInterval(creatingClock);creatingClock=null}styleFlow=null;chatConfirmedStyle="";customerLogo=null;logoChoice="";chatAnswers={};chatAns={};q8Features=[];previewAdjust={touched:false,confirmed:false};chat={msgs:[],step:"q1",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1,howSaid:false,creating:null};chatRender();chatGoTo("q1")}
+    function chatReset(){if(buildTimer){clearInterval(buildTimer);buildTimer=null}if(typeof creatingTimer!=="undefined"&&creatingTimer){clearInterval(creatingTimer);creatingTimer=null}styleFlow=null;chatConfirmedStyle="";customerLogo=null;logoChoice="";chatAnswers={};chatAns={};q8Features=[];previewAdjust={touched:false,confirmed:false};S=JSON.parse(JSON.stringify(DEFAULTS));addons={email:false,phone:false,backend:false};userImages=[];aiImageRequest="";promptOverride=null;chat={msgs:[],step:"q0",data:{},thinking:false,sound:chat.sound,done:false,building:false,idc:1,howSaid:false,creating:null};renderAll();chatRender();chatGoTo("q0")}
 
     /* ============ card form + order submission ============ */
     function luhn(num){var sum=0,alt=false;for(var i=num.length-1;i>=0;i--){var d=+num[i];if(alt){d*=2;if(d>9)d-=9}sum+=d;alt=!alt}return num.length>=15&&sum%10===0}
@@ -4369,7 +4360,7 @@
         +'<div class="img-actions"><button type="button" class="chip" data-imgmove="-1" data-img="'+i+'" '+(i===0?"disabled":"")+' aria-label="Move image earlier">← Earlier</button><button type="button" class="chip" data-imgmove="1" data-img="'+i+'" '+(i===userImages.length-1?"disabled":"")+' aria-label="Move image later">Later →</button><button type="button" class="chip" data-imgremove="'+i+'" style="margin-left:auto;color:var(--bad)">Remove</button></div>'
         +'</div></div>'}).join("");
     }
-    $("img-add-btn").addEventListener("click",function(){$("img-file").click()});
+    var _iab=$("img-add-btn");if(_iab)_iab.addEventListener("click",function(){var f=$("img-file");if(f)f.click()});
     /* one shared ingest — the Step 2 studio and the chat's images question fill the SAME set of images */
     function ingestImages(fileList,after){
       var files=Array.prototype.slice.call(fileList||[]);
@@ -4389,7 +4380,7 @@
       });
       renderAll();
     }
-    $("img-file").addEventListener("change",function(){var fl=this.files;this.value="";ingestImages(fl,null)});
+    var _ifl=$("img-file");if(_ifl)_ifl.addEventListener("change",function(){var fl=this.files;this.value="";ingestImages(fl,null)});
     $("chat-img-file").addEventListener("change",function(){var fl=this.files;this.value="";ingestImages(fl,function(){chatRender()})});
     /* the logo question's own upload: one file, kept apart from the 10 website
        images, shown straight back to the customer in the chat as a preview */
@@ -4404,14 +4395,14 @@
       rd.onerror=function(){toast("That file couldn't be read — please try another logo file.")};
       rd.readAsDataURL(f);
     });
-    $("img-grid").addEventListener("change",function(e){
+    ($("img-grid")||{addEventListener:function(){}}).addEventListener("change",function(e){
       var t=e.target.closest("[data-img]");if(!t)return;var im=userImages[+t.getAttribute("data-img")];if(!im)return;
       im[t.getAttribute("data-k")]=t.value;renderAll();
     });
-    $("img-grid").addEventListener("input",function(e){
+    ($("img-grid")||{addEventListener:function(){}}).addEventListener("input",function(e){
       var t=e.target.closest('[data-k="note"]');if(!t)return;var im=userImages[+t.getAttribute("data-img")];if(!im)return;im.note=t.value;
     });
-    $("img-grid").addEventListener("click",function(e){
+    ($("img-grid")||{addEventListener:function(){}}).addEventListener("click",function(e){
       var rm=e.target.closest("[data-imgremove]");
       if(rm){userImages.splice(+rm.getAttribute("data-imgremove"),1);renderAll();toast("Image removed");return}
       var mv=e.target.closest("[data-imgmove]");
@@ -4454,7 +4445,7 @@
       box.innerHTML='<div style="display:flex;flex-wrap:wrap;gap:9px">'
         +PALETTES.map(function(p){var on=S.colors===p.name;
           return '<button type="button" data-palette="'+esc(p.name)+'" title="'+esc(p.name)+'" aria-label="Colour mood '+esc(p.name)+'" aria-pressed="'+on+'" style="width:38px;height:38px;border-radius:50%;padding:0;background:conic-gradient('+p.sw[0]+' 0 50%,'+p.sw[1]+' 50% 100%);border:'+(on?"3px solid var(--brand-2)":"2px solid rgba(0,0,0,.15)")+';box-shadow:'+(on?("0 0 0 3px color-mix(in srgb,var(--brand-2) 20%,transparent),0 0 14px "+p.sw[1]):"none")+'"></button>'}).join("")
-        +'</div><p class="pick-read">'+esc(S.colors)+' — '+esc(palette().pn)+' &amp; '+esc(palette().an)+'</p>'
+        +'</div><p class="pick-read">'+esc(finalColourRecord())+'</p>'
         +'<div style="margin-top:14px">'+balancePanelHTML()+'</div>';
       syncBalanceUI();syncMixerUI();
     }
@@ -4484,7 +4475,7 @@
       e.preventDefault();var v=$("pro-text").value.trim();if(!v)return;$("pro-text").value="";
       proUser(v);
       S.custom=(S.custom?S.custom+" ":"")+v;promptOverride=null;renderDocs();
-      $("details-prompt").textContent=buildPrompt(S);$("mini-prompt").textContent=buildPrompt(S);
+      setBriefPrompts();setBriefPrompts();
       proSay("Got it — I've added that to your notes, word for word. The builder will see it when your website is made. Anything else?");
     });
 
@@ -4805,8 +4796,79 @@
 
     /* ============ code reader / editor (owner + the site's own back-end customer only) ============ */
     var codeCtx={source:"pro",orderIndex:null,key:"my-site",generated:""};
-    function wrapSiteHTML(inner,title){
-      return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>'+(title||"My Website")+'</title>\n<style>body{margin:0;font-family:"Segoe UI",system-ui,sans-serif}</style>\n</head>\n<body>\n'+inner+'\n</body>\n</html>';
+    /* one generator, one output shape: the brief compiles into a single
+       standalone document. brief.businessName -> title + header brand;
+       brief.palette.primary/secondary -> the --primary/--secondary CSS
+       variables (the FINAL computed colours from the one theme state, a
+       typed custom hex already applied as the override); brief.font,
+       brief.headline and brief.description shape the hero via pvHTML.
+       The document carries its own bridge: nav clicks are forwarded to the
+       parent by postMessage, and pure style updates arrive the same way
+       and are applied to its own CSS variables — the parent never reaches
+       into this document (the sandbox has no allow-same-origin). */
+    function wrapSiteHTML(inner,title,brief){
+      var vars="";
+      if(brief&&brief.palette){
+        vars=":root{--primary:"+brief.palette.primary+";--secondary:"+brief.palette.secondary+";--color-balance:"+(brief.balance!=null?brief.balance:50)+"%;--main-lightness:"+(brief.lightnessMain||0)+";--second-lightness:"+(brief.lightnessSecond||0)+";--btn-radius:"+(brief.buttonRadius||"10px")+";--font-family:"+(brief.fontFamily||"inherit")+"}"
+          +"[data-pvgrad]{background:linear-gradient(135deg,var(--primary) 0%,var(--primary) var(--color-balance),var(--secondary) 100%)!important}"
+          +"[data-pvbtn]{border-radius:var(--btn-radius)!important}"
+          +"[data-pvroot]{font-family:var(--font-family)}";
+      }
+      var bridge='<script>document.addEventListener("click",function(e){var t=e.target&&e.target.closest?e.target.closest("[data-pvgo]"):null;if(t){e.preventDefault();try{parent.postMessage({wfPvNav:t.getAttribute("data-pvgo")},"*")}catch(err){}}var s=e.target&&e.target.closest?e.target.closest("[data-pvsend]"):null;if(s){var n=s.parentNode?s.parentNode.querySelector("[data-pvsend-note]"):null;if(n)n.style.display="block"}var g=e.target&&e.target.closest?e.target.closest("[data-regen]"):null;if(g){try{parent.postMessage({type:"regenerate"},"*")}catch(err){}}});'
+        +'window.addEventListener("message",function(e){var d=e&&e.data;if(!d)return;'
+        +'if(d.wfPvScroll){var el=document.querySelector("[data-pvsec=\""+d.wfPvScroll+"\"]");if(el)el.scrollIntoView({behavior:"smooth",block:"start"})} '
+        +'if(d.wfStyle){var v=d.wfStyle,r=document.documentElement.style,hx=function(x){return typeof x==="string"&&/^#[0-9a-f]{6}$/i.test(x)};'
+        +'if(hx(v.primary))r.setProperty("--primary",v.primary);if(hx(v.secondary))r.setProperty("--secondary",v.secondary);'
+        +'if(typeof v.balance==="number")r.setProperty("--color-balance",Math.max(0,Math.min(100,v.balance))+"%");'
+        +'if(typeof v.lightness==="number")r.setProperty("--main-lightness",v.lightness);'
+        +'if(typeof v.lightnessSecond==="number")r.setProperty("--second-lightness",v.lightnessSecond);'
+        +'if(typeof v.buttonRadius==="string"&&/^[0-9]+px$/.test(v.buttonRadius))r.setProperty("--btn-radius",v.buttonRadius);}});'
+        +'<\/script>';
+      var meta="";
+      if(brief){
+        var bName=esc(brief.businessName||title||"My Website"), bDesc=esc(brief.description||""), bUrl=esc(brief.customDomain||"https://webflowai.app");
+        meta='\n<meta name="description" content="'+bDesc+'">'
+          +'\n<meta property="og:title" content="'+bName+'">'
+          +'\n<meta property="og:description" content="'+bDesc+'">'
+          +'\n<meta property="og:url" content="'+bUrl+'">'
+          +'\n<meta property="og:type" content="website">'
+          +(brief.image?'\n<meta property="og:image" content="'+esc(brief.image)+'">':"")
+          +'\n<meta name="twitter:card" content="summary_large_image">'
+          +'\n<meta name="twitter:title" content="'+bName+'">'
+          +'\n<meta name="twitter:description" content="'+bDesc+'">'
+          +(brief.image?'\n<meta name="twitter:image" content="'+esc(brief.image)+'">':"");
+      }
+      return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>'+esc(title||"My Website")+'</title>'+meta+'\n<style>body{margin:0;font-family:"Segoe UI",system-ui,sans-serif}'+vars+'</style>\n</head>\n<body>\n'+inner+'\n'+bridge+'\n</body>\n</html>';
+    }
+    function currentSiteBrief(){
+      var pt=(typeof chatAns!=="undefined"&&chatAns.q2&&chatAns.q2.text)||"";
+      return {businessName:S.name||"Your Business",
+        palette:{primary:effPrimary().hex,secondary:effAccent().hex},background:effBg().hex,
+        font:S.font,headline:(S.tagline?((S.name||"Your Business")+" — "+S.tagline):(S.name||"Your Business")),
+        description:pt||S.vision||"",balance:S.balanceMain,lightnessMain:S.mixMain,lightnessSecond:S.mixSecond,
+        buttonRadius:pvTheme().btnR,fontFamily:pvTheme().font,
+        image:(typeof customerLogo!=="undefined"&&customerLogo&&customerLogo.src)?customerLogo.src:null,customDomain:null};
+    }
+    function generateSiteFromBrief(brief){return wrapSiteHTML(pvHTML(),brief.businessName,brief)}
+    /* iframe error boundary: an empty or failed generation never blanks a
+       preview — a friendly fallback document in the site's own look loads
+       instead, and its Regenerate button reaches the parent through the
+       same validated postMessage channel as the nav bridge */
+    function fallbackSiteDocument(){
+      var b=currentSiteBrief();
+      var inner='<div style="min-height:430px;display:grid;place-items:center;background:#ffffff;color:#1a2233;font-family:'+(b.fontFamily||"inherit")+';padding:30px;text-align:center"><div><div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,'+b.palette.primary+','+b.palette.secondary+');margin:0 auto 16px"></div><h2 style="margin:0 0 8px;font-size:22px">'+esc(b.businessName)+'</h2><p style="margin:0 0 18px;opacity:.75;font-size:15px">We&rsquo;re polishing your layout&hellip; your preview will be right back.</p><button type="button" data-regen style="background:'+b.palette.primary+';color:#fff;border:0;padding:11px 22px;border-radius:999px;font-size:15px;font-weight:600;cursor:pointer">Regenerate</button></div></div>';
+      return wrapSiteHTML(inner,b.businessName,b);
+    }
+    function safeSiteDocument(){
+      try{var d=generateSiteFromBrief(currentSiteBrief());if(d&&d.replace(/\s+/g,"").length>200)return d}catch(e){}
+      return fallbackSiteDocument();
+    }
+    function pvIframeHTML(cls){return '<iframe class="'+(cls||"pv-iframe")+'" sandbox="allow-scripts" title="Preview of your website" srcdoc="'+esc(safeSiteDocument())+'"></iframe>'}
+    /* pure style changes travel by postMessage only — no srcdoc re-set, no
+       reload — so the mixers stay instant and the sandbox stays intact */
+    function postStyleToPreviews(){
+      var payload={primary:effPrimary().hex,secondary:effAccent().hex,buttonRadius:pvTheme().btnR,balance:S.balanceMain,lightness:S.mixMain,lightnessSecond:S.mixSecond};
+      document.querySelectorAll("iframe.pv-iframe,#pv-frame").forEach(function(f){if(f.contentWindow){try{f.contentWindow.postMessage({wfStyle:payload},"*")}catch(err){}}});
     }
     function highlightHTML(src){
       return esc(src).replace(/(&lt;!--[\s\S]*?--&gt;)|(&lt;\/?)([a-zA-Z][\w-]*)|([\w-]+)=(&quot;[^&]*?&quot;)|(&quot;[^&]*?&quot;)/g,function(m,com,tagOpen,tagName,attrName,attrVal,strVal){
@@ -4867,7 +4929,7 @@
     var siEmail="", siFirstName="", siLastName="", siVerifying=false, siPendingCode=null, siIntent="login";
     function siNewCode(){
       siPendingCode=genCode(); /* a fresh 6-digit code is created for this email, every time */
-      $("si-demo-code").textContent="Your demo code: "+fmtCode(siPendingCode);
+      $("si-demo-code").textContent="Your sign-in code: "+fmtCode(siPendingCode);
     }
     /* after each send, Resend pauses 30s — the same anti-spam cooldown the live email service uses */
     var siCooldownTimer=null;
@@ -4894,7 +4956,7 @@
         btn.textContent=greet?("Hi · "+greet):"Hi";
         btn.title=greet?("Signed in as "+customerFullName()):"Signed in";
         var full=customerFullName();
-        menu.innerHTML='<p>Signed in as <b style="overflow-wrap:anywhere">'+esc(full||"you")+'</b><br />Your sign-in code for this session: <b>Code '+esc(fmtCode(customerCode))+'</b> — the builder AI knows you by your name and that code; your email stays owner-only and is never shown.<br />Your details and orders are saved to this account — your code and updates are sent to your email address.</p>'
+        menu.innerHTML='<p>Signed in as <b style="overflow-wrap:anywhere">'+esc(full||"you")+'</b><br />Your sign-in code for this session: <b>Code '+esc(fmtCode(customerCode))+'</b> — the builder AI knows you by your name and that code; your email stays owner-only and is never shown.<br />Your details and orders are saved to this account — your sign-in code is shown on this page when you sign in.</p>'
           +(hasBackend()?'<button class="btn small block" id="si-pro" type="button" style="margin-top:10px">Open my Pro workspace</button>':'<p style="margin-top:8px">The Pro workspace opens with the back-end add-on.</p>')
           +'<button class="btn ghost small block" id="si-signout" type="button" style="margin-top:8px">Sign out</button>';
         var sp=$("si-pro");if(sp)sp.addEventListener("click",function(){menu.hidden=true;showView("pro")});
@@ -4905,8 +4967,8 @@
       var co=$("checkout-signin");
       if(co){
         co.innerHTML=customerEmail
-          ? '<p style="font-size:14px"><b>Signed in</b>'+(customerFullName()?' · <span style="overflow-wrap:anywhere">'+esc(customerFullName())+'</span>':'')+'<br /><span style="color:var(--muted);font-size:13.5px">This order is saved to your account — we greet you by name, and updates are sent to your email address (never shown here).</span></p>'
-          : '<p style="font-size:14px"><b>Have an account?</b><br /><span style="color:var(--muted);font-size:13.5px">Sign in with your name and email address and this order is saved to your account — your code is emailed to you.</span></p><button class="btn ghost small block" id="co-signin" type="button" style="margin-top:9px">Sign in with your email</button>';
+          ? '<p style="font-size:14px"><b>Signed in</b>'+(customerFullName()?' · <span style="overflow-wrap:anywhere">'+esc(customerFullName())+'</span>':'')+'<br /><span style="color:var(--muted);font-size:13.5px">This order is saved to your account — we greet you by name, and your email address is never shown here.</span></p>'
+          : '<p style="font-size:14px"><b>Have an account?</b><br /><span style="color:var(--muted);font-size:13.5px">Sign in with your name and email address and this order is saved to your account — your sign-in code is shown right on the page.</span></p><button class="btn ghost small block" id="co-signin" type="button" style="margin-top:9px">Sign in with your email</button>';
         var cb=$("co-signin");if(cb)cb.addEventListener("click",openSignin);
       }
     }
@@ -4935,9 +4997,9 @@
       if(!isPersonName(siFirstName)){$("si-err").textContent=(nameLooksLike(siFirstName)?"That looks like "+(nameLooksLike(siFirstName)==="email"?"an email address":"a website address")+", not a name":"That doesn't look like a first name")+" — please enter your first name.";$("si-first").focus();return}
       if(!isPersonName(siLastName)){$("si-err").textContent=(nameLooksLike(siLastName)?"That looks like "+(nameLooksLike(siLastName)==="email"?"an email address":"a website address")+", not a name":"That doesn't look like a last name")+" — please enter your last name.";$("si-last").focus();return}
       siEmail=($("si-email").value||"").trim().toLowerCase();
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(siEmail)){$("si-err").textContent="Please enter a valid email address — your sign-in code is sent there.";return}
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(siEmail)){$("si-err").textContent="Please enter a valid email address — it is your account key, and we greet you by name.";return}
       siNewCode();
-      $("si-sent-to").textContent="Thanks, "+siFirstName+" — we've emailed a fresh 6-digit code to your email address. Check your inbox. (In this preview build, use the demo code shown below.)";
+      $("si-sent-to").textContent="Thanks, "+siFirstName+" — here is your sign-in code, shown right here on this page for now: type it below to continue.";
       siShow(2);var b=siBoxes();b.forEach(function(x){x.value=""});setTimeout(function(){b[0].focus()},40);
       siResendCooldown();
     });
@@ -4946,15 +5008,15 @@
       siNewCode(); /* a brand-new code replaces the old one and goes to the same email the customer entered */
       var b=siBoxes();b.forEach(function(x){x.value=""});b[0].focus();
       $("si-err2").textContent="";
-      $("si-sent-to").textContent="A new 6-digit code was sent to your email address just now — check your inbox. (In this preview build, use the demo code shown below.)";
-      toast("A fresh 6-digit code was sent to your email");
+      $("si-sent-to").textContent="Here is your new sign-in code — shown right here on this page for now: type the new code below to continue.";
+      toast("Here is your new sign-in code — shown above");
       siResendCooldown();
     });
     function siVerify(){
       if(siVerifying)return;
       var code=siBoxes().map(function(b){return b.value}).join("");
-      if(code.length!==6){$("si-err2").textContent="Enter all 6 digits of the code sent to your email.";return}
-      if(siPendingCode&&code!==siPendingCode){$("si-err2").textContent="That code doesn't match the one sent to your email — check the demo code above and try again.";return}
+      if(code.length!==6){$("si-err2").textContent="Enter all 6 digits of the code shown above.";return}
+      if(siPendingCode&&code!==siPendingCode){$("si-err2").textContent="That code doesn't match the code shown above — check it and try again.";return}
       siVerifying=true;
       var btn=$("si-verify");btn.disabled=true;btn.textContent="Verifying…";
       setTimeout(function(){
@@ -4970,15 +5032,19 @@
         if(!chat.data.loginEmail)chat.data.loginEmail=siEmail;
         if(!chat.data.contactEmail)chat.data.contactEmail=siEmail;
         var dn=customerFullName();
-        $("si-done-msg").textContent=dn?("You're signed in, "+dn+". Welcome — the AI will greet you by name, "+(customerGreetingName()||"")+". Your code and updates go to your email address, which is never shown on screen. On the builder AI side you appear as "+dn+" · Code "+fmtCode(code)+"."):("You're signed in. Your code and updates go to your email address, which is never shown on screen.");
+        $("si-done-msg").textContent=dn?("You're signed in, "+dn+". Welcome — the AI will greet you by name, "+(customerGreetingName()||"")+". Your sign-in code is shown on this page when you sign in, and your email address is never shown on screen. On the builder AI side you appear as "+dn+" · Code "+fmtCode(code)+"."):("You're signed in. Your sign-in code is shown on this page when you sign in, and your email address is never shown on screen.");
         siShow(3);renderSigninState();
-        setTimeout(function(){closeSignin();renderAll();var v=document.body.getAttribute("data-view");
-          var gn=customerGreetingName();
-          if(siIntent==="create"){siIntent="login";showView("start");toast(gn?("Account created — welcome, "+gn+"! Let's build your website"):"Account created — let's build your website")}
-          else{if(v==="pro")renderPro();if(v==="entry")showView("home");toast(gn?("Signed in — welcome back, "+gn+"!"):"Signed in — you're right back where you left off")}},1400);
       },900);
     }
     $("si-verify").addEventListener("click",siVerify);
+    /* the signed-in success stays on screen until the customer dismisses it:
+       Continue carries on with the flow; Close just closes the popup */
+    function siFinishSignin(){closeSignin();renderAll();var v=document.body.getAttribute("data-view");
+      var gn=customerGreetingName();
+      if(siIntent==="create"){siIntent="login";showView("start");toast(gn?("Account created — welcome, "+gn+"! Let's build your website"):"Account created — let's build your website")}
+      else{if(v==="pro")renderPro();if(v==="entry")showView("home");toast(gn?("Signed in — welcome back, "+gn+"!"):"Signed in — you're right back where you left off")}}
+    $("si-done-continue").addEventListener("click",siFinishSignin);
+    $("si-done-close").addEventListener("click",function(){closeSignin()});
     siBoxes().forEach(function(box,i,arr){
       box.addEventListener("input",function(){
         box.value=box.value.replace(/\D/g,"").slice(0,1);
@@ -5017,7 +5083,7 @@
       siIntent="create";openSignin();
     });
     $("entry-login").addEventListener("click",function(){siIntent="login";if(customerEmail){showView(hasBackend()?"pro":"home")}else openSignin()});
-    $("f-img-req").addEventListener("input",function(e){aiImageRequest=e.target.value.trim();renderDocs()});
+    var _fir=$("f-img-req");if(_fir)_fir.addEventListener("input",function(e){aiImageRequest=e.target.value.trim();renderDocs()});
 
 
     /* ============ paid back end: live editor dashboard (dark, Version 1) ============ */
@@ -5498,7 +5564,7 @@
     $("q-close").addEventListener("click",closeQ);
     $("q-stay").addEventListener("click",closeQ);
     $("q-overlay").addEventListener("click",function(e){if(e.target===this)closeQ()});
-    $("q-generate").addEventListener("click",function(){closeQ();showView("prompt");toast("Blueprint generated — your brief is ready")});
+    $("q-generate").addEventListener("click",function(){closeQ();openChatStage();toast("Your answers so far are in — finish in the chat, then Confirm & Record")});
     document.addEventListener("keydown",function(e){if(e.key==="Escape"&&$("q-overlay").style.display!=="none")closeQ()});
     /* ============ init ============ */
     document.body.setAttribute("data-view","entry");
